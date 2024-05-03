@@ -1,4 +1,4 @@
-package cli.semanticlayer;
+package com.asemicanalytics.cli.semanticlayer;
 
 import com.asemicanalytics.cli.api.ConfigureDatasourcesControllerApi;
 import com.asemicanalytics.cli.invoker.ApiException;

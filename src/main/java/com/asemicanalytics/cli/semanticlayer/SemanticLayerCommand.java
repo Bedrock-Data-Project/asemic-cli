@@ -1,4 +1,4 @@
-package cli.semanticlayer;
+package com.asemicanalytics.cli.semanticlayer;
 
 import picocli.CommandLine;
 

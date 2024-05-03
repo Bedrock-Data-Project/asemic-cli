@@ -11,8 +11,12 @@
   <url>http://maven.apache.org</url>
 
   <properties>
+    <maven.compiler.source>21</maven.compiler.source>
+    <maven.compiler.target>21</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
+
+
 
   <profiles>
     <profile>
@@ -41,7 +45,7 @@
               <!--                            </execution>-->
             </executions>
             <configuration>
-              <mainClass>com.asemicanalytics.cli.Asemic</mainClass>
+              <mainClass>com.asemicanalytics.com.asemicanalytics.cli.Asemic</mainClass>
               <imageName>asemic-cli</imageName>
             </configuration>
           </plugin>

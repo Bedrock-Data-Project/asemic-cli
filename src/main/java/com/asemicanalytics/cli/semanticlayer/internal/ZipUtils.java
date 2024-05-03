@@ -1,4 +1,4 @@
-package cli.semanticlayer.internal;
+package com.asemicanalytics.cli.semanticlayer.internal;
 
 import java.io.BufferedOutputStream;
 import java.io.FileInputStream;

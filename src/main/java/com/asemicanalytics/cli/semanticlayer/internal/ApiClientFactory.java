@@ -1,4 +1,4 @@
-package cli.semanticlayer.internal;
+package com.asemicanalytics.cli.semanticlayer.internal;
 
 import com.asemicanalytics.cli.invoker.ApiClient;
 
