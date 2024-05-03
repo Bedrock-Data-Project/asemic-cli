@@ -12,4 +12,3 @@ Requires that graalvm is installed (JAVA_HOME needs to be set also) and all the 
 On mac, jenv can be used to set jdk
 See https://www.infoq.com/articles/java-native-cli-graalvm-picocli/
 
-test change
