@@ -45,7 +45,7 @@
               <!--                            </execution>-->
             </executions>
             <configuration>
-              <mainClass>com.asemicanalytics.com.asemicanalytics.cli.Asemic</mainClass>
+              <mainClass>com.asemicanalytics.cli.Asemic</mainClass>
               <imageName>asemic-cli</imageName>
             </configuration>
           </plugin>
