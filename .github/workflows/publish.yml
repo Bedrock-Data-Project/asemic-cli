@@ -1,12 +1,15 @@
 name: GraalVM Native Image builds
-on: [push, workflow_dispatch]
+on:
+  release:
+    types: [ created ]
+
 jobs:
   build:
     name: Build on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [macos-latest, macos-13, windows-latest, ubuntu-latest]
+        os: [macos-latest, macos-13, ubuntu-latest]
     steps:
       - uses: actions/checkout@v4
 
@@ -14,14 +17,22 @@ jobs:
         with:
           java-version: '21'
           distribution: 'graalvm'
-#          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           native-image-job-reports: 'true'
 
       - name: Build native image
-        run: mvn -Pnative package
+        run: | 
+          mvn -Pnative package
+          mv target/asemic-cli target/asemic-cli-${{ matrix.os }}
 
-      - name: Upload binary
-        uses: actions/upload-artifact@v2
-        with:
-          name: asemic-cli-${{ matrix.os }}
-          path: target/asemic-cli
+#      - name: Upload binary
+#        uses: actions/upload-artifact@v2
+#        with:
+#          name: asemic-cli-${{ matrix.os }}
+#          path: target/asemic-cli
+
+      - name: Upload release
+        if: github.event.release.tag_name
+        run: gh release upload ${{ github.event.release.tag_name }} target/asemic-cli-${{ matrix.os }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
