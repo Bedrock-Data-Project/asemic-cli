@@ -22,12 +22,19 @@ jobs:
           native-image-job-reports: 'true'
 
       - name: Build native image
-        run: |
-          mvn package -Dpackaging=native-image
-          mv target/asemic-cli target/asemic-cli-${{ matrix.os }}
+        run: mvn package -Dpackaging=native-image
 
       - name: Upload release
         if: github.event.release.tag_name
-        run: gh release upload ${{ github.event.release.tag_name }} target/asemic-cli-${{ matrix.os }}
+        run: |
+          if [[ "${{ matrix.os }}" == "ubuntu-latest" ]]; then
+            gh release upload ${{ github.event.release.tag_name }} target/asemic-cli#asemic-cli-ubuntu
+          fi
+          if [[ "${{ matrix.os }}" == "macos-latest" ]]; then
+            gh release upload ${{ github.event.release.tag_name }} target/asemic-cli#asemic-cli-macos-arm
+          fi
+          if [[ "${{ matrix.os }}" == "macos-13" ]]; then
+            gh release upload ${{ github.event.release.tag_name }} target/asemic-cli#asemic-macos-x64
+          fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
