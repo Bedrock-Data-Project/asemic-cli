@@ -56,12 +56,40 @@
         ]
       }
     },
+    "/api/v1/{appId}/datasources/db-test": {
+      "post": {
+        "tags": [
+          "datasources-controller"
+        ],
+        "operationId": "submitAppDbAuth",
+        "parameters": [
+          {
+            "name": "appId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
     "/api/v1/{appId}/datasources-configure/db-auth": {
       "post": {
         "tags": [
           "configure-datasources-controller"
         ],
-        "operationId": "submitAppDbAuth",
+        "operationId": "submitAppDbAuth_1",
         "parameters": [
           {
             "name": "appId",
@@ -307,6 +335,14 @@
         "operationId": "daily",
         "parameters": [
           {
+            "name": "AppConfigVersion",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "appId",
             "in": "path",
             "required": true,
@@ -354,13 +390,13 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK",
+          "default": {
+            "description": "default response",
             "content": {
               "application/octet-stream": {
                 "schema": {
                   "type": "string",
-                  "format": "binary"
+                  "format": "byte"
                 }
               }
             }
@@ -436,13 +472,13 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK",
+          "default": {
+            "description": "default response",
             "content": {
-              "application/json": {
+              "application/octet-stream": {
                 "schema": {
                   "type": "string",
-                  "format": "binary"
+                  "format": "byte"
                 }
               }
             }

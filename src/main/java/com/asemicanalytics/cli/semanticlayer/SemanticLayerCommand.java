@@ -6,7 +6,8 @@ import picocli.CommandLine;
     AuthCommand.class,
     ValidateCommand.class,
     PushCommand.class,
-    PullCommand.class
+    PullCommand.class,
+    GenerateDsStaticCommand.class
 })
 public class SemanticLayerCommand {
 }

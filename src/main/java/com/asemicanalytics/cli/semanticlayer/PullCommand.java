@@ -1,12 +1,10 @@
 package com.asemicanalytics.cli.semanticlayer;
 
-import com.asemicanalytics.cli.api.DatasourcesControllerApi;
-import com.asemicanalytics.cli.invoker.ApiException;
-import com.asemicanalytics.cli.semanticlayer.internal.ApiClientFactory;
 import com.asemicanalytics.cli.semanticlayer.internal.GlobalConfig;
+import com.asemicanalytics.cli.semanticlayer.internal.QueryEngineClient;
 import com.asemicanalytics.cli.semanticlayer.internal.ZipUtils;
-import picocli.CommandLine;
-
+import com.asemicanalytics.cli.semanticlayer.internal.cli.SpinnerCli;
+import jakarta.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
@@ -14,22 +12,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
+import picocli.CommandLine;
 
 @CommandLine.Command(name = "pull", mixinStandardHelpOptions = true)
 public class PullCommand implements Runnable {
 
-  @Override
-  public void run() {
-    var api = new DatasourcesControllerApi(ApiClientFactory.create());
-    try {
-      File configZipped = api.getConfig(GlobalConfig.getAppId());
-      deleteDirContents(GlobalConfig.getAppIdDir());
-      ZipUtils.unzipToDirectory(configZipped.toPath(), GlobalConfig.getAppIdDir());
-      System.out.println("@|fg(green) OK|@");
-    } catch (ApiException | IOException e) {
-      throw new RuntimeException(e);
-    }
-  }
+  @Inject
+  QueryEngineClient queryEngineClient;
 
   private static void deleteDirContents(Path dir) throws IOException {
     Files.walkFileTree(dir, new SimpleFileVisitor<>() {
@@ -45,5 +34,21 @@ public class PullCommand implements Runnable {
         return FileVisitResult.CONTINUE;
       }
     });
+  }
+
+  @Override
+  public void run() {
+    new SpinnerCli().spin(() -> {
+      try {
+        File tempDir = Files.createTempDirectory("asemic").toFile();
+        queryEngineClient.downloadCurrentConfig(GlobalConfig.getAppId(), tempDir.toPath());
+        deleteDirContents(GlobalConfig.getAppIdDir());
+        ZipUtils.unzipToDirectory(tempDir.toPath(), GlobalConfig.getAppIdDir());
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
+      return null;
+    });
+    System.out.println(CommandLine.Help.Ansi.AUTO.string("@|fg(green) OK|@"));
   }
 }

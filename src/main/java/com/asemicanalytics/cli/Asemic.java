@@ -1,14 +1,18 @@
 package com.asemicanalytics.cli;
 
 import com.asemicanalytics.cli.semanticlayer.SemanticLayerCommand;
-import picocli.CommandLine;
+import io.micronaut.configuration.picocli.PicocliRunner;
 import picocli.CommandLine.Command;
 
 @Command(name = "asemic", mixinStandardHelpOptions = true, subcommands = {
     SemanticLayerCommand.class})
-public class Asemic {
-  public static void main(String[] args) {
-    int rc = new CommandLine(new Asemic()).execute(args);
-    System.exit(rc);
+public class Asemic implements Runnable {
+  public static void main(String[] args) throws Exception {
+    PicocliRunner.run(Asemic.class, args);
+  }
+
+  @Override
+  public void run() {
+
   }
 }

@@ -1,13 +1,12 @@
 package com.asemicanalytics.cli.semanticlayer;
 
-import com.asemicanalytics.cli.api.ConfigureDatasourcesControllerApi;
-import com.asemicanalytics.cli.invoker.ApiException;
 import com.asemicanalytics.cli.model.DatabaseDto;
-import com.asemicanalytics.cli.semanticlayer.internal.ApiClientFactory;
 import com.asemicanalytics.cli.semanticlayer.internal.GlobalConfig;
-import com.asemicanalytics.cli.semanticlayer.internal.MultichoiceCli;
-import picocli.CommandLine;
-
+import com.asemicanalytics.cli.semanticlayer.internal.QueryEngineClient;
+import com.asemicanalytics.cli.semanticlayer.internal.cli.InputCli;
+import com.asemicanalytics.cli.semanticlayer.internal.cli.MultichoiceCli;
+import com.asemicanalytics.cli.semanticlayer.internal.cli.PasswordCli;
+import jakarta.inject.Inject;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -15,15 +14,19 @@ import java.nio.file.Path;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
+import picocli.CommandLine;
 
 @CommandLine.Command(name = "auth", mixinStandardHelpOptions = true)
 public class AuthCommand implements Runnable {
 
+  @Inject
+  QueryEngineClient queryEngineClient;
+
   private DatabaseDto fromBigQuery() {
-    String projectId = System.console().readLine("Enter your google billing project ID: ");
-    String serviceAccountPath = System.console().readLine(
+    String projectId = new InputCli("Enter your google billing project ID").read();
+    String serviceAccountPath = new InputCli(
         "Enter path to your service account key "
-            + "(Should be generated on google cloud console from a service account): ");
+            + "(Should be generated on google cloud console from a service account)").read();
     try {
       String serviceAccount = Files.readString(Path.of(serviceAccountPath));
       String encodedServiceAccount = Base64.getEncoder()
@@ -40,9 +43,9 @@ public class AuthCommand implements Runnable {
   }
 
   private DatabaseDto fromSnowflake() {
-    String user = System.console().readLine("Enter username: ");
-    String password = new String(System.console().readPassword("Enter password: "));
-    String jdbcUrl = System.console().readLine("Enter JDBC URL: ");
+    String user = new InputCli("Enter username").read();
+    String password = new PasswordCli("Enter password").read();
+    String jdbcUrl = new InputCli("Enter JDBC URL").read();
 
     return new DatabaseDto()
         .databaseType("snowflake")
@@ -55,23 +58,18 @@ public class AuthCommand implements Runnable {
 
   @Override
   public void run() {
-    var datasourcesApi = new ConfigureDatasourcesControllerApi(ApiClientFactory.create());
-
-    int choice = new MultichoiceCli("Choose a database type",
+    String db = new MultichoiceCli("Choose a database type",
         List.of("BigQuery", "Snowflake"))
-        .choose();
-    var databaseDto = switch (choice) {
-      case 0 -> fromBigQuery();
-      case 1 -> fromSnowflake();
+        .read();
+    var databaseDto = switch (db) {
+      case "BigQuery" -> fromBigQuery();
+      case "Snowflake" -> fromSnowflake();
       default -> throw new IllegalArgumentException("Invalid choice");
     };
 
-    try {
-      datasourcesApi.submitAppDbAuth(GlobalConfig.getAppId(), databaseDto);
-      System.out.println("@|fg(green) OK|@");
-    } catch (ApiException e) {
-      throw new RuntimeException(e);
-    }
+    queryEngineClient.submitDbAuth(GlobalConfig.getAppId(), databaseDto);
+    System.out.println(CommandLine.Help.Ansi.AUTO.string("@|fg(green) OK|@"));
+
 
   }
 }

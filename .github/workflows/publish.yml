@@ -10,7 +10,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [macos-latest, macos-13, ubuntu-latest]
+        os: [ macos-latest, macos-13, ubuntu-latest ]
     steps:
       - uses: actions/checkout@v4
 
@@ -22,15 +22,9 @@ jobs:
           native-image-job-reports: 'true'
 
       - name: Build native image
-        run: | 
-          mvn -Pnative package
+        run: |
+          mvn package -Dpackaging=native-image
           mv target/asemic-cli target/asemic-cli-${{ matrix.os }}
-
-#      - name: Upload binary
-#        uses: actions/upload-artifact@v2
-#        with:
-#          name: asemic-cli-${{ matrix.os }}
-#          path: target/asemic-cli
 
       - name: Upload release
         if: github.event.release.tag_name
