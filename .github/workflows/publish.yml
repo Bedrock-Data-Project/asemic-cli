@@ -37,7 +37,7 @@ jobs:
           fi
           if [[ "${{ matrix.os }}" == "macos-13" ]]; then
             mv target/asemic-cli target/asemic-cli-macos-x64
-            gh release upload ${{ github.event.release.tag_name }} target/asemic-macos-x64
+            gh release upload ${{ github.event.release.tag_name }} target/asemic-cli-macos-x64
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
