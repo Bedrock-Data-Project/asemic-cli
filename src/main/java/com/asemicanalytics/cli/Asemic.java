@@ -6,13 +6,8 @@ import picocli.CommandLine.Command;
 
 @Command(name = "asemic", mixinStandardHelpOptions = true, subcommands = {
     SemanticLayerCommand.class})
-public class Asemic implements Runnable {
+public class Asemic{
   public static void main(String[] args) throws Exception {
-    PicocliRunner.run(Asemic.class, args);
-  }
-
-  @Override
-  public void run() {
-
+    PicocliRunner.execute(Asemic.class, args);
   }
 }

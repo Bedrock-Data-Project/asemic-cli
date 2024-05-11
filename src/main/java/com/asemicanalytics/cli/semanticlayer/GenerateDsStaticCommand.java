@@ -1,10 +1,9 @@
 package com.asemicanalytics.cli.semanticlayer;
 
+import com.asemicanalytics.cli.semanticlayer.internal.dsgenerator.DsGeneratorHelper;
 import com.asemicanalytics.cli.semanticlayer.internal.GlobalConfig;
 import com.asemicanalytics.cli.semanticlayer.internal.QueryEngineClient;
 import com.asemicanalytics.cli.semanticlayer.internal.YamlObjectMapperFactory;
-import com.asemicanalytics.cli.semanticlayer.internal.cli.InputCli;
-import com.asemicanalytics.cli.semanticlayer.internal.cli.SpinnerCli;
 import com.asemicanalytics.semanticlayer.dto.v1.semantic_layer.ColumnDto;
 import com.asemicanalytics.semanticlayer.dto.v1.semantic_layer.StaticDatasourceDto;
 import jakarta.inject.Inject;
@@ -12,7 +11,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -23,10 +21,10 @@ import picocli.CommandLine.Option;
 public class GenerateDsStaticCommand implements Runnable {
 
   @Option(names = "--table", description = "Full table name.")
-  Optional<String> table;
+  Optional<String> tableOption;
 
   @Option(names = "--datasource-name", description = "Name of generated datasource.")
-  Optional<String> datasourceName;
+  Optional<String> datasourceOption;
 
   @Option(names = "--no-wizard", description = "Fails if any required input is missing."
       + " Usefull for scripting.")
@@ -35,28 +33,21 @@ public class GenerateDsStaticCommand implements Runnable {
   @Inject
   QueryEngineClient queryEngineClient;
 
-  private List<com.asemicanalytics.cli.model.ColumnDto> getTableSchema(String table) {
-    var columns = new SpinnerCli().spin(() ->
-        queryEngineClient.getColumns(GlobalConfig.getAppId(), table));
-
-    System.out.println("Columns:");
-    for (var column : columns) {
-      System.out.println(
-          "    " + column.getId() + " [" + column.getDataType().toUpperCase() + "]");
-    }
-    return columns;
-  }
-
   @Override
   public void run() {
-    String table = new InputCli("Enter full table name").read();
+    var dsGeneratorHelper = new DsGeneratorHelper(queryEngineClient, noWizard);
+
+    final String table = dsGeneratorHelper.readInput(
+        tableOption, "table", Optional.empty(),
+        "Enter full table name", Optional.empty());
 
     try {
-      var columns = getTableSchema(table);
+      var columns = dsGeneratorHelper.getTableSchema(table);
 
-      String datasourceName = new InputCli(
-          "Enter datasource name",
-          Arrays.stream(table.split("\\.")).toList().getLast()).read();
+      final String datasourceName = dsGeneratorHelper.readInput(
+          datasourceOption, "datasource-name",
+          Optional.empty(), "Enter datasource name",
+          Optional.of(dsGeneratorHelper.recommendedDatasourceName(table)));
 
       var datasourceDto = new StaticDatasourceDto(
           table,
