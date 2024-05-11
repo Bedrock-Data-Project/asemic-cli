@@ -5,7 +5,6 @@ import com.asemicanalytics.cli.semanticlayer.internal.QueryEngineClient;
 import com.asemicanalytics.cli.semanticlayer.internal.ZipUtils;
 import com.asemicanalytics.cli.semanticlayer.internal.cli.SpinnerCli;
 import jakarta.inject.Inject;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
@@ -18,7 +17,7 @@ public class PushCommand implements Runnable {
   @Inject
   QueryEngineClient queryEngineClient;
 
-  public void push(String version) throws IOException {
+  public static void push(QueryEngineClient queryEngineClient, String version) {
     new SpinnerCli().spin(() -> {
       try {
         Path zipFilePath = null;
@@ -42,17 +41,12 @@ public class PushCommand implements Runnable {
     });
   }
 
-  public void push() throws IOException {
-    push(null);
+  public void push(QueryEngineClient queryEngineClient) {
+    push(queryEngineClient);
   }
 
   @Override
   public void run() {
-    try {
-      push();
-      System.out.println(CommandLine.Help.Ansi.AUTO.string("@|fg(green) OK|@"));
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
+    System.out.println(CommandLine.Help.Ansi.AUTO.string("@|fg(green) OK|@"));
   }
 }

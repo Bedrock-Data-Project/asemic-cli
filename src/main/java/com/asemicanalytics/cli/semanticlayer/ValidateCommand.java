@@ -74,6 +74,7 @@ public class ValidateCommand implements Runnable {
 
     var datasources = new SpinnerCli().spin(() -> {
       try {
+        PushCommand.push(queryEngineClient, devVersion);
         return queryEngineClient.getDailyDatasources(GlobalConfig.getAppId(),
             Optional.of(devVersion));
       } catch (Exception e) {

@@ -52,7 +52,7 @@ public class QueryEngineClient {
     var uri = UriBuilder.of(GlobalConfig.getApiUri())
         .path("api/v1")
         .path(appId)
-        .path("datasourcess/daily")
+        .path("datasources/daily")
         .build();
 
     MutableHttpRequest<?> request = HttpRequest.GET(uri)

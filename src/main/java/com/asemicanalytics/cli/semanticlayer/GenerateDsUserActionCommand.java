@@ -62,8 +62,8 @@ public class GenerateDsUserActionCommand implements Runnable {
 
       final String dateColumn = dsGeneratorHelper.readInput(
           dateColumnOption, "date-column",
-          Optional.of("User action datasources need a date column."
-              + "\nIdeally, this should be a partition column for performance reason."),
+          Optional.of("\nUser action datasources need a date column."
+              + "\nIdeally, this should be a partition column for performance reasons."),
           "Enter date column name",
           MostSimilarColumn.find("", columns, Set.of("date")));
 
@@ -71,7 +71,7 @@ public class GenerateDsUserActionCommand implements Runnable {
       final String timestampColumn = dsGeneratorHelper.readInput(
           timestampColumnOption, "timestamp-column",
           Optional.of(
-              "A timestamp column is needed that represents the exact time user action happened"),
+              "\nA timestamp column is needed that represents the exact time user action happened"),
           "Enter timestamp column name",
           MostSimilarColumn.find("", columns, Set.of("datetime")));
 
@@ -79,7 +79,7 @@ public class GenerateDsUserActionCommand implements Runnable {
       final String userIdColumn = dsGeneratorHelper.readInput(
           userIdColumnOption, "user-id-column",
           Optional.of(
-              "Enter the name of the column that represent the id of the user that performed the action"),
+              "\nEnter the name of the column that represent the id of the user that performed the action"),
           "Enter user id column name",
           MostSimilarColumn.find("user", columns, Set.of("string", "integer")));
 
