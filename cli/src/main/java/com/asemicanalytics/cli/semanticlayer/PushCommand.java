@@ -23,10 +23,6 @@ public class PushCommand implements Runnable {
         Path zipFilePath = null;
         try {
           zipFilePath = ZipUtils.zipDirectory(GlobalConfig.getAppIdDir());
-
-          Map<String, String> headers = version != null
-              ? Map.of("AppConfigVersion", version)
-              : Map.of();
           queryEngineClient.uploadConfig(GlobalConfig.getAppId(), zipFilePath,
               Optional.ofNullable(version));
         } finally {
@@ -41,12 +37,9 @@ public class PushCommand implements Runnable {
     });
   }
 
-  public void push(QueryEngineClient queryEngineClient) {
-    push(queryEngineClient);
-  }
-
   @Override
   public void run() {
+    push(queryEngineClient, null);
     System.out.println(CommandLine.Help.Ansi.AUTO.string("@|fg(green) OK|@"));
   }
 }
