@@ -7,6 +7,7 @@ import picocli.CommandLine;
     ValidateCommand.class,
     PushCommand.class,
     PullCommand.class,
+    BackfillUserWideCommand.class,
     GenerateDsStaticCommand.class,
     GenerateDsUserActionCommand.class
 })

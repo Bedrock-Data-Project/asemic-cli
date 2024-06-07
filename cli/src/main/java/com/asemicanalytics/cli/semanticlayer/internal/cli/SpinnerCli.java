@@ -24,15 +24,19 @@ public class SpinnerCli {
       }
     });
     t.start();
-    T result = process.get();
-    running.set(false);
+
     try {
-      t.join();
-      System.out.print("\r");
-    } catch (InterruptedException e) {
-      Thread.currentThread().interrupt();
+      return process.get();
+    } finally{
+      try {
+        running.set(false);
+        t.join();
+      } catch (InterruptedException e) {
+        Thread.currentThread().interrupt();
+      } finally {
+        System.out.print("\r");
+      }
     }
-    return result;
   }
 
 }

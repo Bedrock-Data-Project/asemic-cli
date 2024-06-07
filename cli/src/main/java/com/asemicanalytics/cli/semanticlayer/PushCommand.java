@@ -17,14 +17,16 @@ public class PushCommand implements Runnable {
   @Inject
   QueryEngineClient queryEngineClient;
 
-  public static void push(QueryEngineClient queryEngineClient, String version) {
+  @CommandLine.Option(names = "--version", description = "Custom config version")
+  Optional<String> version;
+
+  public static void push(QueryEngineClient queryEngineClient, Optional<String> version) {
     new SpinnerCli().spin(() -> {
       try {
         Path zipFilePath = null;
         try {
           zipFilePath = ZipUtils.zipDirectory(GlobalConfig.getAppIdDir());
-          queryEngineClient.uploadConfig(GlobalConfig.getAppId(), zipFilePath,
-              Optional.ofNullable(version));
+          queryEngineClient.uploadConfig(GlobalConfig.getAppId(), zipFilePath, version);
         } finally {
           if (zipFilePath != null) {
             Files.delete(zipFilePath);
@@ -39,7 +41,7 @@ public class PushCommand implements Runnable {
 
   @Override
   public void run() {
-    push(queryEngineClient, null);
+    push(queryEngineClient, version);
     System.out.println(CommandLine.Help.Ansi.AUTO.string("@|fg(green) OK|@"));
   }
 }

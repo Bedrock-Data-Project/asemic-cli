@@ -12,6 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.Optional;
 import picocli.CommandLine;
 
 @CommandLine.Command(name = "pull", mixinStandardHelpOptions = true)
@@ -19,6 +20,9 @@ public class PullCommand implements Runnable {
 
   @Inject
   QueryEngineClient queryEngineClient;
+
+  @CommandLine.Option(names = "--version", description = "Custom config version")
+  Optional<String> version;
 
   private static void deleteDirContents(Path dir) throws IOException {
     Files.walkFileTree(dir, new SimpleFileVisitor<>() {
@@ -41,7 +45,12 @@ public class PullCommand implements Runnable {
     new SpinnerCli().spin(() -> {
       try {
         File tempDir = Files.createTempDirectory("asemic").toFile();
-        queryEngineClient.downloadCurrentConfig(GlobalConfig.getAppId(), tempDir.toPath());
+        if (version.isPresent()) {
+          queryEngineClient.downloadConfigByVersion(GlobalConfig.getAppId(), version.get(),
+              tempDir.toPath());
+        } else {
+          queryEngineClient.downloadCurrentConfig(GlobalConfig.getAppId(), tempDir.toPath());
+        }
         deleteDirContents(GlobalConfig.getAppIdDir());
         ZipUtils.unzipToDirectory(tempDir.toPath(), GlobalConfig.getAppIdDir());
       } catch (IOException e) {

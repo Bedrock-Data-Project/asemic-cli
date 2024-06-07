@@ -7,7 +7,8 @@
 
 ```shell
 cd cli
-mvn -Pnative -DskipTests package
+mvn package -Dpackaging=native-image
+sudo mv target/cli /usr/local/bin/asemic-cli
 ```
 
 Requires that graalvm is installed (JAVA_HOME needs to be set also) and all the native build tools set
