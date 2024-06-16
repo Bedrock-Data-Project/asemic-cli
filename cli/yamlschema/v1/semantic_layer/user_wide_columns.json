@@ -3,26 +3,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
   "required": [
-    "base_table_prefix",
-    "registration_date_column",
-    "date_column",
-    "user_id_column",
     "registration_columns"
   ],
   "properties": {
-    "base_table_prefix": {
-      "type": "string"
-      // TODO pattern
-    },
-    "registration_date_column": {
-      "type": "string"
-    },
-    "date_column": {
-      "type": "string"
-    },
-    "user_id_column": {
-      "type": "string"
-    },
     "registration_columns": {
       "type": "array",
       "items": {

@@ -4,7 +4,7 @@
   "type": "object",
   "required": [
     "column",
-    "table",
+    "user_action_datasource",
     "aggregation_expression",
     "missing_value"
   ],
@@ -12,7 +12,7 @@
     "column": {
       "$ref": "http://schema.asemicanalytics.com/v1/semantic_layer/column.json"
     },
-    "table": {
+    "user_action_datasource": {
       "type": "string"
     },
     "aggregation_expression": {
@@ -21,16 +21,25 @@
     "where": {
       "type": "string"
     },
-    "missing_value": {},
+    "missing_value": {
+      "type": "string"
+    },
     "days": {
       "type": "integer"
     },
-    "rolling_windows": {
+    "window": {
       "type": "array",
       "items": {
         "type": "integer"
       },
-      "minItems": 1
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "window_aggregation": {
+      "type": "string"
+    },
+    "can_materialize": {
+      "type": "boolean"
     }
   },
   "additionalProperties": false

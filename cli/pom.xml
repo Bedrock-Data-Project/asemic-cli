@@ -79,7 +79,7 @@
                 <version>1.2.1</version>
                 <configuration>
                     <sourceDirectory>${project.build.directory}/schemas</sourceDirectory>
-                    <targetPackage>com.asemicanalytics.semanticlayer.dto</targetPackage>
+                    <targetPackage>com.asemicanalytics.semanticlayer.config.dto</targetPackage>
                     <classNameSuffix>Dto</classNameSuffix>
                     <includeConstructors>true</includeConstructors>
                     <includeAllPropertiesConstructor>true</includeAllPropertiesConstructor>
@@ -136,6 +136,18 @@
     </build>
 
     <dependencies>
+        <dependency>
+            <groupId>com.asemicanalytics</groupId>
+            <artifactId>semantic-layer-config</artifactId>
+            <version>1.14</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.asemicanalytics</groupId>
+                    <artifactId>semantic-layer-config-dto</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
         <dependency>
             <groupId>jakarta.validation</groupId>
             <artifactId>jakarta.validation-api</artifactId>

@@ -4,8 +4,8 @@ import com.asemicanalytics.cli.semanticlayer.internal.dsgenerator.DsGeneratorHel
 import com.asemicanalytics.cli.semanticlayer.internal.GlobalConfig;
 import com.asemicanalytics.cli.semanticlayer.internal.QueryEngineClient;
 import com.asemicanalytics.cli.semanticlayer.internal.YamlObjectMapperFactory;
-import com.asemicanalytics.semanticlayer.dto.v1.semantic_layer.ColumnDto;
-import com.asemicanalytics.semanticlayer.dto.v1.semantic_layer.StaticDatasourceDto;
+import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.ColumnDto;
+import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.StaticDatasourceDto;
 import jakarta.inject.Inject;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -13,6 +13,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import picocli.CommandLine;
 import picocli.CommandLine.Option;
@@ -56,6 +57,7 @@ public class GenerateDsStaticCommand implements Runnable {
           columns.stream().map(c -> new ColumnDto(
               c.getId(),
               ColumnDto.DataType.valueOf(c.getDataType().toUpperCase()),
+              null,
               null,
               null,
               null,

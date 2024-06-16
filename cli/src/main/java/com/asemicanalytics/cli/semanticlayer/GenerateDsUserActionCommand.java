@@ -5,8 +5,8 @@ import com.asemicanalytics.cli.semanticlayer.internal.QueryEngineClient;
 import com.asemicanalytics.cli.semanticlayer.internal.YamlObjectMapperFactory;
 import com.asemicanalytics.cli.semanticlayer.internal.dsgenerator.DsGeneratorHelper;
 import com.asemicanalytics.cli.semanticlayer.internal.dsgenerator.MostSimilarColumn;
-import com.asemicanalytics.semanticlayer.dto.v1.semantic_layer.ColumnDto;
-import com.asemicanalytics.semanticlayer.dto.v1.semantic_layer.UserActionDatasourceDto;
+import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.ColumnDto;
+import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.UserActionDatasourceDto;
 import jakarta.inject.Inject;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -46,13 +46,13 @@ public class GenerateDsUserActionCommand implements Runnable {
 
   @Override
   public void run() {
-    var dsGeneratorHelper = new DsGeneratorHelper(queryEngineClient, noWizard);
-
-    final String table = dsGeneratorHelper.readInput(
-        tableOption, "table",
-        Optional.empty(), "Enter full table name", Optional.empty());
-
     try {
+      var dsGeneratorHelper = new DsGeneratorHelper(queryEngineClient, noWizard);
+
+      final String table = dsGeneratorHelper.readInput(
+          tableOption, "table",
+          Optional.empty(), "Enter full table name", Optional.empty());
+
       var columns = dsGeneratorHelper.getTableSchema(table);
 
       final String datasourceName = dsGeneratorHelper.readInput(
@@ -87,12 +87,11 @@ public class GenerateDsUserActionCommand implements Runnable {
           table,
           null,
           null,
-          dateColumn,
-          timestampColumn,
-          userIdColumn,
+          null,
           columns.stream().map(c -> new ColumnDto(
               c.getId(),
               ColumnDto.DataType.valueOf(c.getDataType().toUpperCase()),
+              null,
               null,
               null,
               null,

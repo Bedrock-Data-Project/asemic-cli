@@ -8,7 +8,6 @@ import com.asemicanalytics.cli.semanticlayer.internal.cli.SpinnerCli;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import javax.print.attribute.standard.SheetCollate;
 
 public class DsGeneratorHelper {
   private final QueryEngineClient queryEngineClient;
@@ -36,15 +35,26 @@ public class DsGeneratorHelper {
     });
   }
 
+  private void printColumn(String id, String name) {
+    System.out.println("    " + id + " [" + name + "]");
+  }
+
   public List<ColumnDto> getTableSchema(String table) {
     var columns = new SpinnerCli().spin(() ->
         queryEngineClient.getColumns(GlobalConfig.getAppId(), table));
 
     System.out.println("Columns:");
     for (var column : columns) {
-      System.out.println(
-          "    " + column.getId() + " [" + column.getDataType().toUpperCase() + "]");
+      printColumn(column.getId(), column.getDataType());
     }
     return columns;
+  }
+
+  public void printColumns(
+      List<com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.ColumnDto> columns) {
+    System.out.println("Columns:");
+    for (var column : columns) {
+      printColumn(column.getId(), column.getDataType().name());
+    }
   }
 }
