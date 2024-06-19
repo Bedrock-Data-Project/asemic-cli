@@ -1,14 +1,15 @@
 package com.asemicanalytics.cli;
 
-import com.asemicanalytics.cli.semanticlayer.SemanticLayerCommand;
+import com.asemicanalytics.cli.config.ConfigCommand;
+import com.asemicanalytics.cli.userentity.UserEntityCommand;
 import io.micronaut.configuration.picocli.MicronautFactory;
 import io.micronaut.context.ApplicationContext;
 import io.micronaut.context.env.Environment;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 
-@Command(name = "asemic", mixinStandardHelpOptions = true, subcommands = {
-    SemanticLayerCommand.class})
+@Command(name = "asemic", description = "A tool for managing asemic config.", mixinStandardHelpOptions = true,
+    subcommands = {UserEntityCommand.class, ConfigCommand.class})
 public class Asemic {
   public static void main(String[] args) throws Exception {
     int exitCode = execute(Asemic.class, args);
