@@ -14,7 +14,7 @@ public class TotalRevenueColumn extends EntityPropertyTotalDto {
             null,
             null),
         "revenue",
-        "{__current} + COALESCE({__total}, 0)"
+        Function.SUM
     );
   }
 }

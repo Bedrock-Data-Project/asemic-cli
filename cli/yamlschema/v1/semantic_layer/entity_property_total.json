@@ -4,18 +4,25 @@
   "type": "object",
   "required": [
     "column",
-    "source_column",
-    "merge_expression"
+    "source_property",
+    "function"
   ],
   "properties": {
     "column": {
       "$ref": "http://schema.asemicanalytics.com/v1/semantic_layer/column.json"
     },
-    "source_column": {
+    "source_property": {
       "type": "string"
     },
-    "merge_expression": {
-      "type": "string"
+    "function": {
+      "type": "string",
+      "enum": [
+        "sum",
+        "last_value",
+        "first_value",
+        "min",
+        "max"
+      ]
     }
   },
   "additionalProperties": false

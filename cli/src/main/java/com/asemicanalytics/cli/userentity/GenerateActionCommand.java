@@ -5,6 +5,7 @@ import com.asemicanalytics.cli.internal.QueryEngineClient;
 import com.asemicanalytics.cli.internal.YamlSerDe;
 import com.asemicanalytics.cli.internal.dsgenerator.DsGeneratorHelper;
 import com.asemicanalytics.cli.internal.dsgenerator.MostSimilarColumn;
+import com.asemicanalytics.config.parser.yaml.YamlConfigParser;
 import com.asemicanalytics.core.logicaltable.EventLikeLogicalTable;
 import com.asemicanalytics.core.logicaltable.TemporalLogicalTable;
 import com.asemicanalytics.core.logicaltable.action.ActionLogicalTable;
@@ -99,7 +100,7 @@ public class GenerateActionCommand implements Runnable {
 
       var datasourceDto = new ActionLogicalTableDto(
           table,
-          datasourceTags(),
+          logicalTableTags(),
           null,
           null,
           columns.stream().map(c -> new ColumnDto(
@@ -115,7 +116,8 @@ public class GenerateActionCommand implements Runnable {
           List.of());
 
 
-      Path dsPath = GlobalConfig.getUserEntityDirt().resolve(logicalTableName + ".yml");
+      YamlConfigParser parser = new YamlConfigParser(null, GlobalConfig.getAppIdDir().getParent());
+      Path dsPath = parser.actionsDir(GlobalConfig.getAppId()).resolve(logicalTableName + ".yml");
       dsPath.toFile().getParentFile().mkdirs();
 
       new YamlSerDe().save("action_logical_table", datasourceDto, dsPath);
@@ -126,8 +128,8 @@ public class GenerateActionCommand implements Runnable {
     }
   }
 
-  protected List<String> datasourceTags() {
-    return null;
+  protected List<String> logicalTableTags() {
+    return List.of();
   }
 
   protected Map<String, List<String>> additionalColumnTags(

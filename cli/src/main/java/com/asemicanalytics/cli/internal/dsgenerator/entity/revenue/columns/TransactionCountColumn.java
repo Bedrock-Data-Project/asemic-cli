@@ -17,9 +17,6 @@ public class TransactionCountColumn extends EntityPropertyActionDto {
         "COUNT(*)",
         null,
         "0",
-        null,
-        null,
-        null,
         null);
   }
 }

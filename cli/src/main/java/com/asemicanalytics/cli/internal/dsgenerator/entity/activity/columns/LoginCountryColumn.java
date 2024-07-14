@@ -17,9 +17,6 @@ public class LoginCountryColumn extends EntityPropertyActionDto {
         "MAX({%s})".formatted(countryColumn),
         null,
         null,
-        null,
-        null,
-        null,
         null);
   }
 }

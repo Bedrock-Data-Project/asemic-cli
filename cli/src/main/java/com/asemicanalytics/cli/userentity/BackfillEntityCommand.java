@@ -28,8 +28,8 @@ public class BackfillEntityCommand implements Runnable {
     while (dateFrom.isBefore(dateTo) || dateFrom.isEqual(dateTo)) {
       System.out.println("Backfilling date: " + dateFrom + " / " + dateTo);
       new SpinnerCli().spin(() -> {
-          queryEngineClient.backfillUserWide(GlobalConfig.getAppId(), dateFrom, version);
-          return true;
+        queryEngineClient.backfillUserWide(GlobalConfig.getAppId(), dateFrom, version);
+        return true;
       });
       dateFrom = dateFrom.plusDays(1);
     }

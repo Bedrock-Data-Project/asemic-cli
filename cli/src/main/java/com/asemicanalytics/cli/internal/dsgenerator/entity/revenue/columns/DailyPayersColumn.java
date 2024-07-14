@@ -17,9 +17,6 @@ public class DailyPayersColumn extends EntityPropertyActionDto {
         "1",
         null,
         "0",
-        null,
-        null,
-        null,
         null);
   }
 }

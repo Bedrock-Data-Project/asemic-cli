@@ -14,6 +14,6 @@ public class LastLoginPlatformColumn extends EntityPropertyTotalDto {
             null,
             null),
         "login_platform",
-        "COALESCE({__current}, {__total})");
+        Function.LAST_VALUE);
   }
 }

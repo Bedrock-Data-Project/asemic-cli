@@ -14,6 +14,6 @@ public class LastLoginBuildVersionColumn extends EntityPropertyTotalDto {
             null,
             null),
         "login_build_version",
-        "COALESCE({__current}, {__total})");
+        Function.LAST_VALUE);
   }
 }

@@ -29,9 +29,6 @@ public class GlobalConfig {
     return Path.of(System.getProperty("user.dir"));
   }
 
-  public static Path getUserEntityDirt() {
-    return getAppIdDir().resolve("userentity");
-  }
 
   public static String getAppId() {
     return getAppIdDir().getFileName().toString();

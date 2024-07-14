@@ -9,17 +9,10 @@ public class DauColumn extends EntityPropertyActionDto {
             "dau",
             ColumnDto.DataType.INTEGER,
             true,
-            false,
+            true,
             "DAU",
             null,
             null),
-        activityDatasourceName,
-        "1",
-        null,
-        "0",
-        null,
-        null,
-        null,
-        null);
+        activityDatasourceName, "1", null, "0", null);
   }
 }

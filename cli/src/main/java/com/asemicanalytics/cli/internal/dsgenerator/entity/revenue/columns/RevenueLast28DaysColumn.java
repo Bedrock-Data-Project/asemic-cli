@@ -1,11 +1,10 @@
 package com.asemicanalytics.cli.internal.dsgenerator.entity.revenue.columns;
 
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.ColumnDto;
-import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertyActionDto;
-import java.util.List;
+import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertySlidingWindowDto;
 
-public class RevenueLast28DaysColumn extends EntityPropertyActionDto {
-  public RevenueLast28DaysColumn(String revenueDatasourceName, String revenueColumn) {
+public class RevenueLast28DaysColumn extends EntityPropertySlidingWindowDto {
+  public RevenueLast28DaysColumn() {
     super(new ColumnDto(
             "revenue_28_days",
             ColumnDto.DataType.NUMBER,
@@ -14,13 +13,9 @@ public class RevenueLast28DaysColumn extends EntityPropertyActionDto {
             null,
             null,
             null),
-        revenueDatasourceName,
-        "SUM({%s})".formatted(revenueColumn),
-        null,
-        "0",
-        null,
-        List.of(-27, 0),
-        "sum",
-        null);
+        "revenue",
+        Function.SUM,
+        -27,
+        0);
   }
 }

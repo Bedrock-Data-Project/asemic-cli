@@ -6,7 +6,8 @@ import java.util.Optional;
 import java.util.Set;
 
 public class MostSimilarColumn {
-  public static Optional<String> find(String target, List<ColumnDto> columns, Set<String> allowedTypes) {
+  public static Optional<String> find(String target, List<ColumnDto> columns,
+                                      Set<String> allowedTypes) {
     int minDistance = Integer.MAX_VALUE;
     String mostSimilarColumn = null;
 

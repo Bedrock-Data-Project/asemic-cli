@@ -4,17 +4,17 @@ import com.asemicanalytics.cli.internal.GlobalConfig;
 import com.asemicanalytics.cli.internal.QueryEngineClient;
 import com.asemicanalytics.cli.internal.YamlSerDe;
 import com.asemicanalytics.cli.internal.dsgenerator.DsGeneratorHelper;
-import com.asemicanalytics.cli.internal.dsgenerator.entity.ActivityColumns;
-import com.asemicanalytics.cli.internal.dsgenerator.entity.PaymentTransactionColumns;
-import com.asemicanalytics.cli.internal.dsgenerator.entity.FirstAppearanceColumns;
+import com.asemicanalytics.cli.internal.dsgenerator.entity.Activity;
+import com.asemicanalytics.cli.internal.dsgenerator.entity.FirstAppearance;
+import com.asemicanalytics.cli.internal.dsgenerator.entity.PaymentTransaction;
 import com.asemicanalytics.config.EntityModelConfig;
-import com.asemicanalytics.config.configloader.ConfigLoader;
-import com.asemicanalytics.config.configparser.yaml.YamlConfigParser;
+import com.asemicanalytics.config.mapper.ConfigLoader;
+import com.asemicanalytics.config.parser.yaml.YamlConfigParser;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityConfigDto;
+import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityKpisDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertiesDto;
 import jakarta.inject.Inject;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.Optional;
 import picocli.CommandLine;
 import picocli.CommandLine.Option;
@@ -35,10 +35,13 @@ public class GenerateEntityCommand implements Runnable {
 
   @Override
   public void run() {
-    var columnsPath = GlobalConfig.getUserEntityDirt().resolve("properties");
-    var kpisPath = GlobalConfig.getUserEntityDirt().resolve("kpis");
+    var parser = new YamlConfigParser(
+        new YamlSerDe(), GlobalConfig.getAppIdDir().getParent());
 
-    if (Files.exists(columnsPath) || Files.exists(kpisPath)) {
+    var columnsPath = parser.propertiesDir(GlobalConfig.getAppId());
+    var kpisPath = parser.kpisDir(GlobalConfig.getAppId());
+
+    if (columnsPath.toFile().exists() || kpisPath.toFile().exists()) {
       throw new IllegalArgumentException("properties/kpis directories already exist");
     }
 
@@ -50,23 +53,28 @@ public class GenerateEntityCommand implements Runnable {
         "Enter table prefix", Optional.empty());
 
     try {
-      EntityModelConfig entityModelConfig = new ConfigLoader(new YamlConfigParser(
-          new YamlSerDe(), GlobalConfig.getAppIdDir().getParent()))
+      EntityModelConfig entityModelConfig = new ConfigLoader(parser)
           .parse(GlobalConfig.getAppId());
 
       final EntityPropertiesDto registrationColumns;
+      final EntityKpisDto registrationKpis;
       if (entityModelConfig.getFirstAppearanceActionLogicalTable().isPresent()) {
-        registrationColumns = FirstAppearanceColumns.build(
+        registrationColumns = FirstAppearance.buildProperties(
+            entityModelConfig.getFirstAppearanceActionLogicalTable().get());
+        registrationKpis = FirstAppearance.buildKpis(
             entityModelConfig.getFirstAppearanceActionLogicalTable().get());
       } else {
-        throw new IllegalArgumentException("First appearance action not found."
+        throw new IllegalArgumentException("First appearance action not found. "
             + "Generate it using "
             + "first-appearance-action command first.");
       }
 
       final EntityPropertiesDto activityColumns;
+      final EntityKpisDto activityKpis;
       if (entityModelConfig.getActivityActionLogicalTable().isPresent()) {
-        activityColumns = ActivityColumns.build(
+        activityColumns = Activity.buildProperties(
+            entityModelConfig.getActivityActionLogicalTable().get());
+        activityKpis = Activity.buildKpis(
             entityModelConfig.getActivityActionLogicalTable().get());
       } else {
         throw new IllegalArgumentException("Activity action not found."
@@ -75,11 +83,15 @@ public class GenerateEntityCommand implements Runnable {
       }
 
       final Optional<EntityPropertiesDto> revenueColumns;
+      final Optional<EntityKpisDto> revenueKpis;
       if (entityModelConfig.getPaymentTransactionActionLogicalTable().isPresent()) {
-        revenueColumns = Optional.of(PaymentTransactionColumns.build(
+        revenueColumns = Optional.of(PaymentTransaction.buildProperties(
+            entityModelConfig.getPaymentTransactionActionLogicalTable().get()));
+        revenueKpis = Optional.of(PaymentTransaction.buildKpis(
             entityModelConfig.getPaymentTransactionActionLogicalTable().get()));
       } else {
         revenueColumns = Optional.empty();
+        revenueKpis = Optional.empty();
       }
 
       columnsPath.toFile().mkdirs();
@@ -88,23 +100,35 @@ public class GenerateEntityCommand implements Runnable {
       new YamlSerDe().save(
           "entity_config",
           new EntityConfigDto(tablePrefix),
-          columnsPath.resolve("config.yml"));
+          columnsPath.getParent().resolve("config.yml"));
 
       new YamlSerDe().save(
           "entity_properties",
           registrationColumns,
           columnsPath.resolve("registration.yml"));
+      new YamlSerDe().save(
+          "entity_kpis",
+          registrationKpis,
+          kpisPath.resolve("registration.yml"));
 
       new YamlSerDe().save(
           "entity_properties",
-          registrationColumns,
+          activityColumns,
           columnsPath.resolve("activity.yml"));
+      new YamlSerDe().save(
+          "entity_kpis",
+          activityKpis,
+          kpisPath.resolve("activity.yml"));
 
       if (revenueColumns.isPresent()) {
         new YamlSerDe().save(
             "entity_properties",
             revenueColumns.get(),
             columnsPath.resolve("revenue.yml"));
+        new YamlSerDe().save(
+            "entity_kpis",
+            revenueKpis.get(),
+            kpisPath.resolve("revenue.yml"));
       }
 
     } catch (IOException e) {

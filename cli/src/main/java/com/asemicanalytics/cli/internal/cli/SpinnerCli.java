@@ -14,7 +14,7 @@ public class SpinnerCli {
       char[] spinner = new char[] {'|', '/', '-', '\\'};
       int i = 0;
       while (running.get()) {
-        System.out.print("\r" + spinner[i]);
+        // System.out.print("\r" + spinner[i]);
         i = (i + 1) % spinner.length;
         try {
           Thread.sleep(100);
@@ -27,14 +27,14 @@ public class SpinnerCli {
 
     try {
       return process.get();
-    } finally{
+    } finally {
       try {
         running.set(false);
         t.join();
       } catch (InterruptedException e) {
         Thread.currentThread().interrupt();
       } finally {
-        System.out.print("\r");
+        // System.out.print("\r");
       }
     }
   }

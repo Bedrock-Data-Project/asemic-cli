@@ -3,7 +3,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
   "required": [
-    "id"
+    "id",
+    "select",
+    "x_axis"
   ],
   "properties": {
     "id": {
@@ -15,17 +17,40 @@
     "description": {
       "type": "string"
     },
-    "formula": {
+    "category": {
       "type": "string"
     },
-    "sql": {
-      "$ref": "http://schema.asemicanalytics.com/v1/semantic_layer/kpi_sql.json"
+    "recommended": {
+      "type": "boolean"
+    },
+    "select": {
+      "type": "string"
+    },
+    "where": {
+      "type": "string"
     },
     "unit": {
       "$ref": "http://schema.asemicanalytics.com/v1/semantic_layer/unit.json"
     },
-    "total": {
-      "type": "string"
+    "x_axis": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1
+    },
+    "total_function": {
+      "type": "string",
+      "enum": [
+        "sum",
+        "avg",
+        "min",
+        "max",
+        "count"
+      ]
+    },
+    "hidden": {
+      "type": "boolean"
     }
   },
   "additionalProperties": false

@@ -1,9 +1,9 @@
 package com.asemicanalytics.cli.userentity;
 
-import com.asemicanalytics.cli.model.ColumnDto;
 import com.asemicanalytics.cli.internal.QueryEngineClient;
 import com.asemicanalytics.cli.internal.dsgenerator.DsGeneratorHelper;
 import com.asemicanalytics.cli.internal.dsgenerator.MostSimilarColumn;
+import com.asemicanalytics.cli.model.ColumnDto;
 import com.asemicanalytics.core.logicaltable.action.PaymentTransactionActionLogicalTable;
 import io.micronaut.serde.ObjectMapper;
 import jakarta.inject.Inject;

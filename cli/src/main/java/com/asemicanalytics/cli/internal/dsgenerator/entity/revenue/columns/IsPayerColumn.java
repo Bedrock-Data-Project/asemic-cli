@@ -13,8 +13,8 @@ public class IsPayerColumn extends EntityPropertyTotalDto {
             null,
             null,
             null),
-        "transaction_count",
-        "COALESCE({__total}, FALSE) OR ({__current} > 0)"
+        "is_daily_payer",
+        Function.MAX
     );
   }
 }

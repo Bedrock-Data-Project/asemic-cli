@@ -2,9 +2,9 @@ package com.asemicanalytics.cli.internal.dsgenerator;
 
 import com.asemicanalytics.cli.internal.GlobalConfig;
 import com.asemicanalytics.cli.internal.QueryEngineClient;
-import com.asemicanalytics.cli.model.ColumnDto;
 import com.asemicanalytics.cli.internal.cli.InputCli;
 import com.asemicanalytics.cli.internal.cli.SpinnerCli;
+import com.asemicanalytics.cli.model.ColumnDto;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;

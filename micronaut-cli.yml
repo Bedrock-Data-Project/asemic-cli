@@ -3,4 +3,4 @@ defaultPackage: com.asemicanalytics.cli
 testFramework: junit
 sourceLanguage: java
 buildTool: maven
-features: [app-name, graalvm, http-client, java, junit, logback, maven, maven-enforcer-plugin, picocli, picocli-java-application, picocli-junit, properties, readme, serialization-jackson, shade]
+features: [ app-name, graalvm, http-client, java, junit, logback, maven, maven-enforcer-plugin, picocli, picocli-java-application, picocli-junit, properties, readme, serialization-jackson, shade ]

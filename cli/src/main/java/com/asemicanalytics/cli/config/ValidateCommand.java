@@ -1,5 +1,8 @@
 package com.asemicanalytics.cli.config;
 
+import com.asemicanalytics.cli.internal.GlobalConfig;
+import com.asemicanalytics.cli.internal.QueryEngineClient;
+import com.asemicanalytics.cli.internal.cli.SpinnerCli;
 import com.asemicanalytics.cli.model.ChartRequestDto;
 import com.asemicanalytics.cli.model.ChartRequestDtoTimeGrain;
 import com.asemicanalytics.cli.model.ChartRequestDtoXAxis;
@@ -7,9 +10,6 @@ import com.asemicanalytics.cli.model.ColumnDto;
 import com.asemicanalytics.cli.model.ColumnFilterDto;
 import com.asemicanalytics.cli.model.DateIntervalDto;
 import com.asemicanalytics.cli.model.KpiDto;
-import com.asemicanalytics.cli.internal.GlobalConfig;
-import com.asemicanalytics.cli.internal.QueryEngineClient;
-import com.asemicanalytics.cli.internal.cli.SpinnerCli;
 import jakarta.inject.Inject;
 import java.time.LocalDate;
 import java.util.List;
@@ -87,16 +87,16 @@ public class ValidateCommand implements Runnable {
         continue;
       }
       for (var column : logicalTable.getValue().getColumns()) {
-        testChart(devVersion, "column " + column.getId(),
+        testChart(devVersion, "column " + column.getLabel(),
             logicalTable.getValue().getKpis().get(0),
             logicalTable.getValue().getKpis().get(0).getIsDailyKpi(), column);
       }
       for (var kpi : logicalTable.getValue().getKpis()) {
         if (kpi.getIsDailyKpi()) {
-          testChart(devVersion, "kpi (daily) " + kpi.getId(), kpi, true, null);
+          testChart(devVersion, "kpi (daily) " + kpi.getLabel(), kpi, true, null);
         }
         if (kpi.getIsCohortKpi()) {
-          testChart(devVersion, "kpi (cohort) " + kpi.getId(), kpi, false, null);
+          testChart(devVersion, "kpi (cohort) " + kpi.getLabel(), kpi, false, null);
         }
       }
     }

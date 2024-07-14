@@ -1,11 +1,10 @@
 package com.asemicanalytics.cli.internal.dsgenerator.entity.activity.columns;
 
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.ColumnDto;
-import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertyActionDto;
-import java.util.List;
+import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertySlidingWindowDto;
 
-public class DauYesterdayColumn extends EntityPropertyActionDto {
-  public DauYesterdayColumn(String activityDatasourceName) {
+public class DauYesterdayColumn extends EntityPropertySlidingWindowDto {
+  public DauYesterdayColumn() {
     super(new ColumnDto(
             "dau_yesterday",
             ColumnDto.DataType.INTEGER,
@@ -14,13 +13,9 @@ public class DauYesterdayColumn extends EntityPropertyActionDto {
             "DAU Yesterday",
             null,
             null),
-        activityDatasourceName,
-        "1",
-        null,
-        "0",
-        null,
-        List.of(-1, -1),
-        null,
-        null);
+        "dau",
+        EntityPropertySlidingWindowDto.Function.SUM,
+        -1,
+        -1);
   }
 }

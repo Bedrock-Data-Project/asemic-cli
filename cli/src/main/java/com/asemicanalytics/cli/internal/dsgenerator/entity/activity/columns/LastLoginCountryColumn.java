@@ -14,6 +14,6 @@ public class LastLoginCountryColumn extends EntityPropertyTotalDto {
             null,
             null),
         "login_country",
-        "COALESCE({__current}, {__total})");
+        Function.LAST_VALUE);
   }
 }

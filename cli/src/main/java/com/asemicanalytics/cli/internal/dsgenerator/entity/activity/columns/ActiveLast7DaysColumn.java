@@ -1,11 +1,10 @@
 package com.asemicanalytics.cli.internal.dsgenerator.entity.activity.columns;
 
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.ColumnDto;
-import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertyActionDto;
-import java.util.List;
+import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertySlidingWindowDto;
 
-public class ActiveLast7DaysColumn extends EntityPropertyActionDto {
-  public ActiveLast7DaysColumn(String activityDatasourceName) {
+public class ActiveLast7DaysColumn extends EntityPropertySlidingWindowDto {
+  public ActiveLast7DaysColumn() {
     super(new ColumnDto(
             "active_last_7_days",
             ColumnDto.DataType.INTEGER,
@@ -14,13 +13,9 @@ public class ActiveLast7DaysColumn extends EntityPropertyActionDto {
             null,
             null,
             null),
-        activityDatasourceName,
-        "1",
-        null,
-        "0",
-        null,
-        List.of(-6, 0),
-        "count",
-        null);
+        "dau",
+        Function.SUM,
+        -6,
+        0);
   }
 }

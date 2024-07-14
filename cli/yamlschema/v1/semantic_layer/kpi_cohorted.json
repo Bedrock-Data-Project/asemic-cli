@@ -1,9 +1,10 @@
 {
-  "$id": "http://schema.asemicanalytics.com/v1/semantic_layer/entity_kpi_cohorted.json",
+  "$id": "http://schema.asemicanalytics.com/v1/semantic_layer/kpi_cohorted.json",
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
   "required": [
-    "id"
+    "id",
+    "select"
   ],
   "properties": {
     "id": {
@@ -21,11 +22,11 @@
     "recommeded": {
       "type": "boolean"
     },
-    "formula": {
+    "select": {
       "type": "string"
     },
-    "sql": {
-      "$ref": "http://schema.asemicanalytics.com/v1/semantic_layer/kpi_sql.json"
+    "where": {
+      "type": "string"
     },
     "unit": {
       "$ref": "http://schema.asemicanalytics.com/v1/semantic_layer/unit.json"
@@ -37,8 +38,18 @@
       },
       "minItems": 1
     },
-    "total": {
-      "type": "string"
+    "total_function": {
+      "type": "string",
+      "enum": [
+        "sum",
+        "avg",
+        "min",
+        "max",
+        "count"
+      ]
+    },
+    "hidden": {
+      "type": "boolean"
     }
   },
   "additionalProperties": false

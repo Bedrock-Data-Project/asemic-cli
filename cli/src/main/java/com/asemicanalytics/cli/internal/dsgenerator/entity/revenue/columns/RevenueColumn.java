@@ -17,9 +17,6 @@ public class RevenueColumn extends EntityPropertyActionDto {
         "SUM({%s})".formatted(revenueColumn),
         null,
         "0",
-        null,
-        null,
-        null,
         null);
   }
 }

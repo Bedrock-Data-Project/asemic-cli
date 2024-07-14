@@ -1,26 +1,21 @@
 package com.asemicanalytics.cli.internal.dsgenerator.entity.activity.columns;
 
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.ColumnDto;
-import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertyActionDto;
-import java.util.List;
+import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertySlidingWindowDto;
 
-public class MauColumn extends EntityPropertyActionDto {
+public class MauColumn extends EntityPropertySlidingWindowDto {
   public MauColumn(String activityDatasourceName) {
     super(new ColumnDto(
             "mau",
             ColumnDto.DataType.INTEGER,
             true,
-            false,
+            true,
             "MAU",
             null,
             null),
-        activityDatasourceName,
-        "1",
-        null,
-        "0",
-        null,
-        List.of(-29, 0),
-        "max",
-        null);
+        "dau",
+        Function.MAX,
+        -29,
+        0);
   }
 }

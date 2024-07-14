@@ -17,9 +17,6 @@ public class LoginBuildVersionColumn extends EntityPropertyActionDto {
         "MAX({%s})".formatted(buildVersionColumn),
         null,
         null,
-        null,
-        null,
-        null,
         null);
   }
 }
