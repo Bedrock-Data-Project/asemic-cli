@@ -14,6 +14,9 @@ public class BackfillEntityCommand implements Runnable {
   @Inject
   QueryEngineClient queryEngineClient;
 
+  @CommandLine.Option(names = "--app-id", description = "App id")
+  String appId;
+
   @CommandLine.Option(names = "--date-from", description = "YYYY-MM-DD", required = true)
   LocalDate dateFrom;
 
@@ -23,12 +26,15 @@ public class BackfillEntityCommand implements Runnable {
   @CommandLine.Option(names = "--version", description = "Custom config version")
   Optional<String> version;
 
+
+
   @Override
   public void run() {
+    String appId = this.appId != null ? this.appId : GlobalConfig.getAppId();
     while (dateFrom.isBefore(dateTo) || dateFrom.isEqual(dateTo)) {
       System.out.println("Backfilling date: " + dateFrom + " / " + dateTo);
       new SpinnerCli().spin(() -> {
-        queryEngineClient.backfillUserWide(GlobalConfig.getAppId(), dateFrom, version);
+        queryEngineClient.backfillUserWide(appId, dateFrom, version);
         return true;
       });
       dateFrom = dateFrom.plusDays(1);

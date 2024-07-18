@@ -1,6 +1,7 @@
 package com.asemicanalytics.cli.internal.dsgenerator.entity;
 
 import com.asemicanalytics.cli.internal.dsgenerator.entity.revenue.columns.DailyPayersColumn;
+import com.asemicanalytics.cli.internal.dsgenerator.entity.revenue.columns.IsDailyPayerColumn;
 import com.asemicanalytics.cli.internal.dsgenerator.entity.revenue.columns.IsPayerColumn;
 import com.asemicanalytics.cli.internal.dsgenerator.entity.revenue.columns.RevenueColumn;
 import com.asemicanalytics.cli.internal.dsgenerator.entity.revenue.columns.RevenueLast28DaysColumn;
@@ -13,6 +14,7 @@ import com.asemicanalytics.cli.internal.dsgenerator.entity.revenue.kpis.LtvCohor
 import com.asemicanalytics.cli.internal.dsgenerator.entity.revenue.kpis.LtvCohortedDailyKpis;
 import com.asemicanalytics.cli.internal.dsgenerator.entity.revenue.kpis.RevenueKpi;
 import com.asemicanalytics.core.logicaltable.action.PaymentTransactionActionLogicalTable;
+import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.ColumnComputedDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityKpisDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertiesDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertyActionDto;
@@ -28,6 +30,7 @@ public class PaymentTransaction {
     List<EntityPropertyActionDto> userActionColumns = new ArrayList<>();
     List<EntityPropertySlidingWindowDto> slidingWindowColumns = new ArrayList<>();
     List<EntityPropertyTotalDto> totalColumns = new ArrayList<>();
+    List<ColumnComputedDto> computedColumns = new ArrayList<>();
 
     userActionColumns.add(
         new RevenueColumn(logicalTable.getId(), logicalTable.getTransactionAmountColumn().getId()));
@@ -38,12 +41,14 @@ public class PaymentTransaction {
     totalColumns.add(new TotalRevenueColumn());
     totalColumns.add(new IsPayerColumn());
 
+    computedColumns.add(new IsDailyPayerColumn());
+
     return new EntityPropertiesDto(
         List.of(),
         userActionColumns,
         slidingWindowColumns,
         totalColumns,
-        List.of()
+        computedColumns
     );
   }
 

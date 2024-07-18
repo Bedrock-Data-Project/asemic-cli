@@ -17,6 +17,6 @@ public class LoginPlatformColumn extends EntityPropertyActionDto {
         "MAX({%s})".formatted(platformColumn),
         null,
         null,
-        null);
+        false);
   }
 }

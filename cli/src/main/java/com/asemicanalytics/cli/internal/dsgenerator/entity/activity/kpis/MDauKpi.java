@@ -11,7 +11,7 @@ public class MDauKpi extends KpiDto {
         null,
         null,
         null,
-        "SUM({kpi.dau})",
+        "{kpi.dau}",
         "{property.is_payer}",
         null,
         List.of(dateColumn),

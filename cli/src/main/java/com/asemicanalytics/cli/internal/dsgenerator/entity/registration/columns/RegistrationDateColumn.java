@@ -8,7 +8,7 @@ public class RegistrationDateColumn extends EntityPropertyFirstAppearanceDto {
   public RegistrationDateColumn(String dateColumn) {
     super(new ColumnDto(
             EntityLogicalTable.FIRST_APPEARANCE_DATE_COLUMN,
-            ColumnDto.DataType.STRING,
+            ColumnDto.DataType.DATE,
             true,
             true,
             null,
