@@ -28,16 +28,16 @@ jobs:
         if: github.event.release.tag_name
         run: |
           if [[ "${{ matrix.os }}" == "ubuntu-latest" ]]; then
-            mv cli/target/cli target/asemic-cli-ubuntu
-            gh release upload ${{ github.event.release.tag_name }} target/asemic-cli-ubuntu
+            mv cli/target/cli cli/target/asemic-cli-ubuntu
+            gh release upload ${{ github.event.release.tag_name }} cli/target/asemic-cli-ubuntu
           fi
           if [[ "${{ matrix.os }}" == "macos-latest" ]]; then
-            mv cli/target/cli target/asemic-cli-macos-arm
-            gh release upload ${{ github.event.release.tag_name }} target/asemic-cli-macos-arm
+            mv cli/target/cli cli/target/asemic-cli-macos-arm
+            gh release upload ${{ github.event.release.tag_name }} cli/target/asemic-cli-macos-arm
           fi
           if [[ "${{ matrix.os }}" == "macos-13" ]]; then
-            mv cli/target/cli target/asemic-cli-macos-x64
-            gh release upload ${{ github.event.release.tag_name }} target/asemic-cli-macos-x64
+            mv cli/target/cli cli/target/asemic-cli-macos-x64
+            gh release upload ${{ github.event.release.tag_name }} cli/target/asemic-cli-macos-x64
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
