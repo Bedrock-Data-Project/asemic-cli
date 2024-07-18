@@ -50,7 +50,7 @@ public class QueryEngineClient {
         .build();
 
     HttpRequest<?> request = HttpRequest.GET(uri)
-        .bearerAuth(GlobalConfig.getApiToken());
+        .header("Authorization", "Apikey " + GlobalConfig.getApiToken());
 
     try {
       return httpClient.retrieve(request, Argument.listOf(ColumnDto.class));
@@ -69,7 +69,7 @@ public class QueryEngineClient {
         .build();
 
     MutableHttpRequest<?> request = HttpRequest.GET(uri)
-        .bearerAuth(GlobalConfig.getApiToken());
+        .header("Authorization", "Apikey " + GlobalConfig.getApiToken());
     version.ifPresent(v -> request.header("AppConfigVersion", v));
 
     try {
@@ -90,7 +90,7 @@ public class QueryEngineClient {
         .build();
 
     MutableHttpRequest<?> request = HttpRequest.POST(uri, chartRequestDto)
-        .bearerAuth(GlobalConfig.getApiToken())
+        .header("Authorization", "Apikey " + GlobalConfig.getApiToken())
         .contentType(MediaType.APPLICATION_JSON);
     version.ifPresent(v -> request.header("AppConfigVersion", v));
 
@@ -112,7 +112,7 @@ public class QueryEngineClient {
         .build();
 
     HttpRequest<?> request = HttpRequest.POST(uri, databaseDto)
-        .bearerAuth(GlobalConfig.getApiToken())
+        .header("Authorization", "Apikey " + GlobalConfig.getApiToken())
         .contentType(MediaType.APPLICATION_JSON);
 
     try {
@@ -132,7 +132,7 @@ public class QueryEngineClient {
         .build();
 
     MutableHttpRequest<?> request = HttpRequest.GET(uri)
-        .bearerAuth(GlobalConfig.getApiToken())
+        .header("Authorization", "Apikey " + GlobalConfig.getApiToken())
         .accept(MediaType.APPLICATION_OCTET_STREAM);
 
     final byte[] response;
@@ -160,7 +160,7 @@ public class QueryEngineClient {
         .build();
 
     MutableHttpRequest<?> request = HttpRequest.GET(uri)
-        .bearerAuth(GlobalConfig.getApiToken())
+        .header("Authorization", "Apikey " + GlobalConfig.getApiToken())
         .accept(MediaType.APPLICATION_OCTET_STREAM);
 
     final byte[] response;
@@ -193,7 +193,7 @@ public class QueryEngineClient {
         .build();
 
     MutableHttpRequest<?> request = HttpRequest.POST(uri, body)
-        .bearerAuth(GlobalConfig.getApiToken())
+        .header("Authorization", "Apikey " + GlobalConfig.getApiToken())
         .contentType(MediaType.MULTIPART_FORM_DATA_TYPE);
     version.ifPresent(v -> request.header("AppConfigVersion", v));
 
@@ -216,7 +216,7 @@ public class QueryEngineClient {
         .build();
 
     MutableHttpRequest<?> request = HttpRequest.POST(uri, null)
-        .bearerAuth(GlobalConfig.getApiToken())
+        .header("Authorization", "Apikey " + GlobalConfig.getApiToken())
         .contentType(MediaType.APPLICATION_JSON);
     version.ifPresent(v -> request.header("AppConfigVersion", v));
 
