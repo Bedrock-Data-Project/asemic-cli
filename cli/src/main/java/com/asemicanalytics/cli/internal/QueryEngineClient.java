@@ -4,7 +4,7 @@ import com.asemicanalytics.cli.model.ChartDataDto;
 import com.asemicanalytics.cli.model.ChartRequestDto;
 import com.asemicanalytics.cli.model.ColumnDto;
 import com.asemicanalytics.cli.model.DatabaseDto;
-import com.asemicanalytics.cli.model.DatasourceDto;
+import com.asemicanalytics.cli.model.LogicalTableDto;
 import io.micronaut.core.type.Argument;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.MediaType;
@@ -61,7 +61,7 @@ public class QueryEngineClient {
     }
   }
 
-  public Map<String, DatasourceDto> getDailyDatasources(String appId, Optional<String> version) {
+  public Map<String, LogicalTableDto> getDailyDatasources(String appId, Optional<String> version) {
     var uri = UriBuilder.of(GlobalConfig.getApiUri())
         .path("api/v1")
         .path(appId)
@@ -73,7 +73,7 @@ public class QueryEngineClient {
     version.ifPresent(v -> request.header("AppConfigVersion", v));
 
     try {
-      return httpClient.retrieve(request, Argument.mapOf(String.class, DatasourceDto.class));
+      return httpClient.retrieve(request, Argument.mapOf(String.class, LogicalTableDto.class));
     } catch (HttpClientResponseException e) {
       throw new QueryEngineException(e.getResponse().getBody(String.class).orElse("Unknown error"));
     } catch (Exception e) {
