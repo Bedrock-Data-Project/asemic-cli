@@ -16,7 +16,7 @@ public class MauLostKpi extends KpiDto {
         null,
         null,
         List.of(dateColumn, "cohort_day"),
-        KpiDto.TotalFunction.AVG,
+        null,
         null);
   }
 }

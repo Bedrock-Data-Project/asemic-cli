@@ -16,7 +16,7 @@ public class StickinessKpi extends KpiDto {
         null,
         new UnitDto("%", false),
         List.of(dateColumn),
-        KpiDto.TotalFunction.AVG,
+        null,
         null);
   }
 }

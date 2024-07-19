@@ -16,7 +16,7 @@ public class LtvCohortKpi extends KpiDto {
         null,
         new UnitDto("$", true),
         List.of("cohort_day"),
-        KpiDto.TotalFunction.AVG,
+        null,
         null);
   }
 }

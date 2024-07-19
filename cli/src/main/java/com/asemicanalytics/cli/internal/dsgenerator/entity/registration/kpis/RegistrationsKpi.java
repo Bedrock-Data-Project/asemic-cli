@@ -15,7 +15,7 @@ public class RegistrationsKpi extends KpiDto {
         "{property.cohort_day} = 0",
         null,
         List.of(dateColumn, "cohort_day"),
-        KpiDto.TotalFunction.AVG,
+        null,
         null);
   }
 }

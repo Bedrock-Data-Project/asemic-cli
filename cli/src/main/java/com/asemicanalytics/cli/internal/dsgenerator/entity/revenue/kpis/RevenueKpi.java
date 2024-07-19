@@ -16,7 +16,7 @@ public class RevenueKpi extends KpiDto {
         null,
         new UnitDto("$", true),
         List.of(dateColumn, "cohort_day"),
-        KpiDto.TotalFunction.AVG,
+        null,
         null);
   }
 }
