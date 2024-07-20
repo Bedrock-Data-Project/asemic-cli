@@ -18,7 +18,7 @@ import picocli.CommandLine.Option;
 @CommandLine.Command(name = "payment-transaction-action", description = "Generate config for a payment transaction action", mixinStandardHelpOptions = true)
 public class GeneratePaymentTransactionActionCommand extends GenerateActionCommand {
 
-  @Option(names = "--transaction-amount-column", description = "Name of country column.")
+  @Option(names = "--transaction-amount-column", description = "Name of transaction amount column.")
   Optional<String> transactionAmountColumnOption;
 
   @Inject
@@ -39,7 +39,7 @@ public class GeneratePaymentTransactionActionCommand extends GenerateActionComma
     final String transactionAmountColumn = dsGeneratorHelper.readInput(
         dateColumnOption, "transaction-amount-column",
         Optional.of("\nEnter the name of transaction amount column."),
-        "Enter date column name",
+        "Enter transaction amount column name",
         MostSimilarColumn.find("amount", columns, Set.of("integer", "number")));
 
     columnTags.put(transactionAmountColumn,
