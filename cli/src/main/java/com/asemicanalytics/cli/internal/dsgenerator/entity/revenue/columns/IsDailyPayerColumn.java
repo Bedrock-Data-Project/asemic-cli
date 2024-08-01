@@ -1,19 +1,17 @@
 package com.asemicanalytics.cli.internal.dsgenerator.entity.revenue.columns;
 
-import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.ColumnComputedDto;
-import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.ColumnDto;
+import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.ActionColumnDto;
+import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertyComputedDto;
+import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertyDto;
 
-public class IsDailyPayerColumn extends ColumnComputedDto {
+public class IsDailyPayerColumn extends EntityPropertyDto {
+  public static final String ID = "is_daily_payer";
+
   public IsDailyPayerColumn() {
-    super(new ColumnDto(
-            "is_daily_payer",
-            ColumnDto.DataType.BOOLEAN,
-            true,
-            true,
-            null,
-            null,
-            null),
-        "{daily_payers} > 0"
-    );
+    super(null, ActionColumnDto.DataType.INTEGER, null, true, true,
+        null, null, null, null,
+        new EntityPropertyComputedDto(
+            "{daily_payers} = 1"
+        ));
   }
 }

@@ -27,7 +27,6 @@ public class BackfillEntityCommand implements Runnable {
   Optional<String> version;
 
 
-
   @Override
   public void run() {
     String appId = this.appId != null ? this.appId : GlobalConfig.getAppId();

@@ -5,12 +5,14 @@ import com.asemicanalytics.cli.internal.QueryEngineClient;
 import com.asemicanalytics.cli.internal.YamlSerDe;
 import com.asemicanalytics.cli.internal.dsgenerator.DsGeneratorHelper;
 import com.asemicanalytics.cli.internal.dsgenerator.MostSimilarColumn;
+import com.asemicanalytics.cli.model.ColumnDto;
 import com.asemicanalytics.config.parser.yaml.YamlConfigParser;
 import com.asemicanalytics.core.logicaltable.EventLikeLogicalTable;
 import com.asemicanalytics.core.logicaltable.TemporalLogicalTable;
 import com.asemicanalytics.core.logicaltable.action.ActionLogicalTable;
+import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.ActionColumnDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.ActionLogicalTableDto;
-import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.ColumnDto;
+import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.ColumnsDto;
 import io.micronaut.serde.ObjectMapper;
 import jakarta.inject.Inject;
 import java.io.IOException;
@@ -97,22 +99,20 @@ public class GenerateActionCommand implements Runnable {
       columnTags.put(userIdColumn, List.of(ActionLogicalTable.ENTITY_ID_COLUMN_TAG));
       columnTags.putAll(additionalColumnTags(columns));
 
+      var columnsDto = new ColumnsDto();
+      columns.forEach(c -> {
+        var column = new ActionColumnDto();
+        column.setDataType(ActionColumnDto.DataType.valueOf(c.getDataType().toUpperCase()));
+        column.setTags(columnTags.get(c.getId()));
+        columnsDto.setAdditionalProperty(c.getId(), column);
+      });
 
       var datasourceDto = new ActionLogicalTableDto(
           table,
           logicalTableTags(),
           null,
           null,
-          columns.stream().map(c -> new ColumnDto(
-              c.getId(),
-              ColumnDto.DataType.valueOf(c.getDataType().toUpperCase()),
-              null,
-              null,
-              null,
-              null,
-              columnTags.get(c.getId())
-          )).collect(Collectors.toList()),
-          List.of(),
+          columnsDto,
           List.of());
 
 

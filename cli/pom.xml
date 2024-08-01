@@ -144,7 +144,7 @@
         <dependency>
             <groupId>com.asemicanalytics</groupId>
             <artifactId>semantic-layer-config</artifactId>
-            <version>1.14</version>
+            <version>1.15</version>
             <exclusions>
                 <exclusion>
                     <groupId>com.asemicanalytics</groupId>

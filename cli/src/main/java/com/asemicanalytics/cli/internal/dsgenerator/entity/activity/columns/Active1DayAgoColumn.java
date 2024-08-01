@@ -4,14 +4,15 @@ import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.ActionColu
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertyDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertySlidingWindowDto;
 
-public class ActiveLast28DaysColumn extends EntityPropertyDto {
-  public static final String ID = "active_last_28_days";
+public class Active1DayAgoColumn extends EntityPropertyDto {
+  public static final String ID = "active_1_day_ago";
 
-  public ActiveLast28DaysColumn() {
+
+  public Active1DayAgoColumn() {
     super(null, ActionColumnDto.DataType.INTEGER, null, true, true,
         null,
         new EntityPropertySlidingWindowDto(
-            ActiveTodayColumn.ID, EntityPropertySlidingWindowDto.SlidingWindowFunction.SUM, -27, 0
+            ActiveTodayColumn.ID, EntityPropertySlidingWindowDto.SlidingWindowFunction.SUM, -1, -1
         ),
         null, null, null);
   }

@@ -1,95 +1,62 @@
 package com.asemicanalytics.cli.internal.dsgenerator.entity;
 
+import com.asemicanalytics.cli.internal.dsgenerator.entity.activity.columns.Active1DayAgoColumn;
+import com.asemicanalytics.cli.internal.dsgenerator.entity.activity.columns.ActiveLast28Days;
 import com.asemicanalytics.cli.internal.dsgenerator.entity.activity.columns.ActiveLast28DaysColumn;
-import com.asemicanalytics.cli.internal.dsgenerator.entity.activity.columns.ActiveLast7DaysColumn;
-import com.asemicanalytics.cli.internal.dsgenerator.entity.activity.columns.DauColumn;
-import com.asemicanalytics.cli.internal.dsgenerator.entity.activity.columns.DauDateColumn;
-import com.asemicanalytics.cli.internal.dsgenerator.entity.activity.columns.DauYesterdayColumn;
-import com.asemicanalytics.cli.internal.dsgenerator.entity.activity.columns.LastLoginBuildVersionColumn;
-import com.asemicanalytics.cli.internal.dsgenerator.entity.activity.columns.LastLoginCountryColumn;
-import com.asemicanalytics.cli.internal.dsgenerator.entity.activity.columns.LastLoginDateColumn;
-import com.asemicanalytics.cli.internal.dsgenerator.entity.activity.columns.LastLoginPlatformColumn;
-import com.asemicanalytics.cli.internal.dsgenerator.entity.activity.columns.LoginBuildVersionColumn;
-import com.asemicanalytics.cli.internal.dsgenerator.entity.activity.columns.LoginCountryColumn;
-import com.asemicanalytics.cli.internal.dsgenerator.entity.activity.columns.LoginPlatformColumn;
-import com.asemicanalytics.cli.internal.dsgenerator.entity.activity.columns.MauColumn;
-import com.asemicanalytics.cli.internal.dsgenerator.entity.activity.kpis.DauCohortKpi;
+import com.asemicanalytics.cli.internal.dsgenerator.entity.activity.columns.ActiveTodayColumn;
+import com.asemicanalytics.cli.internal.dsgenerator.entity.activity.columns.DaysActiveLast7DaysColumn;
+import com.asemicanalytics.cli.internal.dsgenerator.entity.activity.columns.LastLoginDimensionColumn;
 import com.asemicanalytics.cli.internal.dsgenerator.entity.activity.kpis.DauKpi;
-import com.asemicanalytics.cli.internal.dsgenerator.entity.activity.kpis.MDauCohortKpi;
 import com.asemicanalytics.cli.internal.dsgenerator.entity.activity.kpis.MDauKpi;
-import com.asemicanalytics.cli.internal.dsgenerator.entity.activity.kpis.MauCohortKpi;
 import com.asemicanalytics.cli.internal.dsgenerator.entity.activity.kpis.MauKpi;
 import com.asemicanalytics.cli.internal.dsgenerator.entity.activity.kpis.MauLostKpi;
 import com.asemicanalytics.cli.internal.dsgenerator.entity.activity.kpis.RetentionCohortKpi;
 import com.asemicanalytics.cli.internal.dsgenerator.entity.activity.kpis.RetentionCohortedDailyKpis;
 import com.asemicanalytics.core.logicaltable.action.ActivityLogicalTable;
+import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.ActionColumnDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityKpisDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertiesDto;
-import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertyActionDto;
-import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertySlidingWindowDto;
-import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertyTotalDto;
-import java.util.ArrayList;
-import java.util.List;
+import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.KpisDto;
+import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.PropertiesDto;
 
 public class Activity {
   public static EntityPropertiesDto buildProperties(ActivityLogicalTable logicalTable) {
+    var properties = new PropertiesDto();
+    properties.setAdditionalProperty(ActiveTodayColumn.ID,
+        new ActiveTodayColumn(logicalTable.getId()));
 
-    List<EntityPropertyActionDto> userActionColumns = new ArrayList<>();
-    List<EntityPropertySlidingWindowDto> slidingWindowColumns = new ArrayList<>();
-    List<EntityPropertyTotalDto> totalColumns = new ArrayList<>();
+    properties.setAdditionalProperty(Active1DayAgoColumn.ID, new Active1DayAgoColumn());
+    properties.setAdditionalProperty(DaysActiveLast7DaysColumn.ID, new DaysActiveLast7DaysColumn());
+    properties.setAdditionalProperty(ActiveLast28DaysColumn.ID, new ActiveLast28DaysColumn());
+    properties.setAdditionalProperty(ActiveLast28Days.ID,
+        new ActiveLast28Days(logicalTable.getId()));
 
-    userActionColumns.add(new DauColumn(logicalTable.getId()));
-    userActionColumns.add(
-        new DauDateColumn(logicalTable.getId(), logicalTable.getDateColumn().getId()));
+    properties.setAdditionalProperty("last_login_date",
+        new LastLoginDimensionColumn(logicalTable.getDateColumn().getId(),
+            ActionColumnDto.DataType.DATE, logicalTable.getId()));
 
-    slidingWindowColumns.add(new DauYesterdayColumn());
-    slidingWindowColumns.add(new ActiveLast7DaysColumn());
-    slidingWindowColumns.add(new ActiveLast28DaysColumn());
-    slidingWindowColumns.add(new MauColumn(logicalTable.getId()));
+    for (var column : logicalTable.getColumns()
+        .getColumnsByTag(ActivityLogicalTable.LAST_LOGIN_PROPERTY_TAG)) {
+      String id = "last_login_" + column.getId();
+      properties.setAdditionalProperty(id, new LastLoginDimensionColumn(
+          column.getId(),
+          ActionColumnDto.DataType.valueOf(column.getDataType().name()),
+          logicalTable.getId()));
+    }
 
-    totalColumns.add(new LastLoginDateColumn());
-
-
-    logicalTable.getCountryColumn().ifPresent(countryColumn -> {
-      userActionColumns.add(new LoginCountryColumn(logicalTable.getId(), countryColumn.getId()));
-      totalColumns.add(new LastLoginCountryColumn());
-    });
-    logicalTable.getPlatformColumn().ifPresent(platformColumn -> {
-      userActionColumns.add(new LoginPlatformColumn(logicalTable.getId(), platformColumn.getId()));
-      totalColumns.add(new LastLoginPlatformColumn());
-    });
-    logicalTable.getBuildVersionColumn().ifPresent(buildVersionColumn -> {
-      userActionColumns.add(
-          new LoginBuildVersionColumn(logicalTable.getId(), buildVersionColumn.getId()));
-      totalColumns.add(new LastLoginBuildVersionColumn());
-    });
-
-    return new EntityPropertiesDto(
-        List.of(),
-        userActionColumns,
-        slidingWindowColumns,
-        totalColumns,
-        List.of()
-    );
+    return new EntityPropertiesDto(properties);
   }
 
   public static EntityKpisDto buildKpis(ActivityLogicalTable logicalTable) {
-    return new EntityKpisDto("Engagement",
-        List.of(
-            new DauKpi(logicalTable.getDateColumn().getId()),
-            new DauCohortKpi(),
-            new MauKpi(logicalTable.getDateColumn().getId()),
-            new MauCohortKpi(),
-            new MauLostKpi(logicalTable.getDateColumn().getId()),
-            new MDauKpi(logicalTable.getDateColumn().getId()),
-            new MDauCohortKpi(),
-            new RetentionCohortKpi()
-        ),
-        List.of(1, 2, 3, 4, 5, 6, 7, 14, 28, 30, 60, 90, 180, 365),
-        List.of(
-            new RetentionCohortedDailyKpis()
-        )
-    );
+    var kpis = new KpisDto();
+    kpis.setAdditionalProperty(DauKpi.ID, new DauKpi(logicalTable.getDateColumn().getId()));
+    kpis.setAdditionalProperty(MauKpi.ID, new MauKpi(logicalTable.getDateColumn().getId()));
+    kpis.setAdditionalProperty(MauLostKpi.ID, new MauLostKpi(logicalTable.getDateColumn().getId()));
+    kpis.setAdditionalProperty(MDauKpi.ID, new MDauKpi(logicalTable.getDateColumn().getId()));
+    kpis.setAdditionalProperty(RetentionCohortKpi.ID, new RetentionCohortKpi());
+    kpis.setAdditionalProperty(RetentionCohortedDailyKpis.ID,
+        new RetentionCohortedDailyKpis(logicalTable.getDateColumn().getId()));
+    return new EntityKpisDto(kpis);
   }
 
 }

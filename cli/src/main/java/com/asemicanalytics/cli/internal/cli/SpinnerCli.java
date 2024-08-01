@@ -33,8 +33,6 @@ public class SpinnerCli {
         t.join();
       } catch (InterruptedException e) {
         Thread.currentThread().interrupt();
-      } finally {
-        // System.out.print("\r");
       }
     }
   }

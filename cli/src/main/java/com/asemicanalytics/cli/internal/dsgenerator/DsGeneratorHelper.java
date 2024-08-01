@@ -5,9 +5,11 @@ import com.asemicanalytics.cli.internal.QueryEngineClient;
 import com.asemicanalytics.cli.internal.cli.InputCli;
 import com.asemicanalytics.cli.internal.cli.SpinnerCli;
 import com.asemicanalytics.cli.model.ColumnDto;
+import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.ActionColumnDto;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.SequencedMap;
 
 public class DsGeneratorHelper {
   private final QueryEngineClient queryEngineClient;
@@ -40,6 +42,7 @@ public class DsGeneratorHelper {
   }
 
   public List<ColumnDto> getTableSchema(String table) {
+    System.out.println("Getting table schema...");
     var columns = new SpinnerCli().spin(() ->
         queryEngineClient.getColumns(GlobalConfig.getAppId(), table));
 
@@ -51,10 +54,10 @@ public class DsGeneratorHelper {
   }
 
   public void printColumns(
-      List<com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.ColumnDto> columns) {
+      SequencedMap<String, ActionColumnDto> columns) {
     System.out.println("Columns:");
-    for (var column : columns) {
-      printColumn(column.getId(), column.getDataType().name());
+    for (var entry : columns.entrySet()) {
+      printColumn(entry.getKey(), entry.getValue().getDataType().value());
     }
   }
 }

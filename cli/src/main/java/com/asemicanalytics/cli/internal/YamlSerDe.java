@@ -8,7 +8,6 @@ import java.nio.file.StandardOpenOption;
 import java.util.Map;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
-import org.yaml.snakeyaml.constructor.Constructor;
 
 
 public class YamlSerDe implements YamlFileLoader {

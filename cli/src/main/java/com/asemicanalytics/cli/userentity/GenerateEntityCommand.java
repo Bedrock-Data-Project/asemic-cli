@@ -10,11 +10,18 @@ import com.asemicanalytics.cli.internal.dsgenerator.entity.PaymentTransaction;
 import com.asemicanalytics.config.EntityModelConfig;
 import com.asemicanalytics.config.mapper.ConfigLoader;
 import com.asemicanalytics.config.parser.yaml.YamlConfigParser;
+import com.asemicanalytics.core.logicaltable.action.ActionLogicalTable;
+import com.asemicanalytics.core.logicaltable.action.ActivityLogicalTable;
+import com.asemicanalytics.core.logicaltable.action.FirstAppearanceActionLogicalTable;
+import com.asemicanalytics.core.logicaltable.action.PaymentTransactionActionLogicalTable;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityConfigDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityKpisDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertiesDto;
 import jakarta.inject.Inject;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import picocli.CommandLine;
 import picocli.CommandLine.Option;
@@ -49,46 +56,45 @@ public class GenerateEntityCommand implements Runnable {
     final String tablePrefix = dsGeneratorHelper.readInput(
         tablePrefixOption, "base-table-prefix",
         Optional.of("Enter a prefix for all user wide tables." +
-            "\nAll user wide tables will be created under this prefix (i.e. mydataset.user_wide)"),
+            "\nAll user wide tables will be created under this prefix (i.e. mydataset.userentity)"),
         "Enter table prefix", Optional.empty());
 
     try {
-      EntityModelConfig entityModelConfig = new ConfigLoader(parser)
-          .parse(GlobalConfig.getAppId());
+      Map<String, ActionLogicalTable> actions = new ConfigLoader(parser)
+          .parseActions(GlobalConfig.getAppId(), new ArrayList<>());
+      var firstAppearance = actions.values().stream()
+          .filter(a -> a instanceof FirstAppearanceActionLogicalTable)
+          .map(a -> (FirstAppearanceActionLogicalTable) a)
+          .findFirst().orElseThrow(() ->
+              new IllegalStateException("First appearance action not found"));
+      var activity = actions.values().stream()
+          .filter(a -> a instanceof ActivityLogicalTable)
+          .map(a -> (ActivityLogicalTable) a)
+          .findFirst().orElseThrow(() ->
+              new IllegalStateException("Activity action not found"));
+      var paymentTransaction = actions.values().stream()
+          .filter(a -> a instanceof PaymentTransactionActionLogicalTable)
+          .map(a -> (PaymentTransactionActionLogicalTable) a)
+          .findFirst();
 
       final EntityPropertiesDto registrationColumns;
       final EntityKpisDto registrationKpis;
-      if (entityModelConfig.getFirstAppearanceActionLogicalTable().isPresent()) {
-        registrationColumns = FirstAppearance.buildProperties(
-            entityModelConfig.getFirstAppearanceActionLogicalTable().get());
-        registrationKpis = FirstAppearance.buildKpis(
-            entityModelConfig.getFirstAppearanceActionLogicalTable().get());
-      } else {
-        throw new IllegalArgumentException("First appearance action not found. "
-            + "Generate it using "
-            + "first-appearance-action command first.");
-      }
+      registrationColumns = FirstAppearance.buildProperties(firstAppearance);
+      registrationKpis = FirstAppearance.buildKpis(firstAppearance);
+
 
       final EntityPropertiesDto activityColumns;
       final EntityKpisDto activityKpis;
-      if (entityModelConfig.getActivityActionLogicalTable().isPresent()) {
-        activityColumns = Activity.buildProperties(
-            entityModelConfig.getActivityActionLogicalTable().get());
-        activityKpis = Activity.buildKpis(
-            entityModelConfig.getActivityActionLogicalTable().get());
-      } else {
-        throw new IllegalArgumentException("Activity action not found."
-            + "Generate it using "
-            + "activity-action command first.");
-      }
+      activityColumns = Activity.buildProperties(activity);
+      activityKpis = Activity.buildKpis(activity);
 
       final Optional<EntityPropertiesDto> revenueColumns;
       final Optional<EntityKpisDto> revenueKpis;
-      if (entityModelConfig.getPaymentTransactionActionLogicalTable().isPresent()) {
+      if (paymentTransaction.isPresent()) {
         revenueColumns = Optional.of(PaymentTransaction.buildProperties(
-            entityModelConfig.getPaymentTransactionActionLogicalTable().get()));
+            paymentTransaction.get()));
         revenueKpis = Optional.of(PaymentTransaction.buildKpis(
-            entityModelConfig.getPaymentTransactionActionLogicalTable().get()));
+            paymentTransaction.get()));
       } else {
         revenueColumns = Optional.empty();
         revenueKpis = Optional.empty();
@@ -99,7 +105,10 @@ public class GenerateEntityCommand implements Runnable {
 
       new YamlSerDe().save(
           "entity_config",
-          new EntityConfigDto(tablePrefix),
+          new EntityConfigDto(
+              tablePrefix,
+              List.of(0, 1, 2, 3, 4, 5, 6, 7, 14, 21, 28, 30, 40, 50, 60, 90, 120, 180, 270, 360),
+              90),
           columnsPath.getParent().resolve("config.yml"));
 
       new YamlSerDe().save(

@@ -1,21 +1,25 @@
 package com.asemicanalytics.cli.internal.dsgenerator.entity.activity.kpis;
 
+import com.asemicanalytics.cli.internal.dsgenerator.entity.registration.columns.CohortDayColumn;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.KpiDto;
-import java.util.List;
+import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.XAxisDto;
+import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.XaxisOverrideDto;
 
 public class MDauKpi extends KpiDto {
+  public static final String ID = "mdau";
+
   public MDauKpi(String dateColumn) {
     super(
-        "mdau",
         "mDAU",
-        null,
-        null,
         null,
         "{kpi.dau}",
         "{property.is_payer}",
         null,
-        List.of(dateColumn),
-        KpiDto.TotalFunction.AVG,
+        null,
+        new XAxisDto() {{
+          this.setAdditionalProperty(dateColumn, new XaxisOverrideDto(TotalFunction.AVG));
+          this.setAdditionalProperty(CohortDayColumn.ID, new XaxisOverrideDto());
+        }},
         null);
   }
 }

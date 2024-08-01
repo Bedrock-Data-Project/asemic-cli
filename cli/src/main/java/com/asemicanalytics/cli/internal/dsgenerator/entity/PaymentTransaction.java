@@ -1,5 +1,6 @@
 package com.asemicanalytics.cli.internal.dsgenerator.entity;
 
+import com.asemicanalytics.cli.internal.dsgenerator.entity.activity.columns.ActiveTodayColumn;
 import com.asemicanalytics.cli.internal.dsgenerator.entity.revenue.columns.DailyPayersColumn;
 import com.asemicanalytics.cli.internal.dsgenerator.entity.revenue.columns.IsDailyPayerColumn;
 import com.asemicanalytics.cli.internal.dsgenerator.entity.revenue.columns.IsPayerColumn;
@@ -14,57 +15,48 @@ import com.asemicanalytics.cli.internal.dsgenerator.entity.revenue.kpis.LtvCohor
 import com.asemicanalytics.cli.internal.dsgenerator.entity.revenue.kpis.LtvCohortedDailyKpis;
 import com.asemicanalytics.cli.internal.dsgenerator.entity.revenue.kpis.RevenueKpi;
 import com.asemicanalytics.core.logicaltable.action.PaymentTransactionActionLogicalTable;
-import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.ColumnComputedDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityKpisDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertiesDto;
-import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertyActionDto;
-import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertySlidingWindowDto;
-import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertyTotalDto;
-import java.util.ArrayList;
-import java.util.List;
+import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.KpisDto;
+import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.PropertiesDto;
 
 public class PaymentTransaction {
   public static EntityPropertiesDto buildProperties(
       PaymentTransactionActionLogicalTable logicalTable) {
 
-    List<EntityPropertyActionDto> userActionColumns = new ArrayList<>();
-    List<EntityPropertySlidingWindowDto> slidingWindowColumns = new ArrayList<>();
-    List<EntityPropertyTotalDto> totalColumns = new ArrayList<>();
-    List<ColumnComputedDto> computedColumns = new ArrayList<>();
-
-    userActionColumns.add(
+    var properties = new PropertiesDto();
+    properties.setAdditionalProperty(RevenueColumn.ID,
         new RevenueColumn(logicalTable.getId(), logicalTable.getTransactionAmountColumn().getId()));
-    slidingWindowColumns.add(new RevenueLast28DaysColumn());
-    userActionColumns.add(new DailyPayersColumn(logicalTable.getId()));
-    userActionColumns.add(new TransactionCountColumn(logicalTable.getId()));
+    properties.setAdditionalProperty(RevenueLast28DaysColumn.ID, new RevenueLast28DaysColumn());
+    properties.setAdditionalProperty(DailyPayersColumn.ID,
+        new DailyPayersColumn(logicalTable.getId()));
+    properties.setAdditionalProperty(TransactionCountColumn.ID,
+        new TransactionCountColumn(logicalTable.getId()));
+    properties.setAdditionalProperty(TotalRevenueColumn.ID,
+        new TotalRevenueColumn());
+    properties.setAdditionalProperty(IsPayerColumn.ID,
+        new IsPayerColumn());
+    properties.setAdditionalProperty(IsDailyPayerColumn.ID,
+        new IsDailyPayerColumn());
 
-    totalColumns.add(new TotalRevenueColumn());
-    totalColumns.add(new IsPayerColumn());
+    return new EntityPropertiesDto(properties);
 
-    computedColumns.add(new IsDailyPayerColumn());
-
-    return new EntityPropertiesDto(
-        List.of(),
-        userActionColumns,
-        slidingWindowColumns,
-        totalColumns,
-        computedColumns
-    );
   }
 
   public static EntityKpisDto buildKpis(PaymentTransactionActionLogicalTable logicalTable) {
-    return new EntityKpisDto("Engagement",
-        List.of(
-            new ArpdauKpi(logicalTable.getDateColumn().getId()),
-            new ArppuKpi(logicalTable.getDateColumn().getId()),
-            new DailyPayersKpi(logicalTable.getDateColumn().getId()),
-            new LtvCohortKpi(),
-            new RevenueKpi(logicalTable.getDateColumn().getId())
-        ),
-        List.of(1, 2, 3, 4, 5, 6, 7, 14, 28, 30, 60, 90, 180, 365),
-        List.of(
-            new LtvCohortedDailyKpis(logicalTable.getDateColumn().getId())
-        )
-    );
+    var kpis = new KpisDto();
+    kpis.setAdditionalProperty(
+        ArpdauKpi.ID, new ArpdauKpi(logicalTable.getDateColumn().getId()));
+    kpis.setAdditionalProperty(
+        ArppuKpi.ID, new ArppuKpi(logicalTable.getDateColumn().getId()));
+    kpis.setAdditionalProperty(
+        DailyPayersKpi.ID, new DailyPayersKpi(logicalTable.getDateColumn().getId()));
+    kpis.setAdditionalProperty(
+        LtvCohortKpi.ID, new LtvCohortKpi());
+    kpis.setAdditionalProperty(LtvCohortedDailyKpis.ID,
+        new LtvCohortedDailyKpis(logicalTable.getDateColumn().getId()));
+    kpis.setAdditionalProperty(
+        RevenueKpi.ID, new RevenueKpi(logicalTable.getDateColumn().getId()));
+    return new EntityKpisDto(kpis);
   }
 }
