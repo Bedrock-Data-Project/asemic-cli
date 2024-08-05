@@ -13,6 +13,6 @@ public class RevenueColumn extends EntityPropertyDto {
             revenueDatasourceName, "{" + revenueColumn + "}",
             EntityPropertyActionDto.AggregateFunction.SUM, null, "0"
         ),
-        null, null, null, null);
+        null, null, null, null, null);
   }
 }

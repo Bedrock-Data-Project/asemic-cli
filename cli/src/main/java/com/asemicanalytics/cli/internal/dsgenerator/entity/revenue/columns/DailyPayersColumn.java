@@ -12,6 +12,6 @@ public class DailyPayersColumn extends EntityPropertyDto {
         new EntityPropertyActionDto(
             revenueDatasourceName, "1", EntityPropertyActionDto.AggregateFunction.NONE, null, "0"
         ),
-        null, null, null, null);
+        null, null, null, null, null);
   }
 }

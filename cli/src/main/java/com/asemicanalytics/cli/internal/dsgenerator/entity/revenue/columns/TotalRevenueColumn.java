@@ -9,7 +9,7 @@ public class TotalRevenueColumn extends EntityPropertyDto {
 
   public TotalRevenueColumn() {
     super(null, ActionColumnDto.DataType.NUMBER, null, true, true,
-        null, null,
+        null, null, null,
         new EntityPropertyLifetimeDto(
             RevenueColumn.ID, null,
             null,

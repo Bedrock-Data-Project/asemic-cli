@@ -8,7 +8,7 @@ public class RegistrationDimensionColumn extends EntityPropertyDto {
   public RegistrationDimensionColumn(String dimension,
                                      ActionColumnDto.DataType dataType) {
     super(null, dataType, null, true, true,
-        null, null,
+        null, null, null,
         null,
         new EntityPropertyFirstAppearanceDto(dimension),
         null);

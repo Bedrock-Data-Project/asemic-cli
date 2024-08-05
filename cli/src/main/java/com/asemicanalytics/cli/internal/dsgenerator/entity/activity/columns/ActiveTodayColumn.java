@@ -12,6 +12,6 @@ public class ActiveTodayColumn extends EntityPropertyDto {
         new EntityPropertyActionDto(
             activityDatasourceName, "1", EntityPropertyActionDto.AggregateFunction.NONE, null, "0"
         ),
-        null, null, null, null);
+        null, null, null, null, null);
   }
 }

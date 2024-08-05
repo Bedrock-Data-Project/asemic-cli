@@ -72,7 +72,9 @@
       "oneOf": [
         {
           "type": "string",
-          "enum": ["cohort_day"]
+          "enum": [
+            "cohort_day"
+          ]
         },
         {
           "type": "array",

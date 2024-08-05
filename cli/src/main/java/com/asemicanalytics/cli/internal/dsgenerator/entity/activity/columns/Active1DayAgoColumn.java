@@ -12,8 +12,8 @@ public class Active1DayAgoColumn extends EntityPropertyDto {
     super(null, ActionColumnDto.DataType.INTEGER, null, true, true,
         null,
         new EntityPropertySlidingWindowDto(
-            ActiveTodayColumn.ID, EntityPropertySlidingWindowDto.SlidingWindowFunction.SUM, -1, -1
+            ActiveTodayColumn.ID, EntityPropertySlidingWindowDto.EntityPropertyWindowFunction.SUM, -1, -1
         ),
-        null, null, null);
+        null, null, null, null);
   }
 }

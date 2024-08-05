@@ -9,7 +9,7 @@ public class IsPayerColumn extends EntityPropertyDto {
 
   public IsPayerColumn() {
     super(null, ActionColumnDto.DataType.BOOLEAN, null, true, true,
-        null, null,
+        null, null, null,
         new EntityPropertyLifetimeDto(
             IsDailyPayerColumn.ID, null,
             null,

@@ -9,7 +9,7 @@ public class LastLoginDimensionColumn extends EntityPropertyDto {
   public LastLoginDimensionColumn(String dimension, ActionColumnDto.DataType dataType,
                                   String activityDatasourceName) {
     super(null, dataType, null, true, true,
-        null, null,
+        null, null, null,
         new EntityPropertyLifetimeDto(
             null, null,
             new EntityPropertyActionDto(

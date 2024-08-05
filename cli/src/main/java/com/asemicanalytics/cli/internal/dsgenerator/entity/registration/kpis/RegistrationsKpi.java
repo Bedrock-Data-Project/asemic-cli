@@ -18,7 +18,6 @@ public class RegistrationsKpi extends KpiDto {
         null,
         new XAxisDto() {{
           this.setAdditionalProperty(dateColumn, new XaxisOverrideDto());
-          this.setAdditionalProperty(CohortDayColumn.ID, new XaxisOverrideDto());
         }},
         null);
   }

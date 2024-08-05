@@ -10,7 +10,7 @@ public class CohortSizeColumn extends EntityPropertyDto {
 
   public CohortSizeColumn(String dateColumn) {
     super(null, ActionColumnDto.DataType.INTEGER, null, false, false,
-        null, null, null, null,
+        null, null, null, null, null,
         new EntityPropertyComputedDto(
             "1"
         ));

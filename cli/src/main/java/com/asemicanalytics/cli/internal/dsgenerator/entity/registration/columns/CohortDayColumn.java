@@ -10,7 +10,7 @@ public class CohortDayColumn extends EntityPropertyDto {
 
   public CohortDayColumn(String dateColumn) {
     super(null, ActionColumnDto.DataType.INTEGER, null, true, true,
-        null, null, null, null,
+        null, null, null, null, null,
         new EntityPropertyComputedDto(
             "DATE_DIFF({"
                 + dateColumn + "}, {"

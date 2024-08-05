@@ -11,8 +11,8 @@ public class DaysActiveLast7DaysColumn extends EntityPropertyDto {
     super(null, ActionColumnDto.DataType.INTEGER, null, true, true,
         null,
         new EntityPropertySlidingWindowDto(
-            ActiveTodayColumn.ID, EntityPropertySlidingWindowDto.SlidingWindowFunction.SUM, -6, 0
+            ActiveTodayColumn.ID, EntityPropertySlidingWindowDto.EntityPropertyWindowFunction.SUM, -6, 0
         ),
-        null, null, null);
+        null, null, null, null);
   }
 }

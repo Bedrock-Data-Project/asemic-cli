@@ -13,6 +13,6 @@ public class TransactionCountColumn extends EntityPropertyDto {
             revenueDatasourceName, "COUNT(*)", EntityPropertyActionDto.AggregateFunction.NONE, null,
             "0"
         ),
-        null, null, null, null);
+        null, null, null, null, null);
   }
 }

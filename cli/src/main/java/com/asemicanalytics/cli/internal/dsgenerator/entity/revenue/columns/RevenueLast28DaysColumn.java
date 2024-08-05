@@ -11,8 +11,8 @@ public class RevenueLast28DaysColumn extends EntityPropertyDto {
     super(null, ActionColumnDto.DataType.NUMBER, null, true, true,
         null,
         new EntityPropertySlidingWindowDto(
-            RevenueColumn.ID, EntityPropertySlidingWindowDto.SlidingWindowFunction.SUM, -27, 0
+            RevenueColumn.ID, EntityPropertySlidingWindowDto.EntityPropertyWindowFunction.SUM, -27, 0
         ),
-        null, null, null);
+        null, null, null, null);
   }
 }

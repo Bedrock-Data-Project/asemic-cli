@@ -9,7 +9,7 @@ public class IsDailyPayerColumn extends EntityPropertyDto {
 
   public IsDailyPayerColumn() {
     super(null, ActionColumnDto.DataType.INTEGER, null, true, true,
-        null, null, null, null,
+        null, null, null, null, null,
         new EntityPropertyComputedDto(
             "{daily_payers} = 1"
         ));
