@@ -3,18 +3,18 @@ package com.asemicanalytics.cli.config;
 import com.asemicanalytics.cli.internal.GlobalConfig;
 import com.asemicanalytics.cli.internal.QueryEngineClient;
 import com.asemicanalytics.cli.internal.cli.SpinnerCli;
-import com.asemicanalytics.cli.model.ChartRequestDto;
-import com.asemicanalytics.cli.model.ChartRequestDtoTimeGrain;
-import com.asemicanalytics.cli.model.ChartRequestDtoXAxis;
+import com.asemicanalytics.cli.model.LegacyEntityChartRequestDto;
 import com.asemicanalytics.cli.model.ColumnDto;
 import com.asemicanalytics.cli.model.ColumnFilterDto;
 import com.asemicanalytics.cli.model.DateIntervalDto;
 import com.asemicanalytics.cli.model.KpiDto;
+import com.asemicanalytics.cli.model.LegacyEntityChartRequestDtoTimeGrain;
 import jakarta.inject.Inject;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import javax.swing.text.html.parser.Entity;
 import picocli.CommandLine;
 
 @CommandLine.Command(name = "validate", description = "Validate config without submitting it", mixinStandardHelpOptions = true)
@@ -29,7 +29,7 @@ public class ValidateCommand implements Runnable {
     try {
       new SpinnerCli().spin(() -> {
         var yesterday = LocalDate.now().minusDays(1);
-        queryEngineClient.submitChart(GlobalConfig.getAppId(), new ChartRequestDto()
+        queryEngineClient.submitChart(GlobalConfig.getAppId(), new LegacyEntityChartRequestDto()
             .pageId("")
             .requestId("")
             .kpiId(kpi.getId())
@@ -37,8 +37,8 @@ public class ValidateCommand implements Runnable {
                 .dateFrom(yesterday)
                 .dateTo(yesterday))
             .xaxis(isDailyKpi
-                ? ChartRequestDtoXAxis.DATE
-                : ChartRequestDtoXAxis.COHORT_DAY)
+                ? "date"
+                : "cohort_date")
             .columnFilters(column != null
                 ? List.of(new ColumnFilterDto()
                 .columnId(column.getId())
@@ -46,7 +46,7 @@ public class ValidateCommand implements Runnable {
                 .valueList(List.of()))
                 : List.of())
             .columnGroupBys(List.of())
-            .timeGrain(ChartRequestDtoTimeGrain.DAY)
+            .timeGrain(LegacyEntityChartRequestDtoTimeGrain.DAY)
             .sortByKpiId(null)
             .groupByLimit(10)
             .dryRun(true), Optional.of(version));

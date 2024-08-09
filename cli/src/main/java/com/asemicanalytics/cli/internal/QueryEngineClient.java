@@ -1,11 +1,10 @@
 package com.asemicanalytics.cli.internal;
 
-import com.asemicanalytics.cli.model.BackfillTableStatistics;
 import com.asemicanalytics.cli.model.BackfillTableStatisticsDto;
 import com.asemicanalytics.cli.model.ChartDataDto;
-import com.asemicanalytics.cli.model.ChartRequestDto;
 import com.asemicanalytics.cli.model.ColumnDto;
 import com.asemicanalytics.cli.model.DatabaseDto;
+import com.asemicanalytics.cli.model.LegacyEntityChartRequestDto;
 import com.asemicanalytics.cli.model.LogicalTableDto;
 import io.micronaut.core.type.Argument;
 import io.micronaut.http.HttpRequest;
@@ -83,7 +82,7 @@ public class QueryEngineClient {
     }
   }
 
-  public ChartDataDto submitChart(String appId, ChartRequestDto chartRequestDto,
+  public ChartDataDto submitChart(String appId, LegacyEntityChartRequestDto chartRequestDto,
                                   Optional<String> version) {
     var uri = UriBuilder.of(GlobalConfig.getApiUri())
         .path("api/v1")
