@@ -4,14 +4,15 @@ import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.ActionColu
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertyDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertyLifetimeDto;
 
-public class IsPayerColumn extends EntityPropertyDto {
-    public static final String ID = "is_payer";
+public class PayersLifetimeColumn extends EntityPropertyDto {
+  public static final String ID = "payers_lifetime";
+  public static final String KPI_REF = "{property." + ID + "}";
 
-  public IsPayerColumn() {
-    super(null, ActionColumnDto.DataType.BOOLEAN, null, true, true,
+  public PayersLifetimeColumn() {
+    super(null, ActionColumnDto.DataType.INTEGER, null, true, true,
         null, null, null,
         new EntityPropertyLifetimeDto(
-            IsDailyPayerColumn.ID, null,
+            PayersOnDayColumn.ID, null,
             null,
             EntityPropertyLifetimeDto.MergeFunction.MAX),
         null, null);

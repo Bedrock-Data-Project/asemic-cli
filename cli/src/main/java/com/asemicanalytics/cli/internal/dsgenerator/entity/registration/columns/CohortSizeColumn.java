@@ -7,12 +7,14 @@ import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityProp
 
 public class CohortSizeColumn extends EntityPropertyDto {
   public static final String ID = EntityLogicalTable.COHORT_SIZE_COLUMN;
+  public static final String KPI_REF = "{property." + ID + "}";
 
-  public CohortSizeColumn(String dateColumn) {
+  public CohortSizeColumn() {
     super(null, ActionColumnDto.DataType.INTEGER, null, false, false,
         null, null, null, null, null,
         new EntityPropertyComputedDto(
-            "1"
+            "1",
+            null
         ));
   }
 }

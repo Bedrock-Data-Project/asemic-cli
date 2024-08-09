@@ -1,5 +1,6 @@
 package com.asemicanalytics.cli.internal.dsgenerator.entity.activity.kpis;
 
+import com.asemicanalytics.cli.internal.dsgenerator.entity.activity.columns.ActiveOnDayColumn;
 import com.asemicanalytics.cli.internal.dsgenerator.entity.registration.columns.CohortDayColumn;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.KpiDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.XAxisDto;
@@ -7,12 +8,13 @@ import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.XaxisOverr
 
 public class DauKpi extends KpiDto {
   public static final String ID = "dau";
+  public static final String KPI_REF = "{kpi." + ID + "}";
 
   public DauKpi(String dateColumn) {
     super(
         "DAU",
         null,
-        "SUM({property.active_today})",
+        "SUM(%s)".formatted(ActiveOnDayColumn.KPI_REF),
         null,
         null,
         null,

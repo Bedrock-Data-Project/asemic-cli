@@ -40,6 +40,7 @@ public class GenerateEntityCommand implements Runnable {
   @Inject
   QueryEngineClient queryEngineClient;
 
+  private static final int ACTIVE_DAYS = 90;
   @Override
   public void run() {
     var parser = new YamlConfigParser(
@@ -86,7 +87,7 @@ public class GenerateEntityCommand implements Runnable {
       final EntityPropertiesDto activityColumns;
       final EntityKpisDto activityKpis;
       activityColumns = Activity.buildProperties(activity);
-      activityKpis = Activity.buildKpis(activity);
+      activityKpis = Activity.buildKpis(activity, ACTIVE_DAYS);
 
       final Optional<EntityPropertiesDto> revenueColumns;
       final Optional<EntityKpisDto> revenueKpis;
@@ -108,7 +109,7 @@ public class GenerateEntityCommand implements Runnable {
           new EntityConfigDto(
               tablePrefix,
               List.of(0, 1, 2, 3, 4, 5, 6, 7, 14, 21, 28, 30, 40, 50, 60, 90, 120, 180, 270, 360),
-              90),
+              ACTIVE_DAYS),
           columnsPath.getParent().resolve("config.yml"));
 
       new YamlSerDe().save(

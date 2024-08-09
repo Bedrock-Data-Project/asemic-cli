@@ -6,12 +6,13 @@ import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityProp
 
 public class RevenueLast28DaysColumn extends EntityPropertyDto {
   public static final String ID = "revenue_last_28_days";
+  public static final String KPI_REF = "{property." + ID + "}";
 
   public RevenueLast28DaysColumn() {
-    super(null, ActionColumnDto.DataType.NUMBER, null, true, true,
+    super(null, ActionColumnDto.DataType.NUMBER, null, true, false,
         null,
         new EntityPropertySlidingWindowDto(
-            RevenueColumn.ID, EntityPropertySlidingWindowDto.EntityPropertyWindowFunction.SUM, -27, 0
+            RevenueOnDayColumn.ID, EntityPropertySlidingWindowDto.EntityPropertyWindowFunction.SUM, -27, 0
         ),
         null, null, null, null);
   }

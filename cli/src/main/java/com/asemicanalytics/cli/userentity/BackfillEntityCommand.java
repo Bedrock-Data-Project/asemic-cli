@@ -4,6 +4,8 @@ import com.asemicanalytics.cli.internal.GlobalConfig;
 import com.asemicanalytics.cli.internal.QueryEngineClient;
 import com.asemicanalytics.cli.internal.cli.SpinnerCli;
 import jakarta.inject.Inject;
+import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Optional;
 import picocli.CommandLine;
@@ -27,13 +29,35 @@ public class BackfillEntityCommand implements Runnable {
   Optional<String> version;
 
 
+  String prettyPrintDuration(Duration duration) {
+    long days = duration.toDaysPart();
+    long hours = duration.toHoursPart();
+    long minutes = duration.toMinutesPart();
+    long seconds = duration.toSecondsPart();
+
+    return String.format("%d days, %d hours, %d minutes, %d seconds", days, hours, minutes,
+        seconds);
+  }
+
   @Override
   public void run() {
     String appId = this.appId != null ? this.appId : GlobalConfig.getAppId();
     while (dateFrom.isBefore(dateTo) || dateFrom.isEqual(dateTo)) {
       System.out.println("Backfilling date: " + dateFrom + " / " + dateTo);
       new SpinnerCli().spin(() -> {
-        queryEngineClient.backfillUserWide(appId, dateFrom, version);
+        var start = Instant.now();
+        var stats = queryEngineClient.backfillUserWide(appId, dateFrom, version);
+        var stop = Instant.now();
+
+        var daysLeft = dateTo.toEpochDay() - dateFrom.toEpochDay();
+        for (var tableStatistic : stats) {
+          System.out.printf("Inserted %d rows to table %s in %d seconds\n",
+              tableStatistic.getRowsInserted(), tableStatistic.getTable(),
+              tableStatistic.getInsertDurationSeconds());
+        }
+        System.out.println("Estimated backfill duration: " +
+            prettyPrintDuration(Duration.between(start, stop).multipliedBy(daysLeft)));
+
         return true;
       });
       dateFrom = dateFrom.plusDays(1);

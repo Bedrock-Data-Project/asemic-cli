@@ -7,12 +7,13 @@ import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.XaxisOverr
 
 public class StickinessKpi extends KpiDto {
   public static final String ID = "stickiness";
+  public static final String KPI_REF = "{kpi." + ID + "}";
 
   public StickinessKpi(String dateColumn) {
     super(
         null,
         null,
-        "SAFE_DIVIDE({kpi.dau} * 100, {kpi.mau})",
+        "SAFE_DIVIDE(%s * 100, %s)".formatted(DauKpi.KPI_REF, MauKpi.KPI_REF),
         null,
         new UnitDto("%", false),
         null,

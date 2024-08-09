@@ -1,5 +1,7 @@
 package com.asemicanalytics.cli.internal;
 
+import com.asemicanalytics.cli.model.BackfillTableStatistics;
+import com.asemicanalytics.cli.model.BackfillTableStatisticsDto;
 import com.asemicanalytics.cli.model.ChartDataDto;
 import com.asemicanalytics.cli.model.ChartRequestDto;
 import com.asemicanalytics.cli.model.ColumnDto;
@@ -207,7 +209,7 @@ public class QueryEngineClient {
     System.out.println("Config uploaded successfully");
   }
 
-  public void backfillUserWide(String appId, LocalDate date, Optional<String> version) {
+  public List<BackfillTableStatisticsDto> backfillUserWide(String appId, LocalDate date, Optional<String> version) {
     var uri = UriBuilder.of(GlobalConfig.getApiUri())
         .path("api/v1")
         .path(appId)
@@ -221,7 +223,7 @@ public class QueryEngineClient {
     version.ifPresent(v -> request.header("AppConfigVersion", v));
 
     try {
-      httpClient.exchange(request);
+      return httpClient.retrieve(request, Argument.listOf(BackfillTableStatisticsDto.class));
     } catch (HttpClientResponseException e) {
       throw new QueryEngineException(e.getResponse().getBody(String.class).orElse("Unknown error"));
     } catch (Exception e) {

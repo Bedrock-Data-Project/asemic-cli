@@ -31,7 +31,7 @@ public class FirstAppearance {
     properties.setAdditionalProperty(CohortDayColumn.ID,
         new CohortDayColumn(datasource.getDateColumn().getId()));
     properties.setAdditionalProperty(CohortSizeColumn.ID,
-        new CohortSizeColumn(datasource.getDateColumn().getId()));
+        new CohortSizeColumn());
 
     return new EntityPropertiesDto(properties);
   }

@@ -4,14 +4,14 @@ import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.ActionColu
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertyActionDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertyDto;
 
-public class TransactionCountColumn extends EntityPropertyDto {
-  public static final String ID = "transaction_count";
+public class PayersOnDayColumn extends EntityPropertyDto {
+  public static final String ID = "payers_on_day";
+  public static final String KPI_REF = "{property." + ID + "}";
 
-  public TransactionCountColumn(String revenueDatasourceName) {
-    super(null, ActionColumnDto.DataType.NUMBER, null, true, true,
+  public PayersOnDayColumn(String revenueDatasourceName) {
+    super(null, ActionColumnDto.DataType.INTEGER, null, false, false,
         new EntityPropertyActionDto(
-            revenueDatasourceName, "COUNT(*)", EntityPropertyActionDto.AggregateFunction.NONE, null,
-            "0"
+            revenueDatasourceName, "1", EntityPropertyActionDto.AggregateFunction.NONE, null, "0"
         ),
         null, null, null, null, null);
   }

@@ -6,12 +6,13 @@ import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityProp
 
 public class DaysActiveLast7DaysColumn extends EntityPropertyDto {
   public static final String ID = "days_active_last_7_days";
+  public static final String KPI_REF = "{property." + ID + "}";
 
   public DaysActiveLast7DaysColumn() {
     super(null, ActionColumnDto.DataType.INTEGER, null, true, true,
         null,
         new EntityPropertySlidingWindowDto(
-            ActiveTodayColumn.ID, EntityPropertySlidingWindowDto.EntityPropertyWindowFunction.SUM, -6, 0
+            ActiveOnDayColumn.ID, EntityPropertySlidingWindowDto.EntityPropertyWindowFunction.SUM, -6, 0
         ),
         null, null, null, null);
   }
