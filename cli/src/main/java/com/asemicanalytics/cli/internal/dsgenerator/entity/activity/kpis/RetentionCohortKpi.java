@@ -16,7 +16,7 @@ public class RetentionCohortKpi extends KpiDto {
         null,
         null,
         "SAFE_DIVIDE(%s * 100, SUM(%s))"
-            .formatted(DauKpi.KPI_REF, CohortSizeColumn.KPI_REF),        null,
+            .formatted(DauKpi.KPI_REF, CohortSizeColumn.KPI_REF), null,
         new UnitDto("%", false),
         null,
         new XAxisDto() {{

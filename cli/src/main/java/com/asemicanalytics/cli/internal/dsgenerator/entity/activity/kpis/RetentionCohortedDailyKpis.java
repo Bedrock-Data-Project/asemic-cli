@@ -20,7 +20,7 @@ public class RetentionCohortedDailyKpis extends KpiDto {
         new UnitDto("%", false),
         null,
         new XAxisDto() {{
-          this.setAdditionalProperty(dateColumn, new XaxisOverrideDto(KpiDto.TotalFunction.AVG));
+          this.setAdditionalProperty(dateColumn, new XaxisOverrideDto());
         }},
         "cohort_day");
   }

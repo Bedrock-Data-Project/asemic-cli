@@ -21,7 +21,7 @@ public class LtvCohortedDailyKpis extends KpiDto {
         new UnitDto("$", true),
         null,
         new XAxisDto() {{
-          this.setAdditionalProperty(dateColumn, new XaxisOverrideDto(KpiDto.TotalFunction.AVG));
+          this.setAdditionalProperty(dateColumn, new XaxisOverrideDto());
         }},
         "cohort_day");
   }
