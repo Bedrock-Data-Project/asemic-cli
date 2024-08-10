@@ -37,8 +37,9 @@ public class QueryEngineClient {
   @Inject
   public QueryEngineClient() {
     HttpClientConfiguration configuration = new DefaultHttpClientConfiguration();
-    configuration.setReadTimeout(Duration.ofSeconds(300));
-    this.httpClient = new DefaultHttpClient((URI) null, configuration).toBlocking();
+    configuration.setReadTimeout(Duration.ofSeconds(600));
+    this.httpClient =
+        new RetryableHttpClient(3, new DefaultHttpClient((URI) null, configuration).toBlocking());
   }
 
   public List<ColumnDto> getColumns(String appId, String table) {
@@ -208,7 +209,8 @@ public class QueryEngineClient {
     System.out.println("Config uploaded successfully");
   }
 
-  public List<BackfillTableStatisticsDto> backfillUserWide(String appId, LocalDate date, Optional<String> version) {
+  public List<BackfillTableStatisticsDto> backfillUserWide(String appId, LocalDate date,
+                                                           Optional<String> version) {
     var uri = UriBuilder.of(GlobalConfig.getApiUri())
         .path("api/v1")
         .path(appId)

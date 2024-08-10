@@ -3,18 +3,17 @@ package com.asemicanalytics.cli.config;
 import com.asemicanalytics.cli.internal.GlobalConfig;
 import com.asemicanalytics.cli.internal.QueryEngineClient;
 import com.asemicanalytics.cli.internal.cli.SpinnerCli;
-import com.asemicanalytics.cli.model.LegacyEntityChartRequestDto;
 import com.asemicanalytics.cli.model.ColumnDto;
 import com.asemicanalytics.cli.model.ColumnFilterDto;
 import com.asemicanalytics.cli.model.DateIntervalDto;
 import com.asemicanalytics.cli.model.KpiDto;
+import com.asemicanalytics.cli.model.LegacyEntityChartRequestDto;
 import com.asemicanalytics.cli.model.LegacyEntityChartRequestDtoTimeGrain;
 import jakarta.inject.Inject;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import javax.swing.text.html.parser.Entity;
 import picocli.CommandLine;
 
 @CommandLine.Command(name = "validate", description = "Validate config without submitting it", mixinStandardHelpOptions = true)
@@ -23,8 +22,8 @@ public class ValidateCommand implements Runnable {
   @Inject
   QueryEngineClient queryEngineClient;
 
-  private void testChart(String version, String logPrefix, KpiDto kpi,
-                         boolean isDailyKpi, ColumnDto column) {
+  private boolean testChart(String version, String logPrefix, KpiDto kpi,
+                            boolean isDailyKpi, ColumnDto column) {
 
     try {
       new SpinnerCli().spin(() -> {
@@ -38,7 +37,7 @@ public class ValidateCommand implements Runnable {
                 .dateTo(yesterday))
             .xaxis(isDailyKpi
                 ? "date"
-                : "cohort_date")
+                : "cohort_day")
             .columnFilters(column != null
                 ? List.of(new ColumnFilterDto()
                 .columnId(column.getId())
@@ -56,11 +55,13 @@ public class ValidateCommand implements Runnable {
       System.out.println(
           CommandLine.Help.Ansi.AUTO.string(logPrefix + dots(logPrefix)
               + "@|fg(green) SUCCESS|@"));
+      return true;
     } catch (Exception e) {
       System.out.println(
           CommandLine.Help.Ansi.AUTO.string(logPrefix + dots(logPrefix)
               + "@|fg(red) FAILED|@"));
       System.out.println("    " + e);
+      return false;
     }
   }
 
@@ -70,6 +71,7 @@ public class ValidateCommand implements Runnable {
 
   @Override
   public void run() {
+    int numFailures = 0;
     final String devVersion = "dev/" + UUID.randomUUID();
 
     var logicalTables = new SpinnerCli().spin(() -> {
@@ -87,18 +89,29 @@ public class ValidateCommand implements Runnable {
         continue;
       }
       for (var column : logicalTable.getValue().getColumns()) {
-        testChart(devVersion, "column " + column.getLabel(),
+        if (!testChart(devVersion, "column " + column.getLabel(),
             logicalTable.getValue().getKpis().get(0),
-            logicalTable.getValue().getKpis().get(0).getIsDailyKpi(), column);
+            logicalTable.getValue().getKpis().get(0).getIsDailyKpi(), column)) {
+          numFailures++;
+        }
       }
       for (var kpi : logicalTable.getValue().getKpis()) {
         if (kpi.getIsDailyKpi()) {
-          testChart(devVersion, "kpi (daily) " + kpi.getLabel(), kpi, true, null);
+          if (!testChart(devVersion, "kpi (daily) " + kpi.getLabel(), kpi, true, null)) {
+            numFailures++;
+          }
         }
         if (kpi.getIsCohortKpi()) {
-          testChart(devVersion, "kpi (cohort) " + kpi.getLabel(), kpi, false, null);
+          if (!testChart(devVersion, "kpi (cohort) " + kpi.getLabel(), kpi, false, null)) {
+            numFailures++;
+          }
         }
       }
+    }
+
+    if (numFailures > 0) {
+      System.out.println("Validation failed with " + numFailures + " failures");
+      System.exit(1);
     }
   }
 }
