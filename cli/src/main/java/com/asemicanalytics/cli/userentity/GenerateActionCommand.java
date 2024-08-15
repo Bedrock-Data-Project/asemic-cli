@@ -5,7 +5,6 @@ import com.asemicanalytics.cli.internal.QueryEngineClient;
 import com.asemicanalytics.cli.internal.YamlSerDe;
 import com.asemicanalytics.cli.internal.dsgenerator.DsGeneratorHelper;
 import com.asemicanalytics.cli.internal.dsgenerator.MostSimilarColumn;
-import com.asemicanalytics.cli.model.ColumnDto;
 import com.asemicanalytics.config.parser.yaml.YamlConfigParser;
 import com.asemicanalytics.core.logicaltable.EventLikeLogicalTable;
 import com.asemicanalytics.core.logicaltable.TemporalLogicalTable;
@@ -46,7 +45,19 @@ public class GenerateActionCommand implements Runnable {
 
   @Option(names = "--no-wizard", description = "Fails if any required input is missing."
       + " Useful for scripting.")
-  Optional<Boolean> noWizard;
+  Optional<Boolean> noWizardOption;
+
+  @Option(names = "--subschema", description = "Action table parameters are part of a subschema.")
+  Optional<Boolean> isSubschemaOption;
+
+  @Option(names = "--subschema-type-column", description = "Column that indicates which subschema is used")
+  Optional<String> subschemaTypeColumnOption;
+
+  @Option(names = "--subschema-type-value", description = "Value for subschema type column.")
+  Optional<String> subschemaTypeValueOption;
+
+  @Option(names = "--subschema-params-column", description = "Column that contains parameters for this subschema")
+  Optional<String> subschemaParamsNameOption;
 
   @Inject
   QueryEngineClient queryEngineClient;
@@ -57,18 +68,46 @@ public class GenerateActionCommand implements Runnable {
   @Override
   public void run() {
     try {
-      var dsGeneratorHelper = new DsGeneratorHelper(queryEngineClient, noWizard);
+      var dsGeneratorHelper = new DsGeneratorHelper(queryEngineClient, noWizardOption);
 
       final String table = dsGeneratorHelper.readInput(
           tableOption, "table",
           Optional.empty(), "Enter full table name", Optional.empty());
-
+      String actionRecommendedName = table;
       var columns = dsGeneratorHelper.getTableSchema(table);
+
+      Optional<String> where = Optional.empty();
+      if (isSubschemaOption.orElse(false)) {
+        final String subschemaTypeColumn = dsGeneratorHelper.readInput(
+            subschemaTypeColumnOption, "subschema-type-column",
+            Optional.empty(),
+            "\nEnter the name of the column that indicates which subschema column is used.",
+            MostSimilarColumn.find("event", columns, Set.of("string")));
+
+        final String subschemaTypeValue = dsGeneratorHelper.readInput(
+            subschemaTypeValueOption, "subschema-type-value",
+            Optional.empty(),
+            "Enter the value of %s column for this action".formatted(subschemaTypeColumn),
+            Optional.empty());
+        actionRecommendedName = subschemaTypeValue;
+
+        final String subschemaParamsName = dsGeneratorHelper.readInput(
+            subschemaParamsNameOption, "subschema-params-column",
+            Optional.empty(),
+            "Enter column name that contains parameters for this subschema",
+            Optional.empty());
+
+        columns = columns.stream()
+            .filter(c -> !c.getId().contains(".") || c.getId().startsWith(subschemaParamsName + "."))
+            .collect(Collectors.toList());
+
+        where = Optional.of("{%s} = '%s'".formatted(subschemaTypeColumn, subschemaTypeValue));
+      }
 
       final String logicalTableName = dsGeneratorHelper.readInput(
           logicalTableOption, "action-name",
           Optional.empty(), "Enter action name",
-          Optional.of(dsGeneratorHelper.recommendedlogicalTableName(table)));
+          Optional.of(dsGeneratorHelper.recommendedlogicalTableName(actionRecommendedName)));
 
       final String dateColumn = dsGeneratorHelper.readInput(
           dateColumnOption, "date-column",
@@ -76,7 +115,6 @@ public class GenerateActionCommand implements Runnable {
               + "\nIdeally, this should be a partition column for performance reasons."),
           "Enter date column name",
           MostSimilarColumn.find("", columns, Set.of("date")));
-
 
       final String timestampColumn = dsGeneratorHelper.readInput(
           timestampColumnOption, "timestamp-column",
@@ -113,6 +151,7 @@ public class GenerateActionCommand implements Runnable {
           null,
           null,
           columnsDto,
+          where.orElse(null),
           List.of());
 
 

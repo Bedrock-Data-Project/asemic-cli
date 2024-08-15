@@ -32,7 +32,7 @@ public class GeneratePaymentTransactionActionCommand extends GenerateActionComma
   }
 
   protected Map<String, List<String>> additionalColumnTags(List<ColumnDto> columns) {
-    var dsGeneratorHelper = new DsGeneratorHelper(queryEngineClient, noWizard);
+    var dsGeneratorHelper = new DsGeneratorHelper(queryEngineClient, noWizardOption);
 
     Map<String, List<String>> columnTags = new HashMap<>();
 
