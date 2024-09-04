@@ -1,5 +1,6 @@
 package com.asemicanalytics.cli.internal.dsgenerator.entity;
 
+import com.asemicanalytics.cli.internal.dsgenerator.entity.activity.kpis.MDauKpi;
 import com.asemicanalytics.cli.internal.dsgenerator.entity.revenue.columns.PayersOnDayColumn;
 import com.asemicanalytics.cli.internal.dsgenerator.entity.revenue.columns.PayersLifetimeColumn;
 import com.asemicanalytics.cli.internal.dsgenerator.entity.revenue.columns.PaymentSegmentColumn;
@@ -56,6 +57,7 @@ public class PaymentTransaction {
 
   public static EntityKpisDto buildKpis(PaymentTransactionActionLogicalTable logicalTable) {
     var kpis = new KpisDto();
+    kpis.setAdditionalProperty(MDauKpi.ID, new MDauKpi(logicalTable.getDateColumn().getId()));
     kpis.setAdditionalProperty(
         ArpdauKpi.ID, new ArpdauKpi(logicalTable.getDateColumn().getId()));
     kpis.setAdditionalProperty(

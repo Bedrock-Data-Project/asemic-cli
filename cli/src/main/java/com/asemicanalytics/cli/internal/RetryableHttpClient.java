@@ -4,6 +4,7 @@ import io.micronaut.core.type.Argument;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.client.BlockingHttpClient;
+import io.micronaut.http.client.exceptions.HttpClientResponseException;
 import java.io.IOException;
 import java.util.function.Supplier;
 
@@ -45,6 +46,11 @@ public class RetryableHttpClient implements BlockingHttpClient {
         try {
           return function.get();
         } catch (RuntimeException ex) {
+          if (ex instanceof HttpClientResponseException httpEx) {
+            if (httpEx.getStatus().getCode() < 500) {
+              throw ex;
+            }
+          }
           try {
             Thread.sleep(10000);
           } catch (InterruptedException e) {

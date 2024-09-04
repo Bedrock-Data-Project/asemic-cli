@@ -61,7 +61,6 @@ public class Activity {
     kpis.setAdditionalProperty(DauKpi.ID, new DauKpi(logicalTable.getDateColumn().getId()));
     kpis.setAdditionalProperty(MauKpi.ID, new MauKpi(logicalTable.getDateColumn().getId()));
     kpis.setAdditionalProperty(MauLostKpi.ID, new MauLostKpi(logicalTable.getDateColumn().getId()));
-    kpis.setAdditionalProperty(MDauKpi.ID, new MDauKpi(logicalTable.getDateColumn().getId()));
     kpis.setAdditionalProperty(RetentionCohortKpi.ID, new RetentionCohortKpi());
     kpis.setAdditionalProperty(RetentionCohortedDailyKpis.ID,
         new RetentionCohortedDailyKpis(logicalTable.getDateColumn().getId()));
