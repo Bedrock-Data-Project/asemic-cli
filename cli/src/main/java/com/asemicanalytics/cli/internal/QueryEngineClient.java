@@ -88,7 +88,7 @@ public class QueryEngineClient {
     var uri = UriBuilder.of(GlobalConfig.getApiUri())
         .path("api/v1")
         .path(appId)
-        .path("charts/submit")
+        .path("charts/submit-validate")
         .build();
 
     MutableHttpRequest<?> request = HttpRequest.POST(uri, chartRequestDto)

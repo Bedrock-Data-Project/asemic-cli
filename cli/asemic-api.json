@@ -103,10 +103,43 @@
         ]
       }
     },
-    "/api/v1/{appId}/datasources-configure/regenerate-token": {
+    "/api/v1/{appId}/datasources-configure/token": {
+      "get": {
+        "tags": [
+          "semantic-layer-config-controller"
+        ],
+        "operationId": "getToken",
+        "parameters": [
+          {
+            "name": "appId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
       "post": {
         "tags": [
-          "configure-logical-tables-controller"
+          "semantic-layer-config-controller"
         ],
         "operationId": "regenerateToken",
         "parameters": [
@@ -136,12 +169,122 @@
             "bearerAuth": []
           }
         ]
+      },
+      "delete": {
+        "tags": [
+          "semantic-layer-config-controller"
+        ],
+        "operationId": "deleteToken",
+        "parameters": [
+          {
+            "name": "appId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/{appId}/datasources-configure/test-db-auth": {
+      "post": {
+        "tags": [
+          "semantic-layer-config-controller"
+        ],
+        "operationId": "testAppDbAuth",
+        "parameters": [
+          {
+            "name": "appId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DatabaseDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "No Content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     },
     "/api/v1/{appId}/datasources-configure/db-auth": {
+      "get": {
+        "tags": [
+          "semantic-layer-config-controller"
+        ],
+        "operationId": "getAppDbAuth",
+        "parameters": [
+          {
+            "name": "appId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
       "post": {
         "tags": [
-          "configure-logical-tables-controller"
+          "semantic-layer-config-controller"
         ],
         "operationId": "submitAppDbAuth",
         "parameters": [
@@ -181,12 +324,45 @@
             "bearerAuth": []
           }
         ]
+      },
+      "delete": {
+        "tags": [
+          "semantic-layer-config-controller"
+        ],
+        "operationId": "deleteAppDbAuth",
+        "parameters": [
+          {
+            "name": "appId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
       }
     },
     "/api/v1/{appId}/datasources-configure/config": {
       "post": {
         "tags": [
-          "configure-logical-tables-controller"
+          "semantic-layer-config-controller"
         ],
         "operationId": "submitAppConfig",
         "parameters": [
@@ -290,6 +466,51 @@
           "chart-controller"
         ],
         "operationId": "submitEntityChart",
+        "parameters": [
+          {
+            "name": "appId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LegacyEntityChartRequestDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChartDataDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/{appId}/charts/submit-validate": {
+      "post": {
+        "tags": [
+          "chart-controller"
+        ],
+        "operationId": "validateEntityChart",
         "parameters": [
           {
             "name": "appId",
