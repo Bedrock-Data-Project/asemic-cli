@@ -1,5 +1,6 @@
 package com.asemicanalytics.cli.internal;
 
+import com.asemicanalytics.cli.model.BackfillPropertiesStatistics;
 import com.asemicanalytics.cli.model.BackfillTableStatisticsDto;
 import com.asemicanalytics.cli.model.ChartDataDto;
 import com.asemicanalytics.cli.model.ColumnDto;
@@ -225,6 +226,31 @@ public class QueryEngineClient {
 
     try {
       return httpClient.retrieve(request, Argument.listOf(BackfillTableStatisticsDto.class));
+    } catch (HttpClientResponseException e) {
+      throw new QueryEngineException(e.getResponse().getBody(String.class).orElse("Unknown error"));
+    } catch (Exception e) {
+      throw new QueryEngineException("Unknown error");
+    }
+  }
+
+  public Map<LocalDate, BackfillPropertiesStatistics> backfillUserWideStatistics(
+      String appId, LocalDate dateFrom, LocalDate dateTo, Optional<String> version) {
+    var uri = UriBuilder.of(GlobalConfig.getApiUri())
+        .path("api/v1")
+        .path(appId)
+        .path("datasources/backfill-userwide")
+        .path(dateFrom.toString())
+        .path(dateTo.toString())
+        .build();
+
+    MutableHttpRequest<?> request = HttpRequest.GET(uri)
+        .header("Authorization", "Apikey " + GlobalConfig.getApiToken())
+        .contentType(MediaType.APPLICATION_JSON);
+    version.ifPresent(v -> request.header("AppConfigVersion", v));
+
+    try {
+      return httpClient.retrieve(request,
+          Argument.mapOf(LocalDate.class, BackfillPropertiesStatistics.class));
     } catch (HttpClientResponseException e) {
       throw new QueryEngineException(e.getResponse().getBody(String.class).orElse("Unknown error"));
     } catch (Exception e) {

@@ -779,6 +779,62 @@
           }
         ]
       }
+    },
+    "/api/v1/{appId}/datasources/backfill-userwide/{dateFrom}/{dateTo}": {
+      "get": {
+        "tags": [
+          "logical-tables-controller"
+        ],
+        "operationId": "backfillStatistics",
+        "parameters": [
+          {
+            "name": "appId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "dateFrom",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "dateTo",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "$ref": "#/components/schemas/BackfillPropertiesStatistics"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
     }
   },
   "components": {
@@ -983,6 +1039,93 @@
           }
         }
       },
+      "ActionColumnAggregationFilterDto": {
+        "type": "object",
+        "properties": {
+          "aggregation_function": {
+            "type": "string",
+            "enum": [
+              "count",
+              "sum",
+              "avg",
+              "min",
+              "max",
+              "first_value",
+              "last_value",
+              "none"
+            ]
+          },
+          "column_id": {
+            "type": "string"
+          },
+          "value_list": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "operation": {
+            "type": "string"
+          },
+          "actionPropertySelect": {
+            "type": "string"
+          },
+          "windowPropertyAggregateFunction": {
+            "type": "string",
+            "enum": [
+              "sum",
+              "avg",
+              "count",
+              "min",
+              "max",
+              "array"
+            ]
+          },
+          "actionPropertyAggregateFunction": {
+            "type": "string",
+            "enum": [
+              "count",
+              "sum",
+              "avg",
+              "min",
+              "max",
+              "first_value",
+              "last_value",
+              "none"
+            ]
+          }
+        }
+      },
+      "ActionColumnFilterDto": {
+        "type": "object",
+        "properties": {
+          "column_id": {
+            "type": "string"
+          },
+          "value_list": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "operation": {
+            "type": "string"
+          }
+        }
+      },
+      "FixedWindowDto": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "string",
+            "format": "date"
+          },
+          "to": {
+            "type": "string",
+            "format": "date"
+          }
+        }
+      },
       "LegacyEntityChartRequestDto": {
         "type": "object",
         "properties": {
@@ -1003,6 +1146,18 @@
           },
           "x_axis": {
             "type": "string"
+          },
+          "performed_action_dynamic_cohort_filters": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PerformedActionDynamicCohortFilterDto"
+            }
+          },
+          "performed_action_static_cohort_filters": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PerformedActionStaticCohortFilterDto"
+            }
           },
           "column_filters": {
             "type": "array",
@@ -1051,8 +1206,67 @@
           }
         }
       },
+      "PerformedActionDynamicCohortFilterDto": {
+        "type": "object",
+        "properties": {
+          "aggregation_filters": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ActionColumnAggregationFilterDto"
+            }
+          },
+          "action": {
+            "type": "string"
+          },
+          "window": {
+            "$ref": "#/components/schemas/RelativeWindowDto"
+          },
+          "filters": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ActionColumnFilterDto"
+            }
+          }
+        }
+      },
+      "PerformedActionStaticCohortFilterDto": {
+        "type": "object",
+        "properties": {
+          "aggregation_filters": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ActionColumnAggregationFilterDto"
+            }
+          },
+          "action": {
+            "type": "string"
+          },
+          "window": {
+            "$ref": "#/components/schemas/FixedWindowDto"
+          },
+          "filters": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ActionColumnFilterDto"
+            }
+          }
+        }
+      },
       "PropertiesDto": {
         "type": "object"
+      },
+      "RelativeWindowDto": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "to": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
       },
       "ChartDataDto": {
         "type": "object",
@@ -1209,6 +1423,19 @@
           "createdAt": {
             "type": "string",
             "format": "date-time"
+          }
+        }
+      },
+      "BackfillPropertiesStatistics": {
+        "type": "object",
+        "properties": {
+          "materialized_properties": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "non_materialized_properties": {
+            "type": "integer",
+            "format": "int32"
           }
         }
       }
