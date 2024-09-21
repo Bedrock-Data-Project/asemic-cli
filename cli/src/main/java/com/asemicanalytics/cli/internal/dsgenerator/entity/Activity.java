@@ -1,7 +1,7 @@
 package com.asemicanalytics.cli.internal.dsgenerator.entity;
 
-import com.asemicanalytics.cli.internal.dsgenerator.entity.activity.columns.ActiveLast28DaysColumn;
-import com.asemicanalytics.cli.internal.dsgenerator.entity.activity.columns.ActiveOnDayColumn;
+import com.asemicanalytics.cli.internal.dsgenerator.entity.activity.columns.MauActiveColumn;
+import com.asemicanalytics.cli.internal.dsgenerator.entity.activity.columns.DauActiveColumn;
 import com.asemicanalytics.cli.internal.dsgenerator.entity.activity.columns.DaysActiveLast28DaysColumn;
 import com.asemicanalytics.cli.internal.dsgenerator.entity.activity.columns.DaysActiveLast7DaysColumn;
 import com.asemicanalytics.cli.internal.dsgenerator.entity.activity.columns.DaysSinceLastActiveColumn;
@@ -9,7 +9,6 @@ import com.asemicanalytics.cli.internal.dsgenerator.entity.activity.columns.Last
 import com.asemicanalytics.cli.internal.dsgenerator.entity.activity.columns.WasActiveOnDayColumn;
 import com.asemicanalytics.cli.internal.dsgenerator.entity.activity.kpis.ActiveUsersKpi;
 import com.asemicanalytics.cli.internal.dsgenerator.entity.activity.kpis.DauKpi;
-import com.asemicanalytics.cli.internal.dsgenerator.entity.activity.kpis.MDauKpi;
 import com.asemicanalytics.cli.internal.dsgenerator.entity.activity.kpis.MauKpi;
 import com.asemicanalytics.cli.internal.dsgenerator.entity.activity.kpis.MauLostKpi;
 import com.asemicanalytics.cli.internal.dsgenerator.entity.activity.kpis.RetentionCohortKpi;
@@ -25,15 +24,15 @@ import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.Properties
 public class Activity {
   public static EntityPropertiesDto buildProperties(ActivityLogicalTable logicalTable) {
     var properties = new PropertiesDto();
-    properties.setAdditionalProperty(ActiveOnDayColumn.ID,
-        new ActiveOnDayColumn(logicalTable.getId()));
+    properties.setAdditionalProperty(DauActiveColumn.ID,
+        new DauActiveColumn(logicalTable.getId()));
     properties.setAdditionalProperty(WasActiveOnDayColumn.ID, new WasActiveOnDayColumn());
 
 
     properties.setAdditionalProperty(DaysActiveLast7DaysColumn.ID, new DaysActiveLast7DaysColumn());
     properties.setAdditionalProperty(DaysActiveLast28DaysColumn.ID,
         new DaysActiveLast28DaysColumn());
-    properties.setAdditionalProperty(ActiveLast28DaysColumn.ID, new ActiveLast28DaysColumn());
+    properties.setAdditionalProperty(MauActiveColumn.ID, new MauActiveColumn());
 
     properties.setAdditionalProperty(DaysSinceLastActiveColumn.ID,
         new DaysSinceLastActiveColumn(logicalTable.getDateColumn().getId()));

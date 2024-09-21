@@ -4,11 +4,11 @@ import com.asemicanalytics.cli.internal.GlobalConfig;
 import com.asemicanalytics.cli.internal.QueryEngineClient;
 import com.asemicanalytics.cli.internal.cli.SpinnerCli;
 import com.asemicanalytics.cli.model.ColumnDto;
-import com.asemicanalytics.cli.model.ColumnFilterDto;
 import com.asemicanalytics.cli.model.DateIntervalDto;
+import com.asemicanalytics.cli.model.EntityChartRequestDto;
+import com.asemicanalytics.cli.model.EntityChartRequestDtoTimeGrain;
 import com.asemicanalytics.cli.model.KpiDto;
-import com.asemicanalytics.cli.model.LegacyEntityChartRequestDto;
-import com.asemicanalytics.cli.model.LegacyEntityChartRequestDtoTimeGrain;
+import com.asemicanalytics.cli.model.PropertyFilterDto;
 import jakarta.inject.Inject;
 import java.time.LocalDate;
 import java.util.List;
@@ -28,7 +28,7 @@ public class ValidateCommand implements Runnable {
     try {
       new SpinnerCli().spin(() -> {
         var yesterday = LocalDate.now().minusDays(1);
-        queryEngineClient.submitChart(GlobalConfig.getAppId(), new LegacyEntityChartRequestDto()
+        queryEngineClient.submitChartValidate(GlobalConfig.getAppId(), new EntityChartRequestDto()
             .pageId("")
             .requestId("")
             .kpiId(kpi.getId())
@@ -39,13 +39,13 @@ public class ValidateCommand implements Runnable {
                 ? "date"
                 : "cohort_day")
             .columnFilters(column != null
-                ? List.of(new ColumnFilterDto()
+                ? List.of(new PropertyFilterDto()
                 .columnId(column.getId())
                 .operation("is_not_null")
                 .valueList(List.of()))
                 : List.of())
             .columnGroupBys(List.of())
-            .timeGrain(LegacyEntityChartRequestDtoTimeGrain.DAY)
+            .timeGrain(EntityChartRequestDtoTimeGrain.DAY)
             .sortByKpiId(null)
             .groupByLimit(10)
             .dryRun(true), Optional.of(version));

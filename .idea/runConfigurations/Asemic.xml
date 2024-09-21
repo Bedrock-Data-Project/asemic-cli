@@ -1,0 +1,22 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Asemic" type="Application" factoryName="Application" nameIsGenerated="true">
+    <envs>
+      <env name="ASEMIC_API_TOKEN" value="5e2c8dd6-e615-470e-bbd8-17c158048d8b" />
+      <env name="ASEMIC_API_URL" value="http://localhost:8083" />
+      <env name="ASEMIC_APP_ID_DIR" value="$PROJECT_DIR$/../bedrock-demo/config/heroicmini" />
+    </envs>
+    <option name="MAIN_CLASS_NAME" value="com.asemicanalytics.cli.Asemic" />
+    <module name="cli" />
+    <option name="PROGRAM_PARAMETERS" value="user-entity-model data-tests --date=2024-09-16 --daily-kpi-avg=dau --active-kpi-avg=mau --daily-kpi-sum=revenue --active-kpi-sum=revenue_last_2_days --boolean-total-dimensional-property=was_payer_on_day --numeric-action-column=payment_transaction.revenue" />
+    <option name="VM_PARAMETERS" value="-Djdk.console=jdk.internal.le" />
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="com.asemicanalytics.cli.userentity.internal.dsgenerator.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

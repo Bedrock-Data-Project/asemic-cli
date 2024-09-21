@@ -1,0 +1,96 @@
+package com.asemicanalytics.cli.internal.datatests;
+
+import com.asemicanalytics.cli.internal.CachingChartClient;
+import com.asemicanalytics.cli.model.AggregationFilterDto;
+import com.asemicanalytics.cli.model.AggregationFilterDtoAggregationFunction;
+import com.asemicanalytics.cli.model.DateIntervalDto;
+import com.asemicanalytics.cli.model.EntityChartRequestDto;
+import com.asemicanalytics.cli.model.EntityChartRequestDtoTimeGrain;
+import com.asemicanalytics.cli.model.FixedWindowDto;
+import com.asemicanalytics.cli.model.TimeTravelActionStaticCohortFilterDto;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
+
+public class PerformedActionStatic extends DataTest {
+  private final Optional<String> kpi;
+  private final Optional<String> actionColumn;
+  private final LocalDate date;
+
+  public PerformedActionStatic(String appId, String name,
+                               Optional<String> kpi,
+                               Optional<String> actionColumn,
+                               LocalDate date) {
+    super(name, appId);
+    this.kpi = kpi;
+    this.date = date;
+    this.actionColumn = actionColumn;
+  }
+
+  public boolean supported() {
+    return kpi.isPresent() && actionColumn.isPresent();
+  }
+
+  public TestResult run(CachingChartClient queryEngineClient) {
+    var request = new EntityChartRequestDto()
+        .pageId("")
+        .requestId("")
+        .kpiId(kpi.get())
+        .dateInterval(new DateIntervalDto()
+            .dateFrom(date)
+            .dateTo(date))
+        .compareDateInterval(new DateIntervalDto()
+            .dateFrom(date.minusDays(2))
+            .dateTo(date.minusDays(1)))
+        .xaxis("date")
+        .timeGrain(EntityChartRequestDtoTimeGrain.DAY);
+
+    var data =
+        queryEngineClient.submitChart(appId, request,
+            Optional.empty());
+
+    Double expected = 0.0;
+    Double actual = 0.0;
+
+    if (!data.getChartPoints().isEmpty()) {
+      expected = data.getChartPoints().get(0).getValues().getFirst().getValue();
+    }
+
+    var filter1 = new TimeTravelActionStaticCohortFilterDto()
+        .action(actionColumn.get().split("\\.")[0])
+        .window(new FixedWindowDto().from(date.minusDays(2)).to(date.minusDays(1)))
+        .addAggregationFiltersItem(new AggregationFilterDto()
+            .aggregationFunction(AggregationFilterDtoAggregationFunction.COUNT)
+            .operation("=")
+            .valueList(List.of("0")));
+
+    request.setPerformedActionStaticCohortFilters(
+        List.of(filter1));
+    data =
+        queryEngineClient.submitChart(appId, request,
+            Optional.empty());
+    if (!data.getChartPoints().isEmpty()) {
+      actual += data.getChartPoints().get(0).getValues().getFirst().getValue();
+    }
+
+    var filter2 = new TimeTravelActionStaticCohortFilterDto()
+        .action(actionColumn.get().split("\\.")[0])
+        .window(new FixedWindowDto().from(date.minusDays(2)).to(date.minusDays(1)))
+        .addAggregationFiltersItem(new AggregationFilterDto()
+            .aggregationFunction(AggregationFilterDtoAggregationFunction.COUNT)
+            .operation(">")
+            .valueList(List.of("0")));
+    request.setPerformedActionStaticCohortFilters(
+        List.of(filter2));
+    data =
+        queryEngineClient.submitChart(appId, request,
+            Optional.empty());
+    if (!data.getChartPoints().isEmpty()) {
+      actual += data.getChartPoints().get(0).getValues().getFirst().getValue();
+    }
+
+    return new TestResult(
+        String.format("%.2f", expected),
+        String.format("%.2f", actual));
+  }
+}

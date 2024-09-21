@@ -4,15 +4,15 @@ import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.ActionColu
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertyDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertySlidingWindowDto;
 
-public class ActiveLast28DaysColumn extends EntityPropertyDto {
-  public static final String ID = "active_last_28_days";
+public class MauActiveColumn extends EntityPropertyDto {
+  public static final String ID = "mau_active";
   public static final String KPI_REF = "{property." + ID + "}";
 
-  public ActiveLast28DaysColumn() {
+  public MauActiveColumn() {
     super(null, ActionColumnDto.DataType.INTEGER, null, false, false,
         null,
         new EntityPropertySlidingWindowDto(
-            ActiveOnDayColumn.ID, EntityPropertySlidingWindowDto.EntityPropertyWindowFunction.SUM, -27, 0
+            DauActiveColumn.ID, null, null, EntityPropertySlidingWindowDto.EntityPropertyWindowFunction.SUM, -27, 0
         ),
         null, null, null, null);
   }

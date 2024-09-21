@@ -1,6 +1,6 @@
 package com.asemicanalytics.cli.internal.dsgenerator.entity.activity.kpis;
 
-import com.asemicanalytics.cli.internal.dsgenerator.entity.activity.columns.ActiveOnDayColumn;
+import com.asemicanalytics.cli.internal.dsgenerator.entity.activity.columns.DauActiveColumn;
 import com.asemicanalytics.cli.internal.dsgenerator.entity.registration.columns.CohortDayColumn;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.KpiDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.XAxisDto;
@@ -14,7 +14,7 @@ public class DauKpi extends KpiDto {
     super(
         "DAU",
         null,
-        "SUM(%s)".formatted(ActiveOnDayColumn.KPI_REF),
+        "SUM(%s)".formatted(DauActiveColumn.KPI_REF),
         null,
         null,
         null,

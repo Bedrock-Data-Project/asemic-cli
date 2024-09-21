@@ -14,7 +14,7 @@ public class WasActiveOnDayColumn extends EntityPropertyDto {
     super(null, ActionColumnDto.DataType.STRING, null, true, true,
         null, null, null, null, null,
         new EntityPropertyComputedDto(
-            "{" + ActiveOnDayColumn.ID + "}",
+            "{" + DauActiveColumn.ID + "}",
             List.of(
                 new ValueMappingsDto("0", null, "Inactive on day"),
                 new ValueMappingsDto("1", null, "Active on day")

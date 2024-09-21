@@ -1,6 +1,6 @@
 package com.asemicanalytics.cli.internal.dsgenerator.entity.activity.kpis;
 
-import com.asemicanalytics.cli.internal.dsgenerator.entity.activity.columns.ActiveLast28DaysColumn;
+import com.asemicanalytics.cli.internal.dsgenerator.entity.activity.columns.MauActiveColumn;
 import com.asemicanalytics.cli.internal.dsgenerator.entity.registration.columns.CohortDayColumn;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.KpiDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.XAxisDto;
@@ -14,7 +14,7 @@ public class MauKpi extends KpiDto {
     super(
         "MAU",
         null,
-        "SUM(%s)".formatted(ActiveLast28DaysColumn.KPI_REF),
+        "SUM(%s)".formatted(MauActiveColumn.KPI_REF),
         null,
         null,
         null,

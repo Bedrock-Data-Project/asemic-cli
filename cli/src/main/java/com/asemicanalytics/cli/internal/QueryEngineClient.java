@@ -5,7 +5,7 @@ import com.asemicanalytics.cli.model.BackfillTableStatisticsDto;
 import com.asemicanalytics.cli.model.ChartDataDto;
 import com.asemicanalytics.cli.model.ColumnDto;
 import com.asemicanalytics.cli.model.DatabaseDto;
-import com.asemicanalytics.cli.model.LegacyEntityChartRequestDto;
+import com.asemicanalytics.cli.model.EntityChartRequestDto;
 import com.asemicanalytics.cli.model.LogicalTableDto;
 import io.micronaut.core.type.Argument;
 import io.micronaut.http.HttpRequest;
@@ -84,12 +84,34 @@ public class QueryEngineClient {
     }
   }
 
-  public ChartDataDto submitChart(String appId, LegacyEntityChartRequestDto chartRequestDto,
-                                  Optional<String> version) {
+  public ChartDataDto submitChartValidate(String appId, EntityChartRequestDto chartRequestDto,
+                                          Optional<String> version) {
     var uri = UriBuilder.of(GlobalConfig.getApiUri())
         .path("api/v1")
         .path(appId)
         .path("charts/submit-validate")
+        .build();
+
+    MutableHttpRequest<?> request = HttpRequest.POST(uri, chartRequestDto)
+        .header("Authorization", "Apikey " + GlobalConfig.getApiToken())
+        .contentType(MediaType.APPLICATION_JSON);
+    version.ifPresent(v -> request.header("AppConfigVersion", v));
+
+    try {
+      return httpClient.retrieve(request, ChartDataDto.class);
+    } catch (HttpClientResponseException e) {
+      throw new QueryEngineException(e.getResponse().getBody(String.class).orElse("Unknown error"));
+    } catch (Exception e) {
+      throw new QueryEngineException("Unknown error");
+    }
+  }
+
+  public ChartDataDto submitChart(String appId, EntityChartRequestDto chartRequestDto,
+                                  Optional<String> version) {
+    var uri = UriBuilder.of(GlobalConfig.getApiUri())
+        .path("api/v1")
+        .path(appId)
+        .path("charts/submit")
         .build();
 
     MutableHttpRequest<?> request = HttpRequest.POST(uri, chartRequestDto)
