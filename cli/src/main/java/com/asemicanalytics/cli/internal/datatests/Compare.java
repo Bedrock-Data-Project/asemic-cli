@@ -4,9 +4,7 @@ import com.asemicanalytics.cli.internal.CachingChartClient;
 import com.asemicanalytics.cli.model.DateIntervalDto;
 import com.asemicanalytics.cli.model.EntityChartRequestDto;
 import com.asemicanalytics.cli.model.EntityChartRequestDtoTimeGrain;
-import com.asemicanalytics.cli.model.PropertyFilterDto;
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Optional;
 
 public class Compare extends DataTest {

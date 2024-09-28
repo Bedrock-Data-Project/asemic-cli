@@ -1,11 +1,11 @@
 package com.asemicanalytics.cli.internal.dsgenerator.entity;
 
-import com.asemicanalytics.cli.internal.dsgenerator.entity.activity.columns.MauActiveColumn;
 import com.asemicanalytics.cli.internal.dsgenerator.entity.activity.columns.DauActiveColumn;
 import com.asemicanalytics.cli.internal.dsgenerator.entity.activity.columns.DaysActiveLast28DaysColumn;
 import com.asemicanalytics.cli.internal.dsgenerator.entity.activity.columns.DaysActiveLast7DaysColumn;
 import com.asemicanalytics.cli.internal.dsgenerator.entity.activity.columns.DaysSinceLastActiveColumn;
 import com.asemicanalytics.cli.internal.dsgenerator.entity.activity.columns.LastLoginDimensionColumn;
+import com.asemicanalytics.cli.internal.dsgenerator.entity.activity.columns.MauActiveColumn;
 import com.asemicanalytics.cli.internal.dsgenerator.entity.activity.columns.WasActiveOnDayColumn;
 import com.asemicanalytics.cli.internal.dsgenerator.entity.activity.kpis.ActiveUsersKpi;
 import com.asemicanalytics.cli.internal.dsgenerator.entity.activity.kpis.DauKpi;
@@ -14,8 +14,8 @@ import com.asemicanalytics.cli.internal.dsgenerator.entity.activity.kpis.MauLost
 import com.asemicanalytics.cli.internal.dsgenerator.entity.activity.kpis.RetentionCohortKpi;
 import com.asemicanalytics.cli.internal.dsgenerator.entity.activity.kpis.RetentionCohortedDailyKpis;
 import com.asemicanalytics.cli.internal.dsgenerator.entity.activity.kpis.StickinessKpi;
-import com.asemicanalytics.core.logicaltable.action.ActivityLogicalTable;
-import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.ActionColumnDto;
+import com.asemicanalytics.core.logicaltable.event.ActivityLogicalTable;
+import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.DataType;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityKpisDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertiesDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.KpisDto;
@@ -37,18 +37,9 @@ public class Activity {
     properties.setAdditionalProperty(DaysSinceLastActiveColumn.ID,
         new DaysSinceLastActiveColumn(logicalTable.getDateColumn().getId()));
 
-    properties.setAdditionalProperty("last_login_date",
+    properties.setAdditionalProperty("last_activity_date",
         new LastLoginDimensionColumn(logicalTable.getDateColumn().getId(),
-            ActionColumnDto.DataType.DATE, logicalTable.getId()));
-
-    for (var column : logicalTable.getColumns()
-        .getColumnsByTag(ActivityLogicalTable.LAST_LOGIN_PROPERTY_TAG)) {
-      String id = "last_login_" + column.getId();
-      properties.setAdditionalProperty(id, new LastLoginDimensionColumn(
-          column.getId(),
-          ActionColumnDto.DataType.valueOf(column.getDataType().name()),
-          logicalTable.getId()));
-    }
+            DataType.DATE, logicalTable.getId()));
 
     return new EntityPropertiesDto(properties);
   }

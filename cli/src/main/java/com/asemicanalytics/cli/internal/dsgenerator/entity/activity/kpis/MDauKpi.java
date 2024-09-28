@@ -2,7 +2,6 @@ package com.asemicanalytics.cli.internal.dsgenerator.entity.activity.kpis;
 
 import com.asemicanalytics.cli.internal.dsgenerator.entity.registration.columns.CohortDayColumn;
 import com.asemicanalytics.cli.internal.dsgenerator.entity.revenue.columns.PayersLifetimeColumn;
-import com.asemicanalytics.cli.internal.dsgenerator.entity.revenue.columns.WasPayerLifetimeColumn;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.KpiDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.XAxisDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.XaxisOverrideDto;

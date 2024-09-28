@@ -5,15 +5,12 @@ import com.asemicanalytics.cli.internal.QueryEngineClient;
 import com.asemicanalytics.cli.internal.YamlSerDe;
 import com.asemicanalytics.cli.internal.dsgenerator.DsGeneratorHelper;
 import com.asemicanalytics.cli.internal.dsgenerator.entity.Activity;
-import com.asemicanalytics.cli.internal.dsgenerator.entity.FirstAppearance;
 import com.asemicanalytics.cli.internal.dsgenerator.entity.PaymentTransaction;
-import com.asemicanalytics.config.EntityModelConfig;
+import com.asemicanalytics.cli.internal.dsgenerator.entity.Registrations;
 import com.asemicanalytics.config.mapper.ConfigLoader;
 import com.asemicanalytics.config.parser.yaml.YamlConfigParser;
-import com.asemicanalytics.core.logicaltable.action.ActionLogicalTable;
-import com.asemicanalytics.core.logicaltable.action.ActivityLogicalTable;
-import com.asemicanalytics.core.logicaltable.action.FirstAppearanceActionLogicalTable;
-import com.asemicanalytics.core.logicaltable.action.PaymentTransactionActionLogicalTable;
+import com.asemicanalytics.core.logicaltable.event.ActivityLogicalTable;
+import com.asemicanalytics.core.logicaltable.event.RegistrationsLogicalTable;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityConfigDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityKpisDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertiesDto;
@@ -21,7 +18,6 @@ import jakarta.inject.Inject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import picocli.CommandLine;
 import picocli.CommandLine.Option;
@@ -41,6 +37,7 @@ public class GenerateEntityCommand implements Runnable {
   QueryEngineClient queryEngineClient;
 
   private static final int ACTIVE_DAYS = 90;
+
   @Override
   public void run() {
     var parser = new YamlConfigParser(
@@ -57,31 +54,29 @@ public class GenerateEntityCommand implements Runnable {
     final String tablePrefix = dsGeneratorHelper.readInput(
         tablePrefixOption, "base-table-prefix",
         Optional.of("Enter a prefix for all user wide tables." +
-            "\nAll user wide tables will be created under this prefix (i.e. mydataset.userentity)"),
+            "\nAll user entity tables will be created under this prefix (i.e. mydataset.userentity)"),
         "Enter table prefix", Optional.empty());
 
     try {
-      Map<String, ActionLogicalTable> actions = new ConfigLoader(parser)
-          .parseActions(GlobalConfig.getAppId(), new ArrayList<>());
-      var firstAppearance = actions.values().stream()
-          .filter(a -> a instanceof FirstAppearanceActionLogicalTable)
-          .map(a -> (FirstAppearanceActionLogicalTable) a)
-          .findFirst().orElseThrow(() ->
-              new IllegalStateException("First appearance action not found"));
-      var activity = actions.values().stream()
-          .filter(a -> a instanceof ActivityLogicalTable)
-          .map(a -> (ActivityLogicalTable) a)
-          .findFirst().orElseThrow(() ->
-              new IllegalStateException("Activity action not found"));
-      var paymentTransaction = actions.values().stream()
-          .filter(a -> a instanceof PaymentTransactionActionLogicalTable)
-          .map(a -> (PaymentTransactionActionLogicalTable) a)
+      var events = new ConfigLoader(parser)
+          .parseEvents(GlobalConfig.getAppId(), new ArrayList<>());
+
+      var paymentTransaction = events.getEventLogicalTables().values().stream()
+          .filter(a -> a.hasTag("payment_transaction_event"))
           .findFirst();
+      var registration = new RegistrationsLogicalTable(null,
+          events.getEventLogicalTables().values().stream()
+              .filter(a -> a.hasTag(RegistrationsLogicalTable.TAG))
+              .toList());
+      var activity = new ActivityLogicalTable(null,
+          events.getEventLogicalTables().values().stream()
+              .filter(a -> a.hasTag(ActivityLogicalTable.TAG))
+              .toList());
 
       final EntityPropertiesDto registrationColumns;
       final EntityKpisDto registrationKpis;
-      registrationColumns = FirstAppearance.buildProperties(firstAppearance);
-      registrationKpis = FirstAppearance.buildKpis(firstAppearance);
+      registrationColumns = Registrations.buildProperties(registration);
+      registrationKpis = Registrations.buildKpis(registration);
 
 
       final EntityPropertiesDto activityColumns;

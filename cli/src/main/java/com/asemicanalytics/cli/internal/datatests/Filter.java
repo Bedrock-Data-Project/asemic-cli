@@ -7,9 +7,7 @@ import com.asemicanalytics.cli.model.EntityChartRequestDtoTimeGrain;
 import com.asemicanalytics.cli.model.PropertyFilterDto;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.TreeMap;
 
 public class Filter extends DataTest {
   private final Optional<String> kpi;

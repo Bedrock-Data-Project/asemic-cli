@@ -1,13 +1,13 @@
 package com.asemicanalytics.cli.internal.dsgenerator.entity;
 
 import com.asemicanalytics.cli.internal.dsgenerator.entity.activity.kpis.MDauKpi;
-import com.asemicanalytics.cli.internal.dsgenerator.entity.revenue.columns.PayersOnDayColumn;
 import com.asemicanalytics.cli.internal.dsgenerator.entity.revenue.columns.PayersLifetimeColumn;
+import com.asemicanalytics.cli.internal.dsgenerator.entity.revenue.columns.PayersOnDayColumn;
 import com.asemicanalytics.cli.internal.dsgenerator.entity.revenue.columns.PaymentSegmentColumn;
-import com.asemicanalytics.cli.internal.dsgenerator.entity.revenue.columns.RevenueOnDayColumn;
+import com.asemicanalytics.cli.internal.dsgenerator.entity.revenue.columns.PaymentTransactionsOnDay;
 import com.asemicanalytics.cli.internal.dsgenerator.entity.revenue.columns.RevenueLast28DaysColumn;
 import com.asemicanalytics.cli.internal.dsgenerator.entity.revenue.columns.RevenueLifetimeColumn;
-import com.asemicanalytics.cli.internal.dsgenerator.entity.revenue.columns.PaymentTransactionsOnDay;
+import com.asemicanalytics.cli.internal.dsgenerator.entity.revenue.columns.RevenueOnDayColumn;
 import com.asemicanalytics.cli.internal.dsgenerator.entity.revenue.columns.WasPayerLifetimeColumn;
 import com.asemicanalytics.cli.internal.dsgenerator.entity.revenue.columns.WasPayerOnDayColumn;
 import com.asemicanalytics.cli.internal.dsgenerator.entity.revenue.kpis.ArpdauKpi;
@@ -16,7 +16,7 @@ import com.asemicanalytics.cli.internal.dsgenerator.entity.revenue.kpis.DailyPay
 import com.asemicanalytics.cli.internal.dsgenerator.entity.revenue.kpis.LtvCohortKpi;
 import com.asemicanalytics.cli.internal.dsgenerator.entity.revenue.kpis.LtvCohortedDailyKpis;
 import com.asemicanalytics.cli.internal.dsgenerator.entity.revenue.kpis.RevenueKpi;
-import com.asemicanalytics.core.logicaltable.action.PaymentTransactionActionLogicalTable;
+import com.asemicanalytics.core.logicaltable.event.EventLogicalTable;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityKpisDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EntityPropertiesDto;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.KpisDto;
@@ -24,11 +24,12 @@ import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.Properties
 
 public class PaymentTransaction {
   public static EntityPropertiesDto buildProperties(
-      PaymentTransactionActionLogicalTable logicalTable) {
+      EventLogicalTable logicalTable) {
 
     var properties = new PropertiesDto();
     properties.setAdditionalProperty(RevenueOnDayColumn.ID,
-        new RevenueOnDayColumn(logicalTable.getId(), logicalTable.getTransactionAmountColumn().getId()));
+        new RevenueOnDayColumn(logicalTable.getId(),
+            logicalTable.getColumns().getColumnIdByTag("transaction_amount_column")));
     properties.setAdditionalProperty(RevenueLast28DaysColumn.ID, new RevenueLast28DaysColumn());
     properties.setAdditionalProperty(RevenueLifetimeColumn.ID,
         new RevenueLifetimeColumn());
@@ -55,7 +56,7 @@ public class PaymentTransaction {
 
   }
 
-  public static EntityKpisDto buildKpis(PaymentTransactionActionLogicalTable logicalTable) {
+  public static EntityKpisDto buildKpis(EventLogicalTable logicalTable) {
     var kpis = new KpisDto();
     kpis.setAdditionalProperty(MDauKpi.ID, new MDauKpi(logicalTable.getDateColumn().getId()));
     kpis.setAdditionalProperty(

@@ -8,14 +8,18 @@ import com.asemicanalytics.cli.internal.dsgenerator.MostSimilarColumn;
 import com.asemicanalytics.config.parser.yaml.YamlConfigParser;
 import com.asemicanalytics.core.logicaltable.EventLikeLogicalTable;
 import com.asemicanalytics.core.logicaltable.TemporalLogicalTable;
-import com.asemicanalytics.core.logicaltable.action.ActionLogicalTable;
-import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.ActionColumnDto;
-import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.ActionLogicalTableDto;
+import com.asemicanalytics.core.logicaltable.event.ActivityLogicalTable;
+import com.asemicanalytics.core.logicaltable.event.EventLogicalTable;
+import com.asemicanalytics.core.logicaltable.event.RegistrationsLogicalTable;
 import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.ColumnsDto;
+import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.DataType;
+import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EventColumnDto;
+import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EventLogicalTableDto;
 import io.micronaut.serde.ObjectMapper;
 import jakarta.inject.Inject;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,13 +29,13 @@ import java.util.stream.Collectors;
 import picocli.CommandLine;
 import picocli.CommandLine.Option;
 
-@CommandLine.Command(name = "action", description = "Generates config for a new action.", mixinStandardHelpOptions = true)
-public class GenerateActionCommand implements Runnable {
+@CommandLine.Command(name = "event", description = "Generates config for a new event.", mixinStandardHelpOptions = true)
+public class GenerateEventCommand implements Runnable {
 
   @Option(names = "--table", description = "Full table name.")
   Optional<String> tableOption;
 
-  @Option(names = "--action-name", description = "Name of generated action.")
+  @Option(names = "--event-name", description = "Name of generated event.")
   Optional<String> logicalTableOption;
 
   @Option(names = "--date-column", description = "Name of date column.")
@@ -47,7 +51,7 @@ public class GenerateActionCommand implements Runnable {
       + " Useful for scripting.")
   Optional<Boolean> noWizardOption;
 
-  @Option(names = "--subschema", description = "Action table parameters are part of a subschema.")
+  @Option(names = "--subschema", description = "Event table parameters are part of a subschema.")
   Optional<Boolean> isSubschemaOption;
 
   @Option(names = "--subschema-type-column", description = "Column that indicates which subschema is used")
@@ -58,6 +62,12 @@ public class GenerateActionCommand implements Runnable {
 
   @Option(names = "--subschema-params-column", description = "Column that contains parameters for this subschema")
   Optional<String> subschemaParamsNameOption;
+
+  @Option(names = "--skip-registrations-tag", description = "If set, will not add registrations tag to table.")
+  Optional<Boolean> skipRegistrationsTag;
+
+  @Option(names = "--skip-activity-tag", description = "If set, will not add activity tag to table.")
+  Optional<Boolean> skipActivityTag;
 
   @Inject
   QueryEngineClient queryEngineClient;
@@ -98,20 +108,21 @@ public class GenerateActionCommand implements Runnable {
             Optional.empty());
 
         columns = columns.stream()
-            .filter(c -> !c.getId().contains(".") || c.getId().startsWith(subschemaParamsName + "."))
+            .filter(
+                c -> !c.getId().contains(".") || c.getId().startsWith(subschemaParamsName + "."))
             .collect(Collectors.toList());
 
         where = Optional.of("{%s} = '%s'".formatted(subschemaTypeColumn, subschemaTypeValue));
       }
 
       final String logicalTableName = dsGeneratorHelper.readInput(
-          logicalTableOption, "action-name",
-          Optional.empty(), "Enter action name",
+          logicalTableOption, "event-name",
+          Optional.empty(), "Enter event name",
           Optional.of(dsGeneratorHelper.recommendedlogicalTableName(actionRecommendedName)));
 
       final String dateColumn = dsGeneratorHelper.readInput(
           dateColumnOption, "date-column",
-          Optional.of("\nAction datasources need a date column."
+          Optional.of("\nEvent datasources need a date column."
               + "\nIdeally, this should be a partition column for performance reasons."),
           "Enter date column name",
           MostSimilarColumn.find("", columns, Set.of("date")));
@@ -127,25 +138,25 @@ public class GenerateActionCommand implements Runnable {
       final String userIdColumn = dsGeneratorHelper.readInput(
           userIdColumnOption, "user-id-column",
           Optional.of(
-              "\nEnter the name of the column that represent the id of the user that performed the action"),
+              "\nEnter the name of the column that represent the id of the user that performed the event"),
           "Enter user id column name",
           MostSimilarColumn.find("user", columns, Set.of("string", "integer")));
 
       Map<String, List<String>> columnTags = new HashMap<>();
       columnTags.put(dateColumn, List.of(TemporalLogicalTable.DATE_COLUMN_TAG));
       columnTags.put(timestampColumn, List.of(EventLikeLogicalTable.TIMESTAMP_COLUMN_TAG));
-      columnTags.put(userIdColumn, List.of(ActionLogicalTable.ENTITY_ID_COLUMN_TAG));
+      columnTags.put(userIdColumn, List.of(EventLogicalTable.ENTITY_ID_COLUMN_TAG));
       columnTags.putAll(additionalColumnTags(columns));
 
       var columnsDto = new ColumnsDto();
       columns.forEach(c -> {
-        var column = new ActionColumnDto();
-        column.setDataType(ActionColumnDto.DataType.valueOf(c.getDataType().toUpperCase()));
+        var column = new EventColumnDto();
+        column.setDataType(DataType.valueOf(c.getDataType().toUpperCase()));
         column.setTags(columnTags.get(c.getId()));
         columnsDto.setAdditionalProperty(c.getId(), column);
       });
 
-      var datasourceDto = new ActionLogicalTableDto(
+      var datasourceDto = new EventLogicalTableDto(
           table,
           logicalTableTags(),
           null,
@@ -159,7 +170,7 @@ public class GenerateActionCommand implements Runnable {
       Path dsPath = parser.actionsDir(GlobalConfig.getAppId()).resolve(logicalTableName + ".yml");
       dsPath.toFile().getParentFile().mkdirs();
 
-      new YamlSerDe().save("action_logical_table", datasourceDto, dsPath);
+      new YamlSerDe().save("event_logical_table", datasourceDto, dsPath);
 
       System.out.println("Datasource saved to " + dsPath);
     } catch (IOException e) {
@@ -168,7 +179,14 @@ public class GenerateActionCommand implements Runnable {
   }
 
   protected List<String> logicalTableTags() {
-    return List.of();
+    List<String> tags = new ArrayList<>();
+    if (!skipRegistrationsTag.orElse(false)) {
+      tags.add(RegistrationsLogicalTable.TAG);
+    }
+    if (!skipActivityTag.orElse(false)) {
+      tags.add(ActivityLogicalTable.TAG);
+    }
+    return tags;
   }
 
   protected Map<String, List<String>> additionalColumnTags(

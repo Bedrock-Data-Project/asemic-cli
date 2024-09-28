@@ -4,7 +4,6 @@ import com.asemicanalytics.cli.internal.QueryEngineClient;
 import com.asemicanalytics.cli.internal.dsgenerator.DsGeneratorHelper;
 import com.asemicanalytics.cli.internal.dsgenerator.MostSimilarColumn;
 import com.asemicanalytics.cli.model.ColumnDto;
-import com.asemicanalytics.core.logicaltable.action.PaymentTransactionActionLogicalTable;
 import io.micronaut.serde.ObjectMapper;
 import jakarta.inject.Inject;
 import java.util.HashMap;
@@ -15,8 +14,8 @@ import java.util.Set;
 import picocli.CommandLine;
 import picocli.CommandLine.Option;
 
-@CommandLine.Command(name = "payment-transaction-action", description = "Generate config for a payment transaction action", mixinStandardHelpOptions = true)
-public class GeneratePaymentTransactionActionCommand extends GenerateActionCommand {
+@CommandLine.Command(name = "payment-transaction-event", description = "Generate config for a payment transaction event", mixinStandardHelpOptions = true)
+public class GeneratePaymentTransactionEventCommand extends GenerateEventCommand {
 
   @Option(names = "--transaction-amount-column", description = "Name of transaction amount column.")
   Optional<String> transactionAmountColumnOption;
@@ -28,7 +27,9 @@ public class GeneratePaymentTransactionActionCommand extends GenerateActionComma
   ObjectMapper objectMapper;
 
   protected List<String> logicalTableTags() {
-    return List.of(PaymentTransactionActionLogicalTable.TAG);
+    var tags = super.logicalTableTags();
+    tags.add("payment_transaction_event");
+    return tags;
   }
 
   protected Map<String, List<String>> additionalColumnTags(List<ColumnDto> columns) {
@@ -43,7 +44,7 @@ public class GeneratePaymentTransactionActionCommand extends GenerateActionComma
         MostSimilarColumn.find("amount", columns, Set.of("integer", "number")));
 
     columnTags.put(transactionAmountColumn,
-        List.of(PaymentTransactionActionLogicalTable.TRANSACTION_AMOUNT_COLUMN_TAG));
+        List.of("transaction_amount_column"));
 
     return columnTags;
   }

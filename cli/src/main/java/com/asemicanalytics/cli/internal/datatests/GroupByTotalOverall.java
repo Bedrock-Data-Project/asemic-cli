@@ -1,7 +1,6 @@
 package com.asemicanalytics.cli.internal.datatests;
 
 import com.asemicanalytics.cli.internal.CachingChartClient;
-import com.asemicanalytics.cli.internal.QueryEngineClient;
 import com.asemicanalytics.cli.model.DateIntervalDto;
 import com.asemicanalytics.cli.model.EntityChartRequestDto;
 import com.asemicanalytics.cli.model.EntityChartRequestDtoTimeGrain;

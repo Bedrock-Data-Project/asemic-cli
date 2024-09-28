@@ -3,15 +3,7 @@ package com.asemicanalytics.cli.userentity;
 import com.asemicanalytics.cli.internal.CachingChartClient;
 import com.asemicanalytics.cli.internal.GlobalConfig;
 import com.asemicanalytics.cli.internal.QueryEngineClient;
-import com.asemicanalytics.cli.internal.datatests.Compare;
-import com.asemicanalytics.cli.internal.datatests.Filter;
-import com.asemicanalytics.cli.internal.datatests.GroupByGroupTotalsAvg;
-import com.asemicanalytics.cli.internal.datatests.GroupByGroupTotalsSum;
-import com.asemicanalytics.cli.internal.datatests.GroupByTotalOverall;
-import com.asemicanalytics.cli.internal.datatests.PerformedActionDynamic;
-import com.asemicanalytics.cli.internal.datatests.PerformedActionSimple;
-import com.asemicanalytics.cli.internal.datatests.PerformedActionSimpleWithFilter;
-import com.asemicanalytics.cli.internal.datatests.PerformedActionStatic;
+import com.asemicanalytics.cli.internal.datatests.TimeTravelPropertySimple;
 import jakarta.inject.Inject;
 import java.time.LocalDate;
 import java.util.List;
@@ -102,18 +94,23 @@ public class DataTestsCommand implements Runnable {
 //        // compare
 //        new Compare(appId, "compare daily kpi", dailyKpiAvg, dateFrom),
 //        new Compare(appId, "compare active kpi", activeKpiAvg, dateFrom),
+//
+//        // Performed action
+//        new PerformedActionSimple(appId, "Performed action simple daily", dailyKpiSum, numericActionColumn, dateFrom),
+//        new PerformedActionSimple(appId, "Performed action simple active", activeKpiSum, numericActionColumn, dateFrom),
+//        new PerformedActionSimple(appId, "Performed action simple daily avg", dailyKpiAvg, numericActionColumn, dateFrom),
+//        new PerformedActionSimple(appId, "Performed action simple active avg", activeKpiAvg, numericActionColumn, dateFrom),
+//        new PerformedActionSimpleWithFilter(appId, "Performed action with filter daily", dailyKpiSum, numericActionColumn, dateFrom),
+//        new PerformedActionSimpleWithFilter(appId, "Performed action with filter active", activeKpiSum, numericActionColumn, dateFrom),
+//        new PerformedActionDynamic(appId, "Performed action dynamic daily", dailyKpiSum, numericActionColumn, dateFrom),
+//        new PerformedActionDynamic(appId, "Performed action dynamic active", activeKpiSum, numericActionColumn, dateFrom),
+//        new PerformedActionStatic(appId, "Performed action static daily", dailyKpiSum, numericActionColumn, dateFrom),
+//        new PerformedActionStatic(appId, "Performed action static active", activeKpiSum, numericActionColumn, dateFrom),
 
-        // Performed action
-        new PerformedActionSimple(appId, "Performed action simple daily", dailyKpiSum, numericActionColumn, dateFrom),
-        new PerformedActionSimple(appId, "Performed action simple active", activeKpiSum, numericActionColumn, dateFrom),
-        new PerformedActionSimple(appId, "Performed action simple daily avg", dailyKpiAvg, numericActionColumn, dateFrom),
-        new PerformedActionSimple(appId, "Performed action simple active avg", activeKpiAvg, numericActionColumn, dateFrom),
-        new PerformedActionSimpleWithFilter(appId, "Performed action with filter daily", dailyKpiSum, numericActionColumn, dateFrom),
-        new PerformedActionSimpleWithFilter(appId, "Performed action with filter active", activeKpiSum, numericActionColumn, dateFrom),
-        new PerformedActionDynamic(appId, "Performed action dynamic daily", dailyKpiSum, numericActionColumn, dateFrom),
-        new PerformedActionDynamic(appId, "Performed action dynamic active", activeKpiSum, numericActionColumn, dateFrom),
-        new PerformedActionStatic(appId, "Performed action static daily", dailyKpiSum, numericActionColumn, dateFrom),
-        new PerformedActionStatic(appId, "Performed action static active", activeKpiSum, numericActionColumn, dateFrom)
+        new TimeTravelPropertySimple(appId, "Time travel property simple", dailyKpiAvg,
+            numericProperty, dateFrom),
+        new TimeTravelPropertySimple(appId, "Time travel property simple", activeKpiAvg,
+            numericProperty, dateFrom)
 
 
 //        Dau(where Had event X) + DAU(where Had no event X) == DAU

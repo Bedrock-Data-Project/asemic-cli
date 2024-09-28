@@ -5,7 +5,7 @@ import com.asemicanalytics.cli.internal.QueryEngineClient;
 import com.asemicanalytics.cli.internal.cli.InputCli;
 import com.asemicanalytics.cli.internal.cli.SpinnerCli;
 import com.asemicanalytics.cli.model.ColumnDto;
-import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.ActionColumnDto;
+import com.asemicanalytics.semanticlayer.config.dto.v1.semantic_layer.EventColumnDto;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -54,7 +54,7 @@ public class DsGeneratorHelper {
   }
 
   public void printColumns(
-      SequencedMap<String, ActionColumnDto> columns) {
+      SequencedMap<String, EventColumnDto> columns) {
     System.out.println("Columns:");
     for (var entry : columns.entrySet()) {
       printColumn(entry.getKey(), entry.getValue().getDataType().value());
