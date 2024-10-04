@@ -67,6 +67,7 @@ public class AuthCommand implements Runnable {
       default -> throw new IllegalArgumentException("Invalid choice");
     };
 
+    System.out.println("Uploading database credentials...");
     queryEngineClient.submitDbAuth(GlobalConfig.getAppId(), databaseDto);
     System.out.println(CommandLine.Help.Ansi.AUTO.string("@|fg(green) OK|@"));
 

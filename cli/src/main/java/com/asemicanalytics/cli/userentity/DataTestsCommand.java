@@ -53,12 +53,12 @@ public class DataTestsCommand implements Runnable {
       description = "A total property that is a dimension and has up to two values")
   Optional<String> booleanTotalDimensionalProperty;
 
-  @CommandLine.Option(names = "--numeric-action-column",
-      description = "<action_name>.<column_name> for a numeric column of an action")
+  @CommandLine.Option(names = "--numeric-event-column",
+      description = "<event_name>.<column_name> for a numeric column of an event")
   Optional<String> numericActionColumn;
 
-  @CommandLine.Option(names = "--numeric-action-property",
-      description = "An action property that is sum of a column and has default 0")
+  @CommandLine.Option(names = "--numeric-event-property",
+      description = "An event property that is sum of a column and has default 0")
   Optional<String> numericActionProperty;
 
   @Override
@@ -95,17 +95,17 @@ public class DataTestsCommand implements Runnable {
 //        new Compare(appId, "compare daily kpi", dailyKpiAvg, dateFrom),
 //        new Compare(appId, "compare active kpi", activeKpiAvg, dateFrom),
 //
-//        // Performed action
-//        new PerformedActionSimple(appId, "Performed action simple daily", dailyKpiSum, numericActionColumn, dateFrom),
-//        new PerformedActionSimple(appId, "Performed action simple active", activeKpiSum, numericActionColumn, dateFrom),
-//        new PerformedActionSimple(appId, "Performed action simple daily avg", dailyKpiAvg, numericActionColumn, dateFrom),
-//        new PerformedActionSimple(appId, "Performed action simple active avg", activeKpiAvg, numericActionColumn, dateFrom),
-//        new PerformedActionSimpleWithFilter(appId, "Performed action with filter daily", dailyKpiSum, numericActionColumn, dateFrom),
-//        new PerformedActionSimpleWithFilter(appId, "Performed action with filter active", activeKpiSum, numericActionColumn, dateFrom),
-//        new PerformedActionDynamic(appId, "Performed action dynamic daily", dailyKpiSum, numericActionColumn, dateFrom),
-//        new PerformedActionDynamic(appId, "Performed action dynamic active", activeKpiSum, numericActionColumn, dateFrom),
-//        new PerformedActionStatic(appId, "Performed action static daily", dailyKpiSum, numericActionColumn, dateFrom),
-//        new PerformedActionStatic(appId, "Performed action static active", activeKpiSum, numericActionColumn, dateFrom),
+//        // Performed event
+//        new PerformedActionSimple(appId, "Performed event simple daily", dailyKpiSum, numericActionColumn, dateFrom),
+//        new PerformedActionSimple(appId, "Performed event simple active", activeKpiSum, numericActionColumn, dateFrom),
+//        new PerformedActionSimple(appId, "Performed event simple daily avg", dailyKpiAvg, numericActionColumn, dateFrom),
+//        new PerformedActionSimple(appId, "Performed event simple active avg", activeKpiAvg, numericActionColumn, dateFrom),
+//        new PerformedActionSimpleWithFilter(appId, "Performed event with filter daily", dailyKpiSum, numericActionColumn, dateFrom),
+//        new PerformedActionSimpleWithFilter(appId, "Performed event with filter active", activeKpiSum, numericActionColumn, dateFrom),
+//        new PerformedActionDynamic(appId, "Performed event dynamic daily", dailyKpiSum, numericActionColumn, dateFrom),
+//        new PerformedActionDynamic(appId, "Performed event dynamic active", activeKpiSum, numericActionColumn, dateFrom),
+//        new PerformedActionStatic(appId, "Performed event static daily", dailyKpiSum, numericActionColumn, dateFrom),
+//        new PerformedActionStatic(appId, "Performed event static active", activeKpiSum, numericActionColumn, dateFrom),
 
         new TimeTravelPropertySimple(appId, "Time travel property simple", dailyKpiAvg,
             numericProperty, dateFrom),

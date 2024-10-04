@@ -97,7 +97,7 @@ public class GenerateEventCommand implements Runnable {
         final String subschemaTypeValue = dsGeneratorHelper.readInput(
             subschemaTypeValueOption, "subschema-type-value",
             Optional.empty(),
-            "Enter the value of %s column for this action".formatted(subschemaTypeColumn),
+            "Enter the value of %s column for this event".formatted(subschemaTypeColumn),
             Optional.empty());
         actionRecommendedName = subschemaTypeValue;
 
@@ -130,7 +130,7 @@ public class GenerateEventCommand implements Runnable {
       final String timestampColumn = dsGeneratorHelper.readInput(
           timestampColumnOption, "timestamp-column",
           Optional.of(
-              "\nA timestamp column is needed that represents the exact time action happened"),
+              "\nA timestamp column is needed that represents the exact time event happened"),
           "Enter timestamp column name",
           MostSimilarColumn.find("", columns, Set.of("datetime")));
 

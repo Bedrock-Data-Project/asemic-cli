@@ -141,7 +141,7 @@ public class QueryEngineClient {
         .contentType(MediaType.APPLICATION_JSON);
 
     try {
-      httpClient.retrieve(request, String.class);
+      httpClient.exchange(request);
     } catch (HttpClientResponseException e) {
       throw new QueryEngineException(e.getResponse().getBody(String.class).orElse("Unknown error"));
     } catch (Exception e) {
