@@ -6,6 +6,7 @@ import picocli.CommandLine;
     BackfillEntityCommand.class,
     BackfillStatisticsCommand.class,
     GenerateEventCommand.class,
+    GenerateEventsCommand.class,
     GeneratePaymentTransactionEventCommand.class,
     GenerateEntityCommand.class,
     DataTestsCommand.class,

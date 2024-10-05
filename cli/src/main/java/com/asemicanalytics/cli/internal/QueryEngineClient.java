@@ -47,9 +47,8 @@ public class QueryEngineClient {
     var uri = UriBuilder.of(GlobalConfig.getApiUri())
         .path("api/v1")
         .path(appId)
-        .path("datasources")
+        .path("schemas/tables")
         .path(table)
-        .path("columns")
         .build();
 
     HttpRequest<?> request = HttpRequest.GET(uri)
@@ -273,6 +272,26 @@ public class QueryEngineClient {
     try {
       return httpClient.retrieve(request,
           Argument.mapOf(LocalDate.class, BackfillPropertiesStatistics.class));
+    } catch (HttpClientResponseException e) {
+      throw new QueryEngineException(e.getResponse().getBody(String.class).orElse("Unknown error"));
+    } catch (Exception e) {
+      throw new QueryEngineException("Unknown error");
+    }
+  }
+
+  public List<String> getTables(String appId, String schema) {
+    var uri = UriBuilder.of(GlobalConfig.getApiUri())
+        .path("api/v1")
+        .path(appId)
+        .path("schemas/list-tables")
+        .path(schema)
+        .build();
+
+    HttpRequest<?> request = HttpRequest.GET(uri)
+        .header("Authorization", "Apikey " + GlobalConfig.getApiToken());
+
+    try {
+      return httpClient.retrieve(request, Argument.listOf(String.class));
     } catch (HttpClientResponseException e) {
       throw new QueryEngineException(e.getResponse().getBody(String.class).orElse("Unknown error"));
     } catch (Exception e) {

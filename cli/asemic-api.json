@@ -570,12 +570,104 @@
         }
       }
     },
+    "/api/v1/{appId}/schemas/tables/{table}": {
+      "get": {
+        "tags": [
+          "schemas-controller"
+        ],
+        "operationId": "columns",
+        "parameters": [
+          {
+            "name": "appId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "table",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ColumnDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
+    "/api/v1/{appId}/schemas/list-tables/{schema}": {
+      "get": {
+        "tags": [
+          "schemas-controller"
+        ],
+        "operationId": "listTables",
+        "parameters": [
+          {
+            "name": "appId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "schema",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
     "/api/v1/{appId}/datasources/{table}/columns": {
       "get": {
         "tags": [
           "columns-controller"
         ],
-        "operationId": "columns",
+        "operationId": "columns_1",
         "parameters": [
           {
             "name": "appId",
@@ -1242,9 +1334,6 @@
       "TimeTravelPropertyDynamicCohortFilterDto": {
         "type": "object",
         "properties": {
-          "property_id": {
-            "type": "string"
-          },
           "aggregation_filters": {
             "type": "array",
             "items": {
@@ -1265,9 +1354,6 @@
       "TimeTravelPropertyStaticCohortFilterDto": {
         "type": "object",
         "properties": {
-          "property_id": {
-            "type": "string"
-          },
           "aggregation_filters": {
             "type": "array",
             "items": {

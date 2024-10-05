@@ -25,9 +25,9 @@ import picocli.CommandLine.Option;
 @CommandLine.Command(name = "entity", description = "Generate entity config", mixinStandardHelpOptions = true)
 public class GenerateEntityCommand implements Runnable {
 
-  @Option(names = "--base-table-prefix",
-      description = "Prefix of base table. Generated tables will use this prefix")
-  Optional<String> tablePrefixOption;
+  @Option(names = "--schema",
+      description = "Schema where asemic will generate entity tables")
+  Optional<String> schemaOption;
 
   @Option(names = "--no-wizard", description = "Fails if any required input is missing."
       + " Useful for scripting.")
@@ -51,11 +51,10 @@ public class GenerateEntityCommand implements Runnable {
     }
 
     var dsGeneratorHelper = new DsGeneratorHelper(queryEngineClient, noWizard);
-    final String tablePrefix = dsGeneratorHelper.readInput(
-        tablePrefixOption, "base-table-prefix",
-        Optional.of("Enter a prefix for all user wide tables." +
-            "\nAll user entity tables will be created under this prefix (i.e. mydataset.userentity)"),
-        "Enter table prefix", Optional.empty());
+    final String schema = dsGeneratorHelper.readInput(
+        schemaOption, "base-table-prefix",
+        Optional.of("Enter the name of schema where asemic will generate entity model tables."),
+        "Enter schema name", Optional.empty());
 
     try {
       var events = new ConfigLoader(parser)
@@ -102,7 +101,8 @@ public class GenerateEntityCommand implements Runnable {
       new YamlSerDe().save(
           "entity_config",
           new EntityConfigDto(
-              tablePrefix,
+              schema,
+              "v1",
               List.of(0, 1, 2, 3, 4, 5, 6, 7, 14, 21, 28, 30, 40, 50, 60, 90, 120, 180, 270, 360),
               ACTIVE_DAYS),
           columnsPath.getParent().resolve("config.yml"));
