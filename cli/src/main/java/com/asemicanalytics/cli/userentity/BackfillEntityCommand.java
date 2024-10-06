@@ -51,9 +51,12 @@ public class BackfillEntityCommand implements Runnable {
 
         var daysLeft = dateTo.toEpochDay() - dateFrom.toEpochDay();
         for (var tableStatistic : stats) {
-          System.out.printf("Inserted %d rows to table %s in %d seconds\n",
+
+          System.out.printf("Inserted %d rows to table %s in %d seconds. processed: %S, billed: %s \n",
               tableStatistic.getRowsInserted(), tableStatistic.getTable(),
-              tableStatistic.getInsertDurationSeconds());
+              tableStatistic.getInsertDurationSeconds(),
+              convertBytes(tableStatistic.getBytesProcessed()),
+              convertBytes(tableStatistic.getBytesBilled()));
         }
         System.out.println("Estimated backfill duration: " +
             prettyPrintDuration(Duration.between(start, stop).multipliedBy(daysLeft)));
@@ -62,5 +65,13 @@ public class BackfillEntityCommand implements Runnable {
       });
       dateFrom = dateFrom.plusDays(1);
     }
+  }
+
+  private String convertBytes(long bytes) {
+    int unit = 1024;
+    if (bytes < unit) return bytes + " B";
+    int exp = (int) (Math.log(bytes) / Math.log(unit));
+    String pre = ("KMGTPE").charAt(exp-1) + "i";
+    return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
   }
 }

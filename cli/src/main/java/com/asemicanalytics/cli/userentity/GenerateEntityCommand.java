@@ -102,7 +102,7 @@ public class GenerateEntityCommand implements Runnable {
           "entity_config",
           new EntityConfigDto(
               schema,
-              "v1",
+              "",
               List.of(0, 1, 2, 3, 4, 5, 6, 7, 14, 21, 28, 30, 40, 50, 60, 90, 120, 180, 270, 360),
               ACTIVE_DAYS),
           columnsPath.getParent().resolve("config.yml"));

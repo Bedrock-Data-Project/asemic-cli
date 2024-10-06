@@ -118,7 +118,7 @@ public class GenerateEventsCommand implements Runnable {
         });
 
         var datasourceDto = new EventLogicalTableDto(
-            table,
+            schema + "." + table,
             List.of(RegistrationsLogicalTable.TAG, ActivityLogicalTable.TAG),
             null,
             null,

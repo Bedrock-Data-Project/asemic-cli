@@ -662,52 +662,6 @@
         ]
       }
     },
-    "/api/v1/{appId}/datasources/{table}/columns": {
-      "get": {
-        "tags": [
-          "columns-controller"
-        ],
-        "operationId": "columns_1",
-        "parameters": [
-          {
-            "name": "appId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "table",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/ColumnDto"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ]
-      }
-    },
     "/api/v1/{appId}/datasources/daily": {
       "get": {
         "tags": [
@@ -715,14 +669,6 @@
         ],
         "operationId": "daily",
         "parameters": [
-          {
-            "name": "AppConfigVersion",
-            "in": "header",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          },
           {
             "name": "appId",
             "in": "path",
@@ -1084,6 +1030,14 @@
             "format": "int32"
           },
           "rows_inserted": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "bytes_processed": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "bytes_billed": {
             "type": "integer",
             "format": "int64"
           },
@@ -1453,6 +1407,17 @@
             "items": {
               "$ref": "#/components/schemas/QueryTableStatisticsDto"
             }
+          },
+          "cached": {
+            "type": "boolean"
+          },
+          "bytesProcessed": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "bytesBilled": {
+            "type": "integer",
+            "format": "int64"
           }
         }
       },
