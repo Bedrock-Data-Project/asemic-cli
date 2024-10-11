@@ -75,6 +75,7 @@ public class BackfillEntityCommand implements Runnable {
           System.out.printf("Partition: %s, Rows: %d\n", partition.getKey(), partition.getValue());
         }
       }
+      System.out.println("It took: " + prettyPrintDuration(Duration.between(start, stop)));
       System.out.println("Estimated backfill duration: " + prettyPrintDuration(
           Duration.between(start, stop)
               .dividedBy(ChronoUnit.DAYS.between(dateFrom, intervalEnd))
