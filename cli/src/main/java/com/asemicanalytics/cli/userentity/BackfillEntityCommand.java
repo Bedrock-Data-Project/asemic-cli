@@ -2,11 +2,11 @@ package com.asemicanalytics.cli.userentity;
 
 import com.asemicanalytics.cli.internal.GlobalConfig;
 import com.asemicanalytics.cli.internal.QueryEngineClient;
-import com.asemicanalytics.cli.internal.cli.SpinnerCli;
 import jakarta.inject.Inject;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 import picocli.CommandLine;
 
@@ -24,6 +24,9 @@ public class BackfillEntityCommand implements Runnable {
 
   @CommandLine.Option(names = "--date-to", description = "YYYY-MM-DD", required = true)
   LocalDate dateTo;
+
+  @CommandLine.Option(names = "--days-per-query", description = "How many days in a single query", defaultValue = "10")
+  Integer daysPerQuery;
 
   @CommandLine.Option(names = "--version", description = "Custom config version")
   Optional<String> version;
@@ -43,35 +46,51 @@ public class BackfillEntityCommand implements Runnable {
   public void run() {
     String appId = this.appId != null ? this.appId : GlobalConfig.getAppId();
     while (dateFrom.isBefore(dateTo) || dateFrom.isEqual(dateTo)) {
-      System.out.println("Backfilling date: " + dateFrom + " / " + dateTo);
-      new SpinnerCli().spin(() -> {
-        var start = Instant.now();
-        var stats = queryEngineClient.backfillUserWide(appId, dateFrom, version);
-        var stop = Instant.now();
 
-        var daysLeft = dateTo.toEpochDay() - dateFrom.toEpochDay();
-        for (var tableStatistic : stats) {
+      LocalDate intervalEnd = dateFrom.plusDays(daysPerQuery - 1);
+      if (intervalEnd.isAfter(dateTo)) {
+        intervalEnd = dateTo;
+      }
 
-          System.out.printf("Inserted %d rows to table %s in %d seconds. processed: %S, billed: %s \n",
-              tableStatistic.getRowsInserted(), tableStatistic.getTable(),
-              tableStatistic.getInsertDurationSeconds(),
-              convertBytes(tableStatistic.getBytesProcessed()),
-              convertBytes(tableStatistic.getBytesBilled()));
+      System.out.println("Backfilling (%s - %s) / %s".formatted(dateFrom, intervalEnd, dateTo));
+      var start = Instant.now();
+      var stats = queryEngineClient.backfillUserWide(appId, dateFrom, intervalEnd, version);
+      var stop = Instant.now();
+
+      var daysLeft = dateTo.toEpochDay() - intervalEnd.toEpochDay();
+      for (var tableStatistic : stats) {
+
+        System.out.println("Processed table: %s in %d seconds.".formatted(
+            tableStatistic.getTable(),
+            tableStatistic.getInsertDurationSeconds()));
+        if (tableStatistic.getBytesProcessed() > 0) {
+          System.out.println("Bytes processed: %s".formatted(
+              convertBytes(tableStatistic.getBytesProcessed())));
         }
-        System.out.println("Estimated backfill duration: " +
-            prettyPrintDuration(Duration.between(start, stop).multipliedBy(daysLeft)));
+        if (tableStatistic.getCountBytesProcessed() > 0) {
+          System.out.println("Count query bytes processed: %s".formatted(
+              convertBytes(tableStatistic.getCountBytesProcessed())));
+        }
+        for (var partition : tableStatistic.getRowsInserted().entrySet()) {
+          System.out.printf("Partition: %s, Rows: %d\n", partition.getKey(), partition.getValue());
+        }
+      }
+      System.out.println("Estimated backfill duration: " + prettyPrintDuration(
+          Duration.between(start, stop)
+              .dividedBy(ChronoUnit.DAYS.between(dateFrom, intervalEnd))
+              .multipliedBy(daysLeft)));
 
-        return true;
-      });
-      dateFrom = dateFrom.plusDays(1);
+      dateFrom = dateFrom.plusDays(daysPerQuery);
     }
   }
 
   private String convertBytes(long bytes) {
     int unit = 1024;
-    if (bytes < unit) return bytes + " B";
+    if (bytes < unit) {
+      return bytes + " B";
+    }
     int exp = (int) (Math.log(bytes) / Math.log(unit));
-    String pre = ("KMGTPE").charAt(exp-1) + "i";
+    String pre = ("KMGTPE").charAt(exp - 1) + "i";
     return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
   }
 }

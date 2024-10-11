@@ -56,7 +56,61 @@
         ]
       }
     },
-    "/api/v1/{appId}/datasources/backfill-userwide/{date}": {
+    "/api/v1/{appId}/datasources/backfill-userwide/{dateFrom}/{dateTo}": {
+      "get": {
+        "tags": [
+          "logical-tables-controller"
+        ],
+        "operationId": "backfillStatistics",
+        "parameters": [
+          {
+            "name": "appId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "dateFrom",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "dateTo",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "$ref": "#/components/schemas/BackfillPropertiesStatistics"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      },
       "post": {
         "tags": [
           "logical-tables-controller"
@@ -72,7 +126,16 @@
             }
           },
           {
-            "name": "date",
+            "name": "dateFrom",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "dateTo",
             "in": "path",
             "required": true,
             "schema": {
@@ -817,62 +880,6 @@
           }
         ]
       }
-    },
-    "/api/v1/{appId}/datasources/backfill-userwide/{dateFrom}/{dateTo}": {
-      "get": {
-        "tags": [
-          "logical-tables-controller"
-        ],
-        "operationId": "backfillStatistics",
-        "parameters": [
-          {
-            "name": "appId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "dateFrom",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "date"
-            }
-          },
-          {
-            "name": "dateTo",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "date"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "additionalProperties": {
-                    "$ref": "#/components/schemas/BackfillPropertiesStatistics"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ]
-      }
     }
   },
   "components": {
@@ -1030,14 +1037,17 @@
             "format": "int32"
           },
           "rows_inserted": {
-            "type": "integer",
-            "format": "int64"
+            "type": "object",
+            "additionalProperties": {
+              "type": "integer",
+              "format": "int64"
+            }
           },
           "bytes_processed": {
             "type": "integer",
             "format": "int64"
           },
-          "bytes_billed": {
+          "count_bytes_processed": {
             "type": "integer",
             "format": "int64"
           },
@@ -1412,10 +1422,6 @@
             "type": "boolean"
           },
           "bytesProcessed": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "bytesBilled": {
             "type": "integer",
             "format": "int64"
           }

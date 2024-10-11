@@ -231,13 +231,16 @@ public class QueryEngineClient {
     System.out.println("Config uploaded successfully");
   }
 
-  public List<BackfillTableStatisticsDto> backfillUserWide(String appId, LocalDate date,
+  public List<BackfillTableStatisticsDto> backfillUserWide(String appId,
+                                                           LocalDate dateFrom,
+                                                           LocalDate dateTo,
                                                            Optional<String> version) {
     var uri = UriBuilder.of(GlobalConfig.getApiUri())
         .path("api/v1")
         .path(appId)
         .path("datasources/backfill-userwide")
-        .path(date.toString())
+        .path(dateFrom.toString())
+        .path(dateTo.toString())
         .build();
 
     MutableHttpRequest<?> request = HttpRequest.POST(uri, null)
