@@ -44,7 +44,7 @@ public class PullCommand implements Runnable {
   public void run() {
     new SpinnerCli().spin(() -> {
       try {
-        File tempDir = Files.createTempDirectory("asemic").toFile();
+        File tempDir = Files.createTempDirectory("asemic").resolve("config.zip").toFile();
         if (version.isPresent()) {
           queryEngineClient.downloadConfigByVersion(GlobalConfig.getAppId(), version.get(),
               tempDir.toPath());
