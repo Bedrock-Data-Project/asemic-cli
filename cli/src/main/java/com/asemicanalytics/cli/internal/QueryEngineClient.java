@@ -123,6 +123,7 @@ public class QueryEngineClient {
     } catch (HttpClientResponseException e) {
       throw new QueryEngineException(e.getResponse().getBody(String.class).orElse("Unknown error"));
     } catch (Exception e) {
+      e.printStackTrace();
       throw new QueryEngineException("Unknown error");
     }
   }
