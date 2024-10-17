@@ -44,45 +44,45 @@ public class BackfillEntityCommand implements Runnable {
 
   @Override
   public void run() {
-    String appId = this.appId != null ? this.appId : GlobalConfig.getAppId();
-    while (dateFrom.isBefore(dateTo) || dateFrom.isEqual(dateTo)) {
+      String appId = this.appId != null ? this.appId : GlobalConfig.getAppId();
+      while (dateFrom.isBefore(dateTo) || dateFrom.isEqual(dateTo)) {
 
-      LocalDate intervalEnd = dateFrom.plusDays(daysPerQuery - 1);
-      if (intervalEnd.isAfter(dateTo)) {
-        intervalEnd = dateTo;
+        LocalDate intervalEnd = dateFrom.plusDays(daysPerQuery - 1);
+        if (intervalEnd.isAfter(dateTo)) {
+          intervalEnd = dateTo;
+        }
+
+        System.out.println("Backfilling (%s - %s) / %s".formatted(dateFrom, intervalEnd, dateTo));
+        var start = Instant.now();
+        var stats = queryEngineClient.backfillUserWide(appId, dateFrom, intervalEnd, version);
+        var stop = Instant.now();
+
+        var daysLeft = dateTo.toEpochDay() - intervalEnd.toEpochDay();
+        for (var tableStatistic : stats) {
+
+          System.out.println("Processed table: %s in %d seconds.".formatted(
+                  tableStatistic.getTable(),
+                  tableStatistic.getInsertDurationSeconds()));
+          if (tableStatistic.getBytesProcessed() > 0) {
+            System.out.println("Bytes processed: %s".formatted(
+                    convertBytes(tableStatistic.getBytesProcessed())));
+          }
+          if (tableStatistic.getCountBytesProcessed() > 0) {
+            System.out.println("Count query bytes processed: %s".formatted(
+                    convertBytes(tableStatistic.getCountBytesProcessed())));
+          }
+          for (var partition : tableStatistic.getRowsInserted().entrySet()) {
+            System.out.printf("Partition: %s, Rows: %d\n", partition.getKey(), partition.getValue());
+          }
+        }
+        System.out.println("It took: " + prettyPrintDuration(Duration.between(start, stop)));
+        System.out.println("Estimated backfill duration: " + prettyPrintDuration(
+                Duration.between(start, stop)
+                        .dividedBy(ChronoUnit.DAYS.between(dateFrom, intervalEnd))
+                        .multipliedBy(daysLeft)));
+
+        dateFrom = dateFrom.plusDays(daysPerQuery);
       }
-
-      System.out.println("Backfilling (%s - %s) / %s".formatted(dateFrom, intervalEnd, dateTo));
-      var start = Instant.now();
-      var stats = queryEngineClient.backfillUserWide(appId, dateFrom, intervalEnd, version);
-      var stop = Instant.now();
-
-      var daysLeft = dateTo.toEpochDay() - intervalEnd.toEpochDay();
-      for (var tableStatistic : stats) {
-
-        System.out.println("Processed table: %s in %d seconds.".formatted(
-            tableStatistic.getTable(),
-            tableStatistic.getInsertDurationSeconds()));
-        if (tableStatistic.getBytesProcessed() > 0) {
-          System.out.println("Bytes processed: %s".formatted(
-              convertBytes(tableStatistic.getBytesProcessed())));
-        }
-        if (tableStatistic.getCountBytesProcessed() > 0) {
-          System.out.println("Count query bytes processed: %s".formatted(
-              convertBytes(tableStatistic.getCountBytesProcessed())));
-        }
-        for (var partition : tableStatistic.getRowsInserted().entrySet()) {
-          System.out.printf("Partition: %s, Rows: %d\n", partition.getKey(), partition.getValue());
-        }
-      }
-      System.out.println("It took: " + prettyPrintDuration(Duration.between(start, stop)));
-      System.out.println("Estimated backfill duration: " + prettyPrintDuration(
-          Duration.between(start, stop)
-              .dividedBy(ChronoUnit.DAYS.between(dateFrom, intervalEnd))
-              .multipliedBy(daysLeft)));
-
-      dateFrom = dateFrom.plusDays(daysPerQuery);
-    }
   }
 
   private String convertBytes(long bytes) {

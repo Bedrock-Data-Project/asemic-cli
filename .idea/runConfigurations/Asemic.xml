@@ -2,12 +2,11 @@
   <configuration default="false" name="Asemic" type="Application" factoryName="Application" nameIsGenerated="true">
     <envs>
       <env name="ASEMIC_API_TOKEN" value="5e2c8dd6-e615-470e-bbd8-17c158048d8b" />
-      <env name="ASEMIC_API_URL" value="http://localhost:8083" />
       <env name="ASEMIC_APP_ID_DIR" value="$PROJECT_DIR$/../bedrock-demo/config/heroicmini" />
     </envs>
     <option name="MAIN_CLASS_NAME" value="com.asemicanalytics.cli.Asemic" />
     <module name="cli" />
-    <option name="PROGRAM_PARAMETERS" value="user-entity-model kpi-query --app-id=&quot;123&quot; --date-from=&quot;2024-01-10&quot; --date-to=&quot;2024-01-15&quot; --kpi=&quot;revenue&quot;" />
+    <option name="PROGRAM_PARAMETERS" value="user-entity-model backfill --date-from=2023-01-01 --date-to=2023-01-31 --app-id=123" />
     <option name="VM_PARAMETERS" value="-Djdk.console=jdk.internal.le" />
     <extension name="coverage">
       <pattern>

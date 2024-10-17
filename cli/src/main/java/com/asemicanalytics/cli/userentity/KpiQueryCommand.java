@@ -1,10 +1,14 @@
 package com.asemicanalytics.cli.userentity;
 
+import com.asemicanalytics.cli.internal.GlobalConfig;
 import com.asemicanalytics.cli.internal.QueryEngineClient;
+import com.asemicanalytics.cli.model.ChartDataDto;
 import com.asemicanalytics.cli.model.DateIntervalDto;
 import com.asemicanalytics.cli.model.EntityChartRequestDto;
 import com.asemicanalytics.cli.model.EntityChartRequestDtoTimeGrain;
+
 import jakarta.inject.Inject;
+import net.bytebuddy.asm.Advice;
 import picocli.CommandLine;
 import picocli.CommandLine.Option;
 import java.time.LocalDate;
@@ -32,35 +36,52 @@ import java.util.Optional;
 
         @Override
         public void run() {
-            try {
-                var request = new EntityChartRequestDto()
-                        .pageId("")
-                        .requestId("")
-                        .kpiId(kpi)
-                        .dateInterval(new DateIntervalDto()
-                                .dateFrom(dateFrom)
-                                .dateTo(dateTo))
-                        .compareDateInterval(new DateIntervalDto()
-                                .dateFrom(dateFrom.minusDays(2))
-                                .dateTo(dateFrom.minusDays(1)))
-                        .xaxis("date")
-                        .timeGrain(EntityChartRequestDtoTimeGrain.DAY);
+            String appId = this.appId != null ? this.appId : GlobalConfig.getAppId();
+                try {
+                    var request = new EntityChartRequestDto()
+                            .pageId("")
+                            .requestId("")
+                            .kpiId(kpi)
+                            .dateInterval(new DateIntervalDto()
+                                    .dateFrom(dateFrom)
+                                    .dateTo(dateTo))
+                            .compareDateInterval(new DateIntervalDto()
+                                    .dateFrom(dateFrom.minusDays(2))
+                                    .dateTo(dateFrom.minusDays(1)))
+                            .xaxis("date")
+                            .timeGrain(EntityChartRequestDtoTimeGrain.DAY);
+
+                    var data = queryEngineClient.submitChart(appId, request, Optional.empty());
+                    processResults(data);
 
 
-                var data = queryEngineClient.submitChart(appId, request, Optional.empty());
-
-
-                processResults(data);
-            } catch (Exception e) {
-                System.err.println("Error querying KPI: " + e.getMessage());
-            }
+                } catch (Exception e) {
+                    System.out.println("KPI Query Error: " + e.getMessage());
+                }
         }
 
         private void processResults(Object data) {
             if (data == null) {
                 System.out.println("No results found for the specified KPI.");
             } else {
-                System.out.println("Query Results:");
+                if(data instanceof ChartDataDto chartDataDto) {
+                    var chartPoints = chartDataDto.getChartPoints();
+                    if(!chartPoints.isEmpty()) {
+
+                        System.out.println("Query Results:");
+                        LocalDate currentDate = dateFrom;
+                        for(var point : chartPoints) {
+                            for(var value : point.getValues()) {
+                                System.out.printf("Date: %s, Value: %.2f%n", currentDate, value.getValue());
+                                currentDate = currentDate.plusDays(1);
+                            }
+                        }
+                    } else {
+                        System.out.println("No chart points found.");
+                    }
+                } else {
+                    System.out.println("Unexpected data format.");
+                }
             }
         }
     }
