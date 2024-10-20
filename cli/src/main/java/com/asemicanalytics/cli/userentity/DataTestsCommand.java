@@ -3,6 +3,15 @@ package com.asemicanalytics.cli.userentity;
 import com.asemicanalytics.cli.internal.CachingChartClient;
 import com.asemicanalytics.cli.internal.GlobalConfig;
 import com.asemicanalytics.cli.internal.QueryEngineClient;
+import com.asemicanalytics.cli.internal.datatests.Compare;
+import com.asemicanalytics.cli.internal.datatests.Filter;
+import com.asemicanalytics.cli.internal.datatests.GroupByGroupTotalsAvg;
+import com.asemicanalytics.cli.internal.datatests.GroupByGroupTotalsSum;
+import com.asemicanalytics.cli.internal.datatests.GroupByTotalOverall;
+import com.asemicanalytics.cli.internal.datatests.PerformedActionDynamic;
+import com.asemicanalytics.cli.internal.datatests.PerformedActionSimple;
+import com.asemicanalytics.cli.internal.datatests.PerformedActionSimpleWithFilter;
+import com.asemicanalytics.cli.internal.datatests.PerformedActionStatic;
 import com.asemicanalytics.cli.internal.datatests.TimeTravelPropertySimple;
 import jakarta.inject.Inject;
 import java.time.LocalDate;
@@ -67,45 +76,45 @@ public class DataTestsCommand implements Runnable {
 
     String appId = this.appId != null ? this.appId : GlobalConfig.getAppId();
     List.of(
-//        // total overall
-//        new GroupByTotalOverall(appId, "group by total overall daily kpi AVG", dailyKpiAvg,
-//            booleanTotalDimensionalProperty, dateFrom),
-//        new GroupByTotalOverall(appId, "group by total overall active kpi AVG", activeKpiAvg,
-//            booleanTotalDimensionalProperty, dateFrom),
-//        new GroupByTotalOverall(appId, "group by total overall daily kpi SUM", dailyKpiSum,
-//            booleanTotalDimensionalProperty, dateFrom),
-//        new GroupByTotalOverall(appId, "group by total overall active kpi SUM", activeKpiSum,
-//            booleanTotalDimensionalProperty, dateFrom),
-//
-//        // group totals
-//        new GroupByGroupTotalsAvg(appId, "group by total daily kpi AVG", dailyKpiAvg,
-//            booleanTotalDimensionalProperty, dateFrom),
-//        new GroupByGroupTotalsAvg(appId, "group by total active kpi AVG", activeKpiAvg,
-//            booleanTotalDimensionalProperty, dateFrom),
-//        new GroupByGroupTotalsSum(appId, "group by total daily kpi SUM", dailyKpiSum,
-//            booleanTotalDimensionalProperty, dateFrom),
-//        new GroupByGroupTotalsSum(appId, "group by total active kpi SUM", activeKpiSum,
-//            booleanTotalDimensionalProperty, dateFrom),
-//
-//        // filter
-//        new Filter(appId, "filter daily kpi", dailyKpiAvg, dateFrom),
-//        new Filter(appId, "filter active kpi", activeKpiAvg, dateFrom),
-//
-//        // compare
-//        new Compare(appId, "compare daily kpi", dailyKpiAvg, dateFrom),
-//        new Compare(appId, "compare active kpi", activeKpiAvg, dateFrom),
-//
-//        // Performed event
-//        new PerformedActionSimple(appId, "Performed event simple daily", dailyKpiSum, numericActionColumn, dateFrom),
-//        new PerformedActionSimple(appId, "Performed event simple active", activeKpiSum, numericActionColumn, dateFrom),
-//        new PerformedActionSimple(appId, "Performed event simple daily avg", dailyKpiAvg, numericActionColumn, dateFrom),
-//        new PerformedActionSimple(appId, "Performed event simple active avg", activeKpiAvg, numericActionColumn, dateFrom),
-//        new PerformedActionSimpleWithFilter(appId, "Performed event with filter daily", dailyKpiSum, numericActionColumn, dateFrom),
-//        new PerformedActionSimpleWithFilter(appId, "Performed event with filter active", activeKpiSum, numericActionColumn, dateFrom),
-//        new PerformedActionDynamic(appId, "Performed event dynamic daily", dailyKpiSum, numericActionColumn, dateFrom),
-//        new PerformedActionDynamic(appId, "Performed event dynamic active", activeKpiSum, numericActionColumn, dateFrom),
-//        new PerformedActionStatic(appId, "Performed event static daily", dailyKpiSum, numericActionColumn, dateFrom),
-//        new PerformedActionStatic(appId, "Performed event static active", activeKpiSum, numericActionColumn, dateFrom),
+        // total overall
+        new GroupByTotalOverall(appId, "group by total overall daily kpi AVG", dailyKpiAvg,
+            booleanTotalDimensionalProperty, dateFrom),
+        new GroupByTotalOverall(appId, "group by total overall active kpi AVG", activeKpiAvg,
+            booleanTotalDimensionalProperty, dateFrom),
+        new GroupByTotalOverall(appId, "group by total overall daily kpi SUM", dailyKpiSum,
+            booleanTotalDimensionalProperty, dateFrom),
+        new GroupByTotalOverall(appId, "group by total overall active kpi SUM", activeKpiSum,
+            booleanTotalDimensionalProperty, dateFrom),
+
+        // group totals
+        new GroupByGroupTotalsAvg(appId, "group by total daily kpi AVG", dailyKpiAvg,
+            booleanTotalDimensionalProperty, dateFrom),
+        new GroupByGroupTotalsAvg(appId, "group by total active kpi AVG", activeKpiAvg,
+            booleanTotalDimensionalProperty, dateFrom),
+        new GroupByGroupTotalsSum(appId, "group by total daily kpi SUM", dailyKpiSum,
+            booleanTotalDimensionalProperty, dateFrom),
+        new GroupByGroupTotalsSum(appId, "group by total active kpi SUM", activeKpiSum,
+            booleanTotalDimensionalProperty, dateFrom),
+
+        // filter
+        new Filter(appId, "filter daily kpi", dailyKpiAvg, dateFrom),
+        new Filter(appId, "filter active kpi", activeKpiAvg, dateFrom),
+
+        // compare
+        new Compare(appId, "compare daily kpi", dailyKpiAvg, dateFrom),
+        new Compare(appId, "compare active kpi", activeKpiAvg, dateFrom),
+
+        // Performed event
+        new PerformedActionSimple(appId, "Performed event simple daily", dailyKpiSum, numericActionColumn, dateFrom),
+        new PerformedActionSimple(appId, "Performed event simple active", activeKpiSum, numericActionColumn, dateFrom),
+        new PerformedActionSimple(appId, "Performed event simple daily avg", dailyKpiAvg, numericActionColumn, dateFrom),
+        new PerformedActionSimple(appId, "Performed event simple active avg", activeKpiAvg, numericActionColumn, dateFrom),
+        new PerformedActionSimpleWithFilter(appId, "Performed event with filter daily", dailyKpiSum, numericActionColumn, dateFrom),
+        new PerformedActionSimpleWithFilter(appId, "Performed event with filter active", activeKpiSum, numericActionColumn, dateFrom),
+        new PerformedActionDynamic(appId, "Performed event dynamic daily", dailyKpiSum, numericActionColumn, dateFrom),
+        new PerformedActionDynamic(appId, "Performed event dynamic active", activeKpiSum, numericActionColumn, dateFrom),
+        new PerformedActionStatic(appId, "Performed event static daily", dailyKpiSum, numericActionColumn, dateFrom),
+        new PerformedActionStatic(appId, "Performed event static active", activeKpiSum, numericActionColumn, dateFrom),
 
         new TimeTravelPropertySimple(appId, "Time travel property simple", dailyKpiAvg,
             numericProperty, dateFrom),

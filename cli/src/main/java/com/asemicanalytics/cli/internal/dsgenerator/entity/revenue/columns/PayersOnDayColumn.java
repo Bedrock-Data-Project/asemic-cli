@@ -11,7 +11,7 @@ public class PayersOnDayColumn extends EntityPropertyDto {
   public PayersOnDayColumn(String revenueDatasourceName) {
     super(null, DataType.INTEGER, null, false, false,
         new EntityPropertyEventDto(
-            revenueDatasourceName, "1", EntityPropertyEventDto.AggregateFunction.NONE, null, "0"
+            revenueDatasourceName, "1", EntityPropertyEventDto.AggregateFunction.NONE, null, "0", null
         ),
         null, null, null, null, null);
   }

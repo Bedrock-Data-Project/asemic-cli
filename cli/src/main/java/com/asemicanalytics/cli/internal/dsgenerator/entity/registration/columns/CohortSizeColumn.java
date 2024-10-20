@@ -14,7 +14,7 @@ public class CohortSizeColumn extends EntityPropertyDto {
         null, null, null, null, null,
         new EntityPropertyComputedDto(
             "1",
-            null
+            null, null
         ));
   }
 }

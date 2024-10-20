@@ -21,7 +21,7 @@ public class PaymentSegmentColumn extends EntityPropertyDto {
                 new ValueMappingsDto(null, new RangeDto("0", "20"), "Minnow"),
                 new ValueMappingsDto(null, new RangeDto("20", "100"), "Dolphin"),
                 new ValueMappingsDto(null, new RangeDto("100", null), "Whale")
-            )
+            ), null
         ));
   }
 }

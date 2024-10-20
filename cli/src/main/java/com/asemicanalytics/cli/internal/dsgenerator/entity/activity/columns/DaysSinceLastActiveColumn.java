@@ -14,7 +14,7 @@ public class DaysSinceLastActiveColumn extends EntityPropertyDto {
         null, null, null, null, null,
         new EntityPropertyComputedDto(
             "DATE_DIFF({" + dateColumn + "}, {last_activity_date}, DAY)",
-            null
+            null, null
         ));
   }
 }

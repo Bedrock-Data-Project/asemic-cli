@@ -18,7 +18,7 @@ public class WasPayerLifetimeColumn extends EntityPropertyDto {
             List.of(
                 new ValueMappingsDto("0", null, "Non Payer lifetime"),
                 new ValueMappingsDto("1", null, "Payer lifetime")
-            )
+            ), null
         ));
   }
 }

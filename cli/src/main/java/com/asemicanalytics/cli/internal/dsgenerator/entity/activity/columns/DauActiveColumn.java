@@ -11,7 +11,7 @@ public class DauActiveColumn extends EntityPropertyDto {
   public DauActiveColumn(String activityDatasourceName) {
     super(null, DataType.INTEGER, null, false, false,
         new EntityPropertyEventDto(
-            activityDatasourceName, "1", EntityPropertyEventDto.AggregateFunction.NONE, null, "0"
+            activityDatasourceName, "1", EntityPropertyEventDto.AggregateFunction.NONE, null, "0", null
         ),
         null, null, null, null, null);
   }

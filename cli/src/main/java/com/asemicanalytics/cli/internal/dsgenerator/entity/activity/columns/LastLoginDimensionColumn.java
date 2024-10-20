@@ -17,6 +17,7 @@ public class LastLoginDimensionColumn extends EntityPropertyDto {
                 "{" + dimension + "}",
                 EntityPropertyEventDto.AggregateFunction.LAST_VALUE,
                 null,
+                null,
                 null
             ),
             EntityPropertyLifetimeDto.MergeFunction.LAST_VALUE),

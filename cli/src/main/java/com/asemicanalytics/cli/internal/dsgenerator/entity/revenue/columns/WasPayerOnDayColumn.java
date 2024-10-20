@@ -18,7 +18,7 @@ public class WasPayerOnDayColumn extends EntityPropertyDto {
             List.of(
                 new ValueMappingsDto("0", null, "Non Payer on day"),
                 new ValueMappingsDto("1", null, "Payer on day")
-            )
+            ), null
         ));
   }
 }

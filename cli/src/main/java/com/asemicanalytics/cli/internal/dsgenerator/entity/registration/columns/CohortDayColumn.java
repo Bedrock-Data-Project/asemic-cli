@@ -16,7 +16,7 @@ public class CohortDayColumn extends EntityPropertyDto {
             "DATE_DIFF({"
                 + dateColumn + "}, {"
                 + EntityLogicalTable.REGISTRATION_DATE_COLUMN + "}, DAY)",
-            null
+            null, null
         ));
   }
 }

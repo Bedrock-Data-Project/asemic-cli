@@ -12,7 +12,7 @@ public class RevenueOnDayColumn extends EntityPropertyDto {
     super(null, DataType.NUMBER, null, true, false,
         new EntityPropertyEventDto(
             revenueDatasourceName, "{" + revenueColumn + "}",
-            EntityPropertyEventDto.AggregateFunction.SUM, null, "0"
+            EntityPropertyEventDto.AggregateFunction.SUM, null, "0", null
         ),
         null, null, null, null, null);
   }

@@ -12,7 +12,7 @@ public class PaymentTransactionsOnDay extends EntityPropertyDto {
     super(null, DataType.NUMBER, null, true, false,
         new EntityPropertyEventDto(
             revenueDatasourceName, "COUNT(*)", EntityPropertyEventDto.AggregateFunction.NONE, null,
-            "0"
+            "0", null
         ),
         null, null, null, null, null);
   }

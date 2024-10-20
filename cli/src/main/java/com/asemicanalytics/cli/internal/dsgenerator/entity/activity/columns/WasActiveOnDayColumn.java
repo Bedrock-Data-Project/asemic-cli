@@ -18,7 +18,7 @@ public class WasActiveOnDayColumn extends EntityPropertyDto {
             List.of(
                 new ValueMappingsDto("0", null, "Inactive on day"),
                 new ValueMappingsDto("1", null, "Active on day")
-            )
+            ), null
         ));
   }
 }
