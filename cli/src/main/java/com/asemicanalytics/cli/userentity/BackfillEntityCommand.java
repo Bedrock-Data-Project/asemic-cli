@@ -39,7 +39,7 @@ public class BackfillEntityCommand implements Runnable {
     long seconds = duration.toSecondsPart();
 
     return String.format("%d days, %d hours, %d minutes, %d seconds", days, hours, minutes,
-        seconds);
+            seconds);
   }
 
   @Override
@@ -61,15 +61,15 @@ public class BackfillEntityCommand implements Runnable {
       for (var tableStatistic : stats) {
 
         System.out.println("Processed table: %s in %d seconds.".formatted(
-            tableStatistic.getTable(),
-            tableStatistic.getInsertDurationSeconds()));
+                tableStatistic.getTable(),
+                tableStatistic.getInsertDurationSeconds()));
         if (tableStatistic.getBytesProcessed() > 0) {
           System.out.println("Bytes processed: %s".formatted(
-              convertBytes(tableStatistic.getBytesProcessed())));
+                  convertBytes(tableStatistic.getBytesProcessed())));
         }
         if (tableStatistic.getCountBytesProcessed() > 0) {
           System.out.println("Count query bytes processed: %s".formatted(
-              convertBytes(tableStatistic.getCountBytesProcessed())));
+                  convertBytes(tableStatistic.getCountBytesProcessed())));
         }
         for (var partition : tableStatistic.getRowsInserted().entrySet()) {
           System.out.printf("Partition: %s, Rows: %d\n", partition.getKey(), partition.getValue());
@@ -77,9 +77,9 @@ public class BackfillEntityCommand implements Runnable {
       }
       System.out.println("It took: " + prettyPrintDuration(Duration.between(start, stop)));
       System.out.println("Estimated backfill duration: " + prettyPrintDuration(
-          Duration.between(start, stop)
-              .dividedBy(ChronoUnit.DAYS.between(dateFrom, intervalEnd))
-              .multipliedBy(daysLeft)));
+              Duration.between(start, stop)
+                      .dividedBy(ChronoUnit.DAYS.between(dateFrom, intervalEnd))
+                      .multipliedBy(daysLeft)));
 
       dateFrom = dateFrom.plusDays(daysPerQuery);
     }
