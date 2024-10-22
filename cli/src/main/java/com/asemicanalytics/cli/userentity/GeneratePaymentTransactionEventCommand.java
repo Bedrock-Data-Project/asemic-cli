@@ -20,8 +20,7 @@ public class GeneratePaymentTransactionEventCommand extends GenerateEventCommand
   @Option(names = "--transaction-amount-column", description = "Name of transaction amount column.")
   Optional<String> transactionAmountColumnOption;
 
-  @Inject
-  QueryEngineClient queryEngineClient;
+  QueryEngineClient queryEngineClient = new QueryEngineClient();
 
   @Inject
   ObjectMapper objectMapper;

@@ -19,8 +19,7 @@ import picocli.CommandLine;
 @CommandLine.Command(name = "auth", description = "Upload database credentials so asemic can access your data", mixinStandardHelpOptions = true)
 public class AuthCommand implements Runnable {
 
-  @Inject
-  QueryEngineClient queryEngineClient;
+  QueryEngineClient queryEngineClient = new QueryEngineClient();
 
   private DatabaseDto fromBigQuery() {
     String projectId = new InputCli("Enter your google billing project ID").read();

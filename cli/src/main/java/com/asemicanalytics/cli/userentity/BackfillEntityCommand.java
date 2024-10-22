@@ -13,8 +13,7 @@ import picocli.CommandLine;
 @CommandLine.Command(name = "backfill", description = "Runs an interactive backfill for entity table", mixinStandardHelpOptions = true)
 public class BackfillEntityCommand implements Runnable {
 
-  @Inject
-  QueryEngineClient queryEngineClient;
+  QueryEngineClient queryEngineClient = new QueryEngineClient();
 
   @CommandLine.Option(names = "--app-id", description = "App id")
   String appId;

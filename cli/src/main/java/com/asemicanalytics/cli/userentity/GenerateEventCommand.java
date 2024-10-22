@@ -69,8 +69,7 @@ public class GenerateEventCommand implements Runnable {
   @Option(names = "--skip-activity-tag", description = "If set, will not add activity tag to table.")
   Optional<Boolean> skipActivityTag;
 
-  @Inject
-  QueryEngineClient queryEngineClient;
+  QueryEngineClient queryEngineClient = new QueryEngineClient();
 
   @Inject
   ObjectMapper objectMapper;

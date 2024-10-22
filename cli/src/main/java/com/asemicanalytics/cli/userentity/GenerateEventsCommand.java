@@ -43,8 +43,7 @@ public class GenerateEventsCommand implements Runnable {
   @Option(names = "--user-id-column", description = "Name of user id column.")
   Optional<String> userIdColumnOption;
 
-  @Inject
-  QueryEngineClient queryEngineClient;
+  QueryEngineClient queryEngineClient = new QueryEngineClient();
 
   @Inject
   ObjectMapper objectMapper;

@@ -18,8 +18,7 @@ import java.util.Optional;
 @CommandLine.Command(name = "kpi-query", description = "Queries a predefined KPI without sending the existing configuration", mixinStandardHelpOptions = true)
 public class KpiQueryCommand implements Runnable {
 
-  @Inject
-  QueryEngineClient queryEngineClient;
+  QueryEngineClient queryEngineClient = new QueryEngineClient();
 
   @CommandLine.Option(names = "--app-id", description = "App id")
   String appId;

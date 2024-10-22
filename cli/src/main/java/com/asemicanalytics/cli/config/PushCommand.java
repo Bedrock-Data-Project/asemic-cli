@@ -13,8 +13,7 @@ import picocli.CommandLine;
 @CommandLine.Command(name = "push", description = "Submit config to asemic", mixinStandardHelpOptions = true)
 public class PushCommand implements Runnable {
 
-  @Inject
-  QueryEngineClient queryEngineClient;
+  QueryEngineClient queryEngineClient = new QueryEngineClient();
 
   @CommandLine.Option(names = "--version", description = "Custom config version")
   Optional<String> version;

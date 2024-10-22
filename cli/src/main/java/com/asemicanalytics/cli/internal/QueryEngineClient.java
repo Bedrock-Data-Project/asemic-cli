@@ -18,8 +18,6 @@ import io.micronaut.http.client.exceptions.HttpClientResponseException;
 import io.micronaut.http.client.multipart.MultipartBody;
 import io.micronaut.http.client.netty.DefaultHttpClient;
 import io.micronaut.http.uri.UriBuilder;
-import jakarta.inject.Inject;
-import jakarta.inject.Singleton;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -31,11 +29,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-@Singleton
 public class QueryEngineClient {
   private final BlockingHttpClient httpClient;
 
-  @Inject
   public QueryEngineClient() {
     HttpClientConfiguration configuration = new DefaultHttpClientConfiguration();
     configuration.setReadTimeout(Duration.ofSeconds(600));

@@ -33,8 +33,7 @@ public class GenerateEntityCommand implements Runnable {
       + " Useful for scripting.")
   Optional<Boolean> noWizard;
 
-  @Inject
-  QueryEngineClient queryEngineClient;
+  QueryEngineClient queryEngineClient = new QueryEngineClient();
 
   private static final int ACTIVE_DAYS = 90;
 

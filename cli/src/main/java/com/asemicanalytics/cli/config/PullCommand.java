@@ -18,8 +18,7 @@ import picocli.CommandLine;
 @CommandLine.Command(name = "pull", description = "Download current config", mixinStandardHelpOptions = true)
 public class PullCommand implements Runnable {
 
-  @Inject
-  QueryEngineClient queryEngineClient;
+  QueryEngineClient queryEngineClient = new QueryEngineClient();
 
   @CommandLine.Option(names = "--version", description = "Custom config version")
   Optional<String> version;

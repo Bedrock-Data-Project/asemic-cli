@@ -9,7 +9,6 @@ import com.asemicanalytics.cli.model.EntityChartRequestDto;
 import com.asemicanalytics.cli.model.EntityChartRequestDtoTimeGrain;
 import com.asemicanalytics.cli.model.KpiDto;
 import com.asemicanalytics.cli.model.PropertyFilterDto;
-import jakarta.inject.Inject;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -19,8 +18,7 @@ import picocli.CommandLine;
 @CommandLine.Command(name = "validate", description = "Validate config without submitting it", mixinStandardHelpOptions = true)
 public class ValidateCommand implements Runnable {
 
-  @Inject
-  QueryEngineClient queryEngineClient;
+  QueryEngineClient queryEngineClient = new QueryEngineClient();
 
   private boolean testChart(String version, String logPrefix, KpiDto kpi,
                             boolean isDailyKpi, ColumnDto column) {

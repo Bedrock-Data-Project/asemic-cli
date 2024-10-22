@@ -11,8 +11,7 @@ import picocli.CommandLine;
 @CommandLine.Command(name = "backfill-statistics", description = "Show statistics for backfilled properties", mixinStandardHelpOptions = true)
 public class BackfillStatisticsCommand implements Runnable {
 
-  @Inject
-  QueryEngineClient queryEngineClient;
+  QueryEngineClient queryEngineClient = new QueryEngineClient();
 
   @CommandLine.Option(names = "--app-id", description = "App id")
   String appId;

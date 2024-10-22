@@ -22,8 +22,7 @@ import picocli.CommandLine;
 @CommandLine.Command(name = "data-tests", description = "Runs a series of consistency tests on your entity data model", mixinStandardHelpOptions = true)
 public class DataTestsCommand implements Runnable {
 
-  @Inject
-  QueryEngineClient queryEngineClient;
+  QueryEngineClient queryEngineClient = new QueryEngineClient();
 
   @CommandLine.Option(names = "--app-id", description = "App id")
   String appId;
