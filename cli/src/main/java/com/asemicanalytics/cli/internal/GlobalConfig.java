@@ -8,7 +8,7 @@ public class GlobalConfig {
     if (apiUri != null) {
       return apiUri;
     }
-    return "http://34.36.33.251";
+    return "https://api-test.asemicanalytics.com";
   }
 
   public static String getApiToken() {
