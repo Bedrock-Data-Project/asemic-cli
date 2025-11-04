@@ -8,6 +8,7 @@ import com.asemicanalytics.cli.model.EntityChartRequestDto;
 import com.asemicanalytics.cli.model.EntityChartRequestDtoTimeGrain;
 
 import jakarta.inject.Inject;
+import java.time.ZoneId;
 import net.bytebuddy.asm.Advice;
 import picocli.CommandLine;
 import picocli.CommandLine.Option;
@@ -42,11 +43,11 @@ public class KpiQueryCommand implements Runnable {
           .requestId("")
           .kpiId(kpi)
           .dateInterval(new DateIntervalDto()
-              .dateFrom(dateFrom)
-              .dateTo(dateTo))
+              .dateFrom(dateFrom.atStartOfDay(ZoneId.of("UTC")))
+              .dateTo(dateTo.atStartOfDay(ZoneId.of("UTC"))))
           .compareDateInterval(new DateIntervalDto()
-              .dateFrom(dateFrom.minusDays(2))
-              .dateTo(dateFrom.minusDays(1)))
+              .dateFrom(dateFrom.minusDays(2).atStartOfDay(ZoneId.of("UTC")))
+              .dateTo(dateFrom.minusDays(1).atStartOfDay(ZoneId.of("UTC"))))
           .xaxis("date")
           .timeGrain(EntityChartRequestDtoTimeGrain.DAY);
 
@@ -64,14 +65,14 @@ public class KpiQueryCommand implements Runnable {
       System.out.println("No results found for the specified KPI.");
     } else {
       if(data instanceof ChartDataDto chartDataDto) {
-        var chartPoints = chartDataDto.getChartPoints();
+        var chartPoints = chartDataDto.getGranular().getRows();
         if(!chartPoints.isEmpty()) {
 
           System.out.println("Query Results:");
           LocalDate currentDate = dateFrom;
           for(var point : chartPoints) {
-            for(var value : point.getValues()) {
-              System.out.printf("Date: %s, Value: %.2f%n", currentDate, value.getValue());
+            for(var value : point.getMetrics()) {
+              System.out.printf("Date: %s, Value: %.2f%n", currentDate, value);
               currentDate = currentDate.plusDays(1);
             }
           }

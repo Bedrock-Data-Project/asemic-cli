@@ -43,7 +43,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/FunnelDataDto"
+                  "$ref": "#/components/schemas/ChartDataDto"
                 }
               }
             }
@@ -613,6 +613,51 @@
         ]
       }
     },
+    "/api/v1/{appId}/charts/submit-event": {
+      "post": {
+        "tags": [
+          "chart-controller"
+        ],
+        "operationId": "submitEventChart",
+        "parameters": [
+          {
+            "name": "appId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EventChartRequestDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChartDataDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ]
+      }
+    },
     "/health": {
       "get": {
         "tags": [
@@ -884,217 +929,6 @@
   },
   "components": {
     "schemas": {
-      "DateIntervalDto": {
-        "type": "object",
-        "properties": {
-          "date_from": {
-            "type": "string",
-            "format": "date"
-          },
-          "date_to": {
-            "type": "string",
-            "format": "date"
-          }
-        }
-      },
-      "FunnelRequestDto": {
-        "type": "object",
-        "properties": {
-          "page_id": {
-            "type": "string"
-          },
-          "request_id": {
-            "type": "string"
-          },
-          "sequence_query": {
-            "type": "string"
-          },
-          "date_interval": {
-            "$ref": "#/components/schemas/DateIntervalDto"
-          },
-          "column_filters": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/PropertyFilterDto"
-            }
-          },
-          "column_group_bys": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "compare_date_interval": {
-            "$ref": "#/components/schemas/DateIntervalDto"
-          },
-          "sort_by_kpi_id": {
-            "type": "string"
-          },
-          "sort_by_mode": {
-            "type": "string",
-            "enum": [
-              "TOTAL",
-              "CHANGE",
-              "IMPACT"
-            ]
-          },
-          "group_by_limit": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "visualization_mode": {
-            "type": "string",
-            "enum": [
-              "CONVERSION",
-              "CONVERSION_OVER_TIME",
-              "TIME_TO_CONVERSION_OVER_TIME"
-            ]
-          }
-        }
-      },
-      "PropertyFilterDto": {
-        "type": "object",
-        "properties": {
-          "column_id": {
-            "type": "string"
-          },
-          "value_list": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "operation": {
-            "type": "string"
-          }
-        }
-      },
-      "FunnelDataDto": {
-        "type": "object",
-        "properties": {
-          "chart_points": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/FunnelPointDto"
-            }
-          },
-          "compare_period_chart_points": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/FunnelPointDto"
-            }
-          },
-          "unit": {
-            "$ref": "#/components/schemas/Unit"
-          }
-        }
-      },
-      "FunnelPointDto": {
-        "type": "object",
-        "properties": {
-          "x_axis_value": {
-            "type": "string"
-          },
-          "values": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/LinePointDto"
-            }
-          }
-        }
-      },
-      "LinePointDto": {
-        "type": "object",
-        "properties": {
-          "group_by_key": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "value": {
-            "type": "number",
-            "format": "double"
-          }
-        }
-      },
-      "Unit": {
-        "type": "object",
-        "properties": {
-          "symbol": {
-            "type": "string"
-          },
-          "isPrefix": {
-            "type": "boolean"
-          }
-        }
-      },
-      "BackfillTableStatisticsDto": {
-        "type": "object",
-        "properties": {
-          "insert_duration_seconds": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "rows_inserted": {
-            "type": "object",
-            "additionalProperties": {
-              "type": "integer",
-              "format": "int64"
-            }
-          },
-          "bytes_processed": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "count_bytes_processed": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "table": {
-            "type": "string"
-          }
-        }
-      },
-      "TokenDto": {
-        "type": "object",
-        "properties": {
-          "value": {
-            "type": "string"
-          }
-        }
-      },
-      "DatabaseDto": {
-        "type": "object",
-        "properties": {
-          "database_type": {
-            "type": "string"
-          },
-          "database_config": {
-            "type": "object",
-            "additionalProperties": {
-              "type": "object"
-            }
-          }
-        }
-      },
-      "ColumnValuesRequestDto": {
-        "type": "object",
-        "properties": {
-          "page_id": {
-            "type": "string"
-          },
-          "request_id": {
-            "type": "string"
-          },
-          "date_interval": {
-            "$ref": "#/components/schemas/DateIntervalDto"
-          },
-          "column_id": {
-            "type": "string"
-          }
-        }
-      },
       "AggregationFilterDto": {
         "type": "object",
         "properties": {
@@ -1102,6 +936,7 @@
             "type": "string",
             "enum": [
               "count",
+              "count_distinct",
               "sum",
               "avg",
               "min",
@@ -1125,28 +960,26 @@
           }
         }
       },
-      "EntityChartRequestDto": {
+      "DateIntervalDto": {
         "type": "object",
         "properties": {
-          "page_id": {
-            "type": "string"
+          "date_from": {
+            "type": "string",
+            "format": "date-time"
           },
-          "request_id": {
-            "type": "string"
-          },
-          "adhoc_properties": {
-            "$ref": "#/components/schemas/PropertiesDto"
-          },
-          "performed_action_dynamic_cohort_filters": {
+          "date_to": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "FilterGroup": {
+        "type": "object",
+        "properties": {
+          "column_filters": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/TimeTravelActionDynamicCohortFilterDto"
-            }
-          },
-          "performed_action_static_cohort_filters": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/TimeTravelActionStaticCohortFilterDto"
+              "$ref": "#/components/schemas/PropertyFilterDto"
             }
           },
           "property_dynamic_cohort_filters": {
@@ -1161,62 +994,17 @@
               "$ref": "#/components/schemas/TimeTravelPropertyStaticCohortFilterDto"
             }
           },
-          "kpi_id": {
-            "type": "string"
-          },
-          "date_interval": {
-            "$ref": "#/components/schemas/DateIntervalDto"
-          },
-          "compare_date_interval": {
-            "$ref": "#/components/schemas/DateIntervalDto"
-          },
-          "x_axis": {
-            "type": "string"
-          },
-          "column_filters": {
+          "performed_action_dynamic_cohort_filters": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/PropertyFilterDto"
+              "$ref": "#/components/schemas/TimeTravelActionDynamicCohortFilterDto"
             }
           },
-          "column_group_bys": {
+          "performed_action_static_cohort_filters": {
             "type": "array",
             "items": {
-              "type": "string"
+              "$ref": "#/components/schemas/TimeTravelActionStaticCohortFilterDto"
             }
-          },
-          "time_grain": {
-            "type": "string",
-            "enum": [
-              "min15",
-              "hour",
-              "day",
-              "week",
-              "month",
-              "quarter",
-              "year"
-            ]
-          },
-          "sort_by_kpi_id": {
-            "type": "string"
-          },
-          "sort_by_mode": {
-            "type": "string",
-            "enum": [
-              "TOTAL",
-              "CHANGE",
-              "IMPACT"
-            ]
-          },
-          "group_by_limit": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "dry_run": {
-            "type": "boolean"
-          },
-          "include_queries": {
-            "type": "boolean"
           }
         }
       },
@@ -1233,8 +1021,90 @@
           }
         }
       },
+      "FunnelRequestDto": {
+        "type": "object",
+        "properties": {
+          "page_id": {
+            "type": "string"
+          },
+          "request_id": {
+            "type": "string"
+          },
+          "date_interval": {
+            "$ref": "#/components/schemas/DateIntervalDto"
+          },
+          "compare_date_interval": {
+            "$ref": "#/components/schemas/DateIntervalDto"
+          },
+          "column_group_bys": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "group_by_limit": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "dry_run": {
+            "type": "boolean"
+          },
+          "include_queries": {
+            "type": "boolean"
+          },
+          "adhoc_properties": {
+            "$ref": "#/components/schemas/PropertiesDto"
+          },
+          "property_filter_groups": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FilterGroup"
+            }
+          },
+          "sort_by_kpi_id": {
+            "type": "string"
+          },
+          "sort_by_mode": {
+            "type": "string",
+            "enum": [
+              "TOTAL",
+              "CHANGE",
+              "IMPACT",
+              "GROUP_BY"
+            ]
+          },
+          "sequence_query": {
+            "type": "string"
+          },
+          "visualization_mode": {
+            "type": "string",
+            "enum": [
+              "CONVERSION",
+              "CONVERSION_OVER_TIME",
+              "TIME_TO_CONVERSION_OVER_TIME"
+            ]
+          }
+        }
+      },
       "PropertiesDto": {
         "type": "object"
+      },
+      "PropertyFilterDto": {
+        "type": "object",
+        "properties": {
+          "column_id": {
+            "type": "string"
+          },
+          "value_list": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "operation": {
+            "type": "string"
+          }
+        }
       },
       "RelativeWindowDto": {
         "type": "object",
@@ -1338,37 +1208,14 @@
       "ChartDataDto": {
         "type": "object",
         "properties": {
-          "chart_points": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ChartPointDto"
-            }
+          "total_overall": {
+            "$ref": "#/components/schemas/TableDto"
           },
-          "chart_total": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/LinePointDto"
-            }
+          "granular": {
+            "$ref": "#/components/schemas/TableDto"
           },
-          "chart_total_overall": {
-            "type": "number",
-            "format": "double"
-          },
-          "compare_period_chart_points": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ChartPointDto"
-            }
-          },
-          "compare_period_chart_total": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/LinePointDto"
-            }
-          },
-          "compare_period_chart_total_overall": {
-            "type": "number",
-            "format": "double"
+          "total": {
+            "$ref": "#/components/schemas/TableDto"
           },
           "unit": {
             "$ref": "#/components/schemas/Unit"
@@ -1377,20 +1224,6 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/QueryDto"
-            }
-          }
-        }
-      },
-      "ChartPointDto": {
-        "type": "object",
-        "properties": {
-          "x_axis_value": {
-            "type": "string"
-          },
-          "values": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/LinePointDto"
             }
           }
         }
@@ -1454,6 +1287,297 @@
           }
         }
       },
+      "TableDto": {
+        "type": "object",
+        "properties": {
+          "dimension_names": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "metric_names": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "rows": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TableRowDto"
+            }
+          }
+        }
+      },
+      "TableRowDto": {
+        "type": "object",
+        "properties": {
+          "dimensions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "metrics": {
+            "type": "array",
+            "items": {
+              "type": "number",
+              "format": "double"
+            }
+          }
+        }
+      },
+      "Unit": {
+        "type": "object",
+        "properties": {
+          "symbol": {
+            "type": "string"
+          },
+          "isPrefix": {
+            "type": "boolean"
+          }
+        }
+      },
+      "BackfillTableStatisticsDto": {
+        "type": "object",
+        "properties": {
+          "insert_duration_seconds": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "rows_inserted": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          "bytes_processed": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "count_bytes_processed": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "table": {
+            "type": "string"
+          }
+        }
+      },
+      "TokenDto": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string"
+          }
+        }
+      },
+      "DatabaseDto": {
+        "type": "object",
+        "properties": {
+          "database_type": {
+            "type": "string"
+          },
+          "database_config": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "ColumnValuesRequestDto": {
+        "type": "object",
+        "properties": {
+          "page_id": {
+            "type": "string"
+          },
+          "request_id": {
+            "type": "string"
+          },
+          "date_interval": {
+            "$ref": "#/components/schemas/DateIntervalDto"
+          },
+          "column_id": {
+            "type": "string"
+          }
+        }
+      },
+      "EntityChartRequestDto": {
+        "type": "object",
+        "properties": {
+          "page_id": {
+            "type": "string"
+          },
+          "request_id": {
+            "type": "string"
+          },
+          "date_interval": {
+            "$ref": "#/components/schemas/DateIntervalDto"
+          },
+          "compare_date_interval": {
+            "$ref": "#/components/schemas/DateIntervalDto"
+          },
+          "column_group_bys": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "group_by_limit": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "dry_run": {
+            "type": "boolean"
+          },
+          "include_queries": {
+            "type": "boolean"
+          },
+          "adhoc_properties": {
+            "$ref": "#/components/schemas/PropertiesDto"
+          },
+          "property_filter_groups": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FilterGroup"
+            }
+          },
+          "sort_by_kpi_id": {
+            "type": "string"
+          },
+          "sort_by_mode": {
+            "type": "string",
+            "enum": [
+              "TOTAL",
+              "CHANGE",
+              "IMPACT",
+              "GROUP_BY"
+            ]
+          },
+          "kpi_id": {
+            "type": "string"
+          },
+          "x_axis": {
+            "type": "string"
+          },
+          "time_grain": {
+            "type": "string",
+            "enum": [
+              "min15",
+              "hour",
+              "day",
+              "week",
+              "month",
+              "quarter",
+              "year"
+            ]
+          }
+        }
+      },
+      "EventChartRequestDto": {
+        "type": "object",
+        "properties": {
+          "page_id": {
+            "type": "string"
+          },
+          "request_id": {
+            "type": "string"
+          },
+          "date_interval": {
+            "$ref": "#/components/schemas/DateIntervalDto"
+          },
+          "compare_date_interval": {
+            "$ref": "#/components/schemas/DateIntervalDto"
+          },
+          "column_group_bys": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "group_by_limit": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "dry_run": {
+            "type": "boolean"
+          },
+          "include_queries": {
+            "type": "boolean"
+          },
+          "adhoc_properties": {
+            "$ref": "#/components/schemas/PropertiesDto"
+          },
+          "property_filter_groups": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FilterGroup"
+            }
+          },
+          "sort_by_kpi_id": {
+            "type": "string"
+          },
+          "sort_by_mode": {
+            "type": "string",
+            "enum": [
+              "TOTAL",
+              "CHANGE",
+              "IMPACT",
+              "GROUP_BY"
+            ]
+          },
+          "event": {
+            "type": "string"
+          },
+          "kpi_event_parameter": {
+            "type": "string"
+          },
+          "kpi_id": {
+            "type": "string"
+          },
+          "kpi_aggregation_function": {
+            "type": "string",
+            "enum": [
+              "count",
+              "count_distinct",
+              "sum",
+              "avg",
+              "min",
+              "max",
+              "first_value",
+              "last_value",
+              "none"
+            ]
+          },
+          "event_filters": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PropertyFilterDto"
+            }
+          },
+          "event_group_bys": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "time_grain": {
+            "type": "string",
+            "enum": [
+              "min15",
+              "hour",
+              "day",
+              "week",
+              "month",
+              "quarter",
+              "year"
+            ]
+          }
+        }
+      },
       "ColumnDto": {
         "type": "object",
         "properties": {
@@ -1480,6 +1604,9 @@
           },
           "description": {
             "type": "string"
+          },
+          "authorized": {
+            "type": "boolean"
           }
         }
       },
@@ -1506,6 +1633,9 @@
           },
           "unit": {
             "$ref": "#/components/schemas/Unit"
+          },
+          "authorized": {
+            "type": "boolean"
           }
         }
       },
@@ -1543,6 +1673,9 @@
           "dateTo": {
             "type": "string",
             "format": "date"
+          },
+          "authorized": {
+            "type": "boolean"
           }
         }
       },

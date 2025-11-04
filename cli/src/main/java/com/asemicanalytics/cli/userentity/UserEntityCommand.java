@@ -9,7 +9,6 @@ import picocli.CommandLine;
     GenerateEventsCommand.class,
     GeneratePaymentTransactionEventCommand.class,
     GenerateEntityCommand.class,
-    DataTestsCommand.class,
     KpiQueryCommand.class,
 })
 public class UserEntityCommand {

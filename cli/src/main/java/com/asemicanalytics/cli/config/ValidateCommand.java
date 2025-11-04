@@ -10,6 +10,7 @@ import com.asemicanalytics.cli.model.EntityChartRequestDtoTimeGrain;
 import com.asemicanalytics.cli.model.KpiDto;
 import com.asemicanalytics.cli.model.PropertyFilterDto;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -25,7 +26,7 @@ public class ValidateCommand implements Runnable {
 
     try {
       new SpinnerCli().spin(() -> {
-        var yesterday = LocalDate.now().minusDays(1);
+        var yesterday = LocalDate.now().minusDays(1).atStartOfDay(ZoneId.of("UTC"));
         queryEngineClient.submitChartValidate(GlobalConfig.getAppId(), new EntityChartRequestDto()
             .pageId("")
             .requestId("")
@@ -36,16 +37,11 @@ public class ValidateCommand implements Runnable {
             .xaxis(isDailyKpi
                 ? "date"
                 : "cohort_day")
-            .columnFilters(column != null
-                ? List.of(new PropertyFilterDto()
-                .columnId(column.getId())
-                .operation("is_not_null")
-                .valueList(List.of()))
-                : List.of())
             .columnGroupBys(List.of())
             .timeGrain(EntityChartRequestDtoTimeGrain.DAY)
             .sortByKpiId(null)
             .groupByLimit(10)
+            .includeQueries(false)
             .dryRun(true), Optional.of(version));
 
         return null;
