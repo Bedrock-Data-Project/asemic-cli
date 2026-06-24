@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Path;
 import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -31,12 +32,53 @@ import java.util.Optional;
 
 public class QueryEngineClient {
   private final BlockingHttpClient httpClient;
+  private String cachedJwt;
+  private Instant jwtExpiresAt;
 
   public QueryEngineClient() {
     HttpClientConfiguration configuration = new DefaultHttpClientConfiguration();
     configuration.setReadTimeout(Duration.ofSeconds(600));
     this.httpClient =
         new RetryableHttpClient(3, new DefaultHttpClient((URI) null, configuration).toBlocking());
+  }
+
+  /**
+   * Authorization header for engine requests. Prefers a personal access token
+   * exchanged (and cached) for a short-lived configure-scoped JWT
+   * ({@code Bearer}); falls back to the legacy per-project token
+   * ({@code Apikey}, view-only) when no PAT is configured.
+   */
+  private synchronized String authorizationHeader() {
+    var pat = GlobalConfig.getPat();
+    if (pat.isEmpty()) {
+      return "Apikey " + GlobalConfig.getApiToken();
+    }
+    return "Bearer " + exchangedJwt(pat.get());
+  }
+
+  private String exchangedJwt(String pat) {
+    if (cachedJwt != null && jwtExpiresAt != null
+        && Instant.now().isBefore(jwtExpiresAt.minusSeconds(30))) {
+      return cachedJwt;
+    }
+    var uri = UriBuilder.of(GlobalConfig.getWebUri())
+        .path("api/v1")
+        .path("auth/exchange")
+        .build();
+    HttpRequest<?> request = HttpRequest.POST(uri, "")
+        .header("Authorization", "Bearer " + pat);
+    try {
+      var body = httpClient.retrieve(request, Argument.mapOf(String.class, Object.class));
+      cachedJwt = (String) body.get("token");
+      jwtExpiresAt = Instant.now().plusSeconds(
+          body.get("expires_in") instanceof Number n ? n.longValue() : 900L);
+      return cachedJwt;
+    } catch (HttpClientResponseException e) {
+      throw new QueryEngineException("Failed to exchange ASEMIC_PAT for a token: "
+          + e.getResponse().getBody(String.class).orElse("unknown error"));
+    } catch (Exception e) {
+      throw new QueryEngineException("Failed to exchange ASEMIC_PAT for a token");
+    }
   }
 
   public List<ColumnDto> getColumns(String appId, String table) {
@@ -48,7 +90,7 @@ public class QueryEngineClient {
         .build();
 
     HttpRequest<?> request = HttpRequest.GET(uri)
-        .header("Authorization", "Apikey " + GlobalConfig.getApiToken());
+        .header("Authorization", authorizationHeader());
 
     try {
       return httpClient.retrieve(request, Argument.listOf(ColumnDto.class));
@@ -67,7 +109,7 @@ public class QueryEngineClient {
         .build();
 
     MutableHttpRequest<?> request = HttpRequest.GET(uri)
-        .header("Authorization", "Apikey " + GlobalConfig.getApiToken());
+        .header("Authorization", authorizationHeader());
     version.ifPresent(v -> request.header("AppConfigVersion", v));
 
     try {
@@ -88,7 +130,7 @@ public class QueryEngineClient {
         .build();
 
     MutableHttpRequest<?> request = HttpRequest.POST(uri, chartRequestDto)
-        .header("Authorization", "Apikey " + GlobalConfig.getApiToken())
+        .header("Authorization", authorizationHeader())
         .contentType(MediaType.APPLICATION_JSON);
     version.ifPresent(v -> request.header("AppConfigVersion", v));
 
@@ -110,7 +152,7 @@ public class QueryEngineClient {
         .build();
 
     MutableHttpRequest<?> request = HttpRequest.POST(uri, chartRequestDto)
-        .header("Authorization", "Apikey " + GlobalConfig.getApiToken())
+        .header("Authorization", authorizationHeader())
         .contentType(MediaType.APPLICATION_JSON);
     version.ifPresent(v -> request.header("AppConfigVersion", v));
 
@@ -133,7 +175,7 @@ public class QueryEngineClient {
         .build();
 
     HttpRequest<?> request = HttpRequest.POST(uri, databaseDto)
-        .header("Authorization", "Apikey " + GlobalConfig.getApiToken())
+        .header("Authorization", authorizationHeader())
         .contentType(MediaType.APPLICATION_JSON);
 
     try {
@@ -153,7 +195,7 @@ public class QueryEngineClient {
         .build();
 
     MutableHttpRequest<?> request = HttpRequest.GET(uri)
-        .header("Authorization", "Apikey " + GlobalConfig.getApiToken())
+        .header("Authorization", authorizationHeader())
         .accept(MediaType.APPLICATION_OCTET_STREAM);
 
     final byte[] response;
@@ -181,7 +223,7 @@ public class QueryEngineClient {
         .build();
 
     MutableHttpRequest<?> request = HttpRequest.GET(uri)
-        .header("Authorization", "Apikey " + GlobalConfig.getApiToken())
+        .header("Authorization", authorizationHeader())
         .accept(MediaType.APPLICATION_OCTET_STREAM);
 
     final byte[] response;
@@ -214,7 +256,7 @@ public class QueryEngineClient {
         .build();
 
     MutableHttpRequest<?> request = HttpRequest.POST(uri, body)
-        .header("Authorization", "Apikey " + GlobalConfig.getApiToken())
+        .header("Authorization", authorizationHeader())
         .contentType(MediaType.MULTIPART_FORM_DATA_TYPE);
     version.ifPresent(v -> request.header("AppConfigVersion", v));
 
@@ -241,7 +283,7 @@ public class QueryEngineClient {
         .build();
 
     MutableHttpRequest<?> request = HttpRequest.POST(uri, null)
-        .header("Authorization", "Apikey " + GlobalConfig.getApiToken())
+        .header("Authorization", authorizationHeader())
         .contentType(MediaType.APPLICATION_JSON);
     version.ifPresent(v -> request.header("AppConfigVersion", v));
 
@@ -265,7 +307,7 @@ public class QueryEngineClient {
         .build();
 
     MutableHttpRequest<?> request = HttpRequest.GET(uri)
-        .header("Authorization", "Apikey " + GlobalConfig.getApiToken())
+        .header("Authorization", authorizationHeader())
         .contentType(MediaType.APPLICATION_JSON);
     version.ifPresent(v -> request.header("AppConfigVersion", v));
 
@@ -288,7 +330,7 @@ public class QueryEngineClient {
         .build();
 
     HttpRequest<?> request = HttpRequest.GET(uri)
-        .header("Authorization", "Apikey " + GlobalConfig.getApiToken());
+        .header("Authorization", authorizationHeader());
 
     try {
       return httpClient.retrieve(request, Argument.listOf(String.class));
