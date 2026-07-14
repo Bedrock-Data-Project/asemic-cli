@@ -1,7 +1,6 @@
 package com.asemicanalytics.cli.internal;
 
 import java.nio.file.Path;
-import java.util.Optional;
 
 public class GlobalConfig {
   public static String getApiUri() {
@@ -13,8 +12,8 @@ public class GlobalConfig {
   }
 
   /**
-   * The web app (control plane) base URL, where a personal access token is
-   * exchanged for a short-lived engine JWT. Only used when ASEMIC_PAT is set.
+   * The web app (control plane) base URL, where the personal access token is
+   * exchanged for a short-lived engine JWT.
    */
   public static String getWebUri() {
     var webUri = System.getenv("ASEMIC_WEB_URL");
@@ -25,21 +24,17 @@ public class GlobalConfig {
   }
 
   /**
-   * A personal access token (preferred): exchanged for a short-lived,
-   * configure-scoped engine JWT. When unset, the CLI falls back to the legacy
-   * per-project {@code ASEMIC_API_TOKEN} (view-only {@code Apikey}).
+   * The personal access token, exchanged for a short-lived, configure-scoped
+   * engine JWT. Required — the legacy per-project {@code ASEMIC_API_TOKEN}
+   * ({@code Apikey}) mechanism was removed from the engine.
    */
-  public static Optional<String> getPat() {
-    return Optional.ofNullable(System.getenv("ASEMIC_PAT"));
-  }
-
-  public static String getApiToken() {
-    var apiToken = System.getenv("ASEMIC_API_TOKEN");
-    if (apiToken != null) {
-      return apiToken;
+  public static String getPat() {
+    var pat = System.getenv("ASEMIC_PAT");
+    if (pat != null) {
+      return pat;
     }
     throw new IllegalStateException(
-        "API token not found. Define ASEMIC_API_TOKEN environment variable");
+        "Personal access token not found. Define the ASEMIC_PAT environment variable");
   }
 
   public static Path getAppIdDir() {

@@ -9,6 +9,6 @@ sudo mv asemic-cli /usr/local/bin
 ```
 
 ```
-export ASEMIC_API_TOKEN=<TOKEN>
+export ASEMIC_PAT=<PERSONAL_ACCESS_TOKEN>
 ./asemic-cli --help
 ```

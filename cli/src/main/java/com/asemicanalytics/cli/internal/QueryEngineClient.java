@@ -43,17 +43,12 @@ public class QueryEngineClient {
   }
 
   /**
-   * Authorization header for engine requests. Prefers a personal access token
+   * Authorization header for engine requests: the personal access token
    * exchanged (and cached) for a short-lived configure-scoped JWT
-   * ({@code Bearer}); falls back to the legacy per-project token
-   * ({@code Apikey}, view-only) when no PAT is configured.
+   * ({@code Bearer}).
    */
   private synchronized String authorizationHeader() {
-    var pat = GlobalConfig.getPat();
-    if (pat.isEmpty()) {
-      return "Apikey " + GlobalConfig.getApiToken();
-    }
-    return "Bearer " + exchangedJwt(pat.get());
+    return "Bearer " + exchangedJwt(GlobalConfig.getPat());
   }
 
   private String exchangedJwt(String pat) {
